@@ -26,6 +26,7 @@ class StageScreen extends StatelessWidget {
     return piyakRoute(GameScreen(
       key: ValueKey(level.id),
       level: level,
+      useDpad: save.dpadOn,
       hintProvider: (c) => hintFor(c.board),
       onEvents: sound.playForEvents,
       onCleared: (stars) => save.setStars(level.id, stars),

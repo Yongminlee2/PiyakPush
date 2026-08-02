@@ -55,8 +55,8 @@ class SaveService extends ChangeNotifier {
   // ── 설정
   bool get soundOn => _p.getBool('opt.sound') ?? true;
 
-  /// 실기기 테스트 결과 스와이프가 불편하다는 피드백 → 방향키가 기본.
-  bool get dpadOn => _p.getBool('opt.dpad') ?? true;
+  /// 조작 방식 — true면 십자 방향키, false면 조이스틱(기본).
+  bool get dpadOn => _p.getBool('opt.dpad') ?? false;
 
   Future<void> setSoundOn(bool v) async {
     await _p.setBool('opt.sound', v);

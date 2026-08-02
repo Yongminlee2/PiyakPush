@@ -14,6 +14,7 @@ import '../theme.dart';
 import '../widgets/act_background.dart';
 import '../widgets/board_view.dart';
 import '../widgets/clear_popup.dart';
+import '../widgets/dpad.dart';
 import '../widgets/hud.dart';
 import '../widgets/joystick.dart';
 import '../widgets/speech_bubble.dart';
@@ -37,6 +38,9 @@ class GameScreen extends StatefulWidget {
   /// 팝업을 그리는 시점에 호출된다 — 이 스테이지의 별이 저장된 뒤라야
   /// 다음 챕터 해금 여부를 정확히 판정할 수 있기 때문이다.
   final ClearOutcome Function()? clearOutcome;
+
+  /// 설정의 조작 방식 — true면 십자 방향키, false면 조이스틱.
+  final bool useDpad;
   const GameScreen({
     required this.level,
     this.onNext,
@@ -44,6 +48,7 @@ class GameScreen extends StatefulWidget {
     this.hintProvider,
     this.onEvents,
     this.clearOutcome,
+    this.useDpad = false,
     super.key,
   });
 
@@ -229,7 +234,11 @@ class _GameScreenState extends State<GameScreen> {
                 ),
                 SizedBox(
                   height: 180,
-                  child: Joystick(onDir: holdDir, onRelease: releaseDir),
+                  child: widget.useDpad
+                      ? Center(
+                          child:
+                              DPad(onDirDown: holdDir, onRelease: releaseDir))
+                      : Joystick(onDir: holdDir, onRelease: releaseDir),
                 ),
               ],
             ),

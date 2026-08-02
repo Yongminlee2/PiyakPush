@@ -127,7 +127,7 @@ void main() {
           level: lv(['#####', '#@\$o#', '#####'], optimal: 1, id: 'c1s01')),
     ));
     await tester.pump();
-    expect(find.textContaining('스와이프'), findsOneWidget);
+    expect(find.textContaining('기울여서'), findsOneWidget);
     await cleanup(tester);
   });
 }
