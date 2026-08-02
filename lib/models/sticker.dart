@@ -1,6 +1,6 @@
 /// 스티커 정의 24종 + 꾸미기 보드 배치 모델.
 ///
-/// 해금: 누적 별 6개마다 1종 (6, 12, …, 144 — 총 150별).
+/// 해금: 누적 별 25개마다 1종 (25, 50, …, 600 — 200스테이지 × 별 3개).
 library;
 
 class StickerDef {
@@ -44,7 +44,7 @@ final List<StickerDef> kStickers = List.unmodifiable(() {
   ];
   return [
     for (var i = 0; i < defs.length; i++)
-      StickerDef(defs[i].$1, defs[i].$2, defs[i].$3, (i + 1) * 6),
+      StickerDef(defs[i].$1, defs[i].$2, defs[i].$3, (i + 1) * 25),
   ];
 }());
 

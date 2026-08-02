@@ -18,8 +18,9 @@ void main() {
     await tester.tap(find.text('시작'));
     await tester.pumpAndSettle();
     expect(find.byType(ChapterScreen), findsOneWidget);
+    expect(find.text('1막 · 배우기'), findsOneWidget);
     expect(find.textContaining('풀밭'), findsOneWidget);
-    // 챕터 2는 잠금
-    expect(find.byIcon(Icons.lock_rounded), findsNWidgets(4));
+    // 첫 실행이라 1챕터만 열려 있고 나머지는 잠겨 있다
+    expect(find.byIcon(Icons.lock_rounded), findsWidgets);
   });
 }

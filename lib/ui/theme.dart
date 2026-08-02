@@ -10,13 +10,17 @@ abstract final class PiyakColors {
   /// 보드를 감싸는 판 — 크림 배경보다 한 톤 진해 게임판처럼 보인다.
   static const boardPanel = Color(0xFFF2E7C9);
 
-  /// 챕터 1~5 테마색 (풀밭·얼음길·비밀굴·단추와문·금간바닥)
+  /// 챕터 1~20 테마색. 막마다 색 계열이 옮겨간다
+  /// (1막 자연색 → 2막 청록 → 3막 보라·분홍 → 4막 주황·자주).
   static const chapterColors = [
-    Color(0xFF8FD16A),
-    Color(0xFF7FC8E8),
-    Color(0xFFB98FD6),
-    Color(0xFFF08FB0),
-    Color(0xFFC49A6C),
+    Color(0xFF8FD16A), Color(0xFF7FC8E8), Color(0xFFB98FD6), //
+    Color(0xFFF08FB0), Color(0xFFC49A6C),
+    Color(0xFF6FC9A8), Color(0xFF5FBFC4), Color(0xFF7FB3E0), //
+    Color(0xFF9FA8DC), Color(0xFFB79ED0),
+    Color(0xFFD19ADC), Color(0xFFDE9BC0), Color(0xFFE8A0A8), //
+    Color(0xFFEDAA92), Color(0xFFF0B87F),
+    Color(0xFFF2A25C), Color(0xFFEE8F5C), Color(0xFFE87D6B), //
+    Color(0xFFDC6F7E), Color(0xFFC96B92),
   ];
 
   static const grass = Color(0xFFC5E8B0);

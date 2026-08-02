@@ -85,7 +85,7 @@ class TitleScreen extends StatelessWidget {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8),
                           child: LinearProgressIndicator(
-                            value: save.totalStars / 150,
+                            value: save.totalStars / 600,
                             minHeight: 12,
                             backgroundColor: PiyakColors.creamBg,
                             valueColor: const AlwaysStoppedAnimation(
@@ -99,7 +99,7 @@ class TitleScreen extends StatelessWidget {
                         children: [
                           const Icon(Icons.star_rounded,
                               color: PiyakColors.starYellow, size: 20),
-                          Text(' ${save.totalStars} / 150',
+                          Text(' ${save.totalStars} / 600',
                               style: const TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,

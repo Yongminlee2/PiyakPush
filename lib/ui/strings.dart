@@ -10,7 +10,15 @@ abstract final class S {
   static const settings = '설정';
 
   static const chapterTitle = '챕터';
-  static const chapterNames = ['풀밭', '얼음길', '비밀 굴', '단추와 문', '금 간 바닥'];
+  static const chapterNames = [
+    '풀밭', '얼음길', '비밀 굴', '단추와 문', '금 간 바닥', //
+    '얼음 굴', '미끄럼 자물쇠', '부서지는 얼음', '굴과 자물쇠', '무너지는 통로', //
+    '넓은 들판', '알 넷의 방', '얼어붙은 광장', '굴 미로', '잠긴 정원', //
+    '뒤엉킨 길', '삐약의 시험', '다섯 알의 탑', '마지막 관문', '삐약 마스터', //
+  ];
+
+  /// 5챕터씩 묶은 막 이름 — 20개 목록이 평평해 보이지 않게 한다.
+  static const actNames = ['1막 · 배우기', '2막 · 뒤섞기', '3막 · 넓어지기', '4막 · 시험'];
   static const lockedChapter = '이전 챕터에서 별 12개를 모으면 열려요';
 
   static const moves = '이동';

@@ -4,6 +4,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/progression.dart';
 import '../../services/save_service.dart';
 import '../strings.dart';
 import '../theme.dart';
@@ -13,11 +14,18 @@ class ChapterScreen extends StatelessWidget {
   const ChapterScreen({super.key});
 
   static const _icons = [
-    Icons.grass_rounded,
-    Icons.ac_unit_rounded,
-    Icons.blur_circular_rounded,
-    Icons.radio_button_checked_rounded,
+    Icons.grass_rounded, Icons.ac_unit_rounded, //
+    Icons.blur_circular_rounded, Icons.radio_button_checked_rounded,
     Icons.broken_image_rounded,
+    Icons.severe_cold_rounded, Icons.lock_open_rounded, //
+    Icons.icecream_rounded, Icons.vpn_key_rounded,
+    Icons.warning_amber_rounded,
+    Icons.landscape_rounded, Icons.egg_rounded, //
+    Icons.cloudy_snowing, Icons.route_rounded,
+    Icons.local_florist_rounded,
+    Icons.shuffle_rounded, Icons.school_rounded, //
+    Icons.filter_5_rounded, Icons.door_front_door_rounded,
+    Icons.emoji_events_rounded,
   ];
 
   @override
@@ -36,9 +44,24 @@ class ChapterScreen extends StatelessWidget {
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
-        itemCount: 5,
-        itemBuilder: (context, i) {
-          final c = i + 1;
+        itemCount: kChapterCount + S.actNames.length,
+        itemBuilder: (context, row) {
+          // 5챕터마다 막 헤더가 하나씩 앞에 붙는다 — 0·6·12·18번 행이 헤더다.
+          final act = row ~/ 6;
+          if (row % 6 == 0) {
+            return Padding(
+              padding: EdgeInsets.only(top: act == 0 ? 0 : 20, bottom: 8),
+              child: Text(
+                S.actNames[act],
+                style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: PiyakColors.outline),
+              ),
+            );
+          }
+          final c = act * 5 + (row % 6);
+          final i = c - 1;
           final unlocked = save.chapterUnlocked(c);
           final stars = save.chapterStars(c);
           // ListTile은 가장 가까운 Material에 배경과 잉크를 그리므로,

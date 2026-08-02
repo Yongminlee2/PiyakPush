@@ -4,20 +4,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:piyak_push/models/sticker.dart';
 
 void main() {
-  test('스티커는 24종, 임계값 6단위 오름차순', () {
+  test('스티커는 24종, 임계값 25단위 오름차순', () {
     expect(kStickers.length, 24);
     for (var i = 0; i < kStickers.length; i++) {
-      expect(kStickers[i].threshold, (i + 1) * 6);
+      expect(kStickers[i].threshold, (i + 1) * 25);
     }
-    expect(kStickers.last.threshold, 144); // 총 150별 이내
+    expect(kStickers.last.threshold, 600); // 200스테이지 × 별 3개
   });
 
   test('해금 경계', () {
     expect(unlockedStickers(0), isEmpty);
-    expect(unlockedStickers(5), isEmpty);
-    expect(unlockedStickers(6).length, 1);
-    expect(unlockedStickers(143).length, 23);
-    expect(unlockedStickers(150).length, 24);
+    expect(unlockedStickers(24), isEmpty);
+    expect(unlockedStickers(25).length, 1);
+    expect(unlockedStickers(599).length, 23);
+    expect(unlockedStickers(600).length, 24);
   });
 
   test('꾸미기 배치 JSON 왕복', () {
