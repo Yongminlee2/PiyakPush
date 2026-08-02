@@ -162,12 +162,21 @@ class BoardPainter extends CustomPainter {
             : PiyakColors.buttonBlueD;
         final open = board.doorOpenFor(t);
         if (open) {
-          // 열린 문: 색 테두리만 남긴 통로
-          final framePaint = Paint()
-            ..color = col
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = cell * 0.10;
-          canvas.drawRRect(rr.deflate(cell * 0.05), framePaint);
+          // 열린 문: 문짝이 왼쪽으로 젖혀지고 통로가 뚫린다.
+          // 테두리만 남기면 열렸는지 알아보기 어려워 문짝을 남겨 둔다.
+          canvas.drawRRect(
+            rr.deflate(cell * 0.04),
+            Paint()
+              ..color = col.withValues(alpha: 0.5)
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = cell * 0.07,
+          );
+          final leaf = RRect.fromRectAndRadius(
+            Rect.fromLTWH(r.left, r.top, r.width * 0.24, r.height),
+            Radius.circular(cell * 0.08),
+          );
+          canvas.drawRRect(leaf, _fill(col));
+          canvas.drawRRect(leaf, _line);
         } else {
           canvas.drawRRect(rr, _fill(col));
           canvas.drawRRect(rr, _line);
