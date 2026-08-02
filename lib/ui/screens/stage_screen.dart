@@ -42,7 +42,7 @@ class StageScreen extends StatelessWidget {
       chapter: chapter,
       index: idx,
       levelCount: levels.length,
-      currentChapterStars: save.chapterStars(chapter),
+      currentChapterClears: save.chapterClearedCount(chapter),
     );
     return switch (step) {
       NextInChapter(:final index) => ClearOutcome(
@@ -61,8 +61,8 @@ class StageScreen extends StatelessWidget {
                     builder: (_) => StageScreen(chapter: chapter)));
           },
         ),
-      ChapterLocked(:final starsNeeded) =>
-        ClearOutcome(note: S.needMoreStars(starsNeeded)),
+      ChapterLocked(:final clearsNeeded) =>
+        ClearOutcome(note: S.needMoreClears(clearsNeeded)),
       AllChaptersCleared() => ClearOutcome(
           nextLabel: S.toTitle,
           note: S.allCleared,

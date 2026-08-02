@@ -3,8 +3,13 @@
 /// 재발시키지 않기 위한 분리다.
 library;
 
-const int kChapterUnlockStars = 12;
-const int kChapterCount = 5;
+/// 다음 챕터를 열려면 현재 챕터에서 몇 개를 깨야 하는가.
+///
+/// v1.1까지는 "별 12개"였는데, 한 챕터는 10스테이지뿐이라 전부 별 1개로
+/// 클리어해도 10개여서 영구히 갇힐 수 있었다. 별은 실력 보상이지 관문이
+/// 아니어야 한다 — 클리어 개수로 판정한다.
+const int kChapterUnlockClears = 8;
+const int kChapterCount = 20;
 
 sealed class NextStep {
   const NextStep();
@@ -22,11 +27,11 @@ class NextChapter extends NextStep {
   const NextChapter(this.chapter);
 }
 
-/// [chapter] 챕터가 별 [starsNeeded] 개 부족으로 잠겨 있다.
+/// [chapter] 챕터가 클리어 [clearsNeeded] 개 부족으로 잠겨 있다.
 class ChapterLocked extends NextStep {
   final int chapter;
-  final int starsNeeded;
-  const ChapterLocked(this.chapter, this.starsNeeded);
+  final int clearsNeeded;
+  const ChapterLocked(this.chapter, this.clearsNeeded);
 }
 
 /// 마지막 챕터의 마지막 스테이지까지 끝냈다.
@@ -38,13 +43,14 @@ NextStep resolveNextStep({
   required int chapter,
   required int index,
   required int levelCount,
-  required int currentChapterStars,
+  required int currentChapterClears,
   int chapterCount = kChapterCount,
 }) {
   if (index + 1 < levelCount) return NextInChapter(index + 1);
   if (chapter >= chapterCount) return const AllChaptersCleared();
-  if (currentChapterStars >= kChapterUnlockStars) {
+  if (currentChapterClears >= kChapterUnlockClears) {
     return NextChapter(chapter + 1);
   }
-  return ChapterLocked(chapter + 1, kChapterUnlockStars - currentChapterStars);
+  return ChapterLocked(
+      chapter + 1, kChapterUnlockClears - currentChapterClears);
 }

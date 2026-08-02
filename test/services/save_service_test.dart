@@ -25,23 +25,41 @@ void main() {
     expect(s.totalStars, 6);
   });
 
-  test('챕터 해금: 이전 챕터 별 12개 경계', () async {
+  test('chapterClearedCount는 별 1개 이상인 스테이지 수', () async {
+    final s = await SaveService.load();
+    await s.setStars('c2s01', 3);
+    await s.setStars('c2s02', 1);
+    await s.setStars('c2s03', 2);
+    expect(s.chapterClearedCount(2), 3);
+    expect(s.chapterClearedCount(1), 0);
+  });
+
+  test('챕터 해금: 클리어 8개 경계', () async {
     final s = await SaveService.load();
     expect(s.chapterUnlocked(1), true);
-    for (var i = 1; i <= 4; i++) {
-      await s.setStars('c1s0$i', 3); // 12개
+    for (var i = 1; i <= 7; i++) {
+      await s.setStars('c1s0$i', 1);
     }
-    expect(s.chapterStars(1), 12);
-    expect(s.chapterUnlocked(2), true);
-    expect(s.chapterUnlocked(3), false);
+    expect(s.chapterUnlocked(2), false); // 7개로는 안 열린다
+    await s.setStars('c1s08', 1);
+    expect(s.chapterUnlocked(2), true); // 8개면 열린다
+  });
 
-    final s2 = await SaveService.load();
-    await s2.resetAll();
-    await s2.setStars('c1s01', 3);
-    await s2.setStars('c1s02', 3);
-    await s2.setStars('c1s03', 3);
-    await s2.setStars('c1s04', 2); // 11개
-    expect(s2.chapterUnlocked(2), false);
+  test('10스테이지를 별 1개씩 다 깨면 다음 챕터가 열린다 (v1.1 결함 회귀)', () async {
+    final s = await SaveService.load();
+    for (var i = 1; i <= 10; i++) {
+      await s.setStars('c3s${i.toString().padLeft(2, '0')}', 1);
+    }
+    expect(s.chapterStars(3), 10); // 별로는 옛 기준 12개에 못 미친다
+    expect(s.chapterUnlocked(4), true); // 그래도 열려야 한다
+  });
+
+  test('totalStars는 20챕터를 모두 센다', () async {
+    final s = await SaveService.load();
+    await s.setStars('c1s01', 3);
+    await s.setStars('c12s01', 3);
+    await s.setStars('c20s10', 2);
+    expect(s.totalStars, 8);
   });
 
   test('설정 토글과 초기화 (방향키는 기본 켜짐)', () async {

@@ -32,11 +32,25 @@ class SaveService extends ChangeNotifier {
     return sum;
   }
 
-  int get totalStars =>
-      [1, 2, 3, 4, 5].fold(0, (acc, c) => acc + chapterStars(c));
+  /// 별 1개 이상 받은 스테이지 수 — 챕터 해금 판정의 기준.
+  int chapterClearedCount(int c) {
+    var n = 0;
+    for (var i = 1; i <= 10; i++) {
+      if (starsOf('c${c}s${i.toString().padLeft(2, '0')}') > 0) n++;
+    }
+    return n;
+  }
+
+  int get totalStars {
+    var sum = 0;
+    for (var c = 1; c <= kChapterCount; c++) {
+      sum += chapterStars(c);
+    }
+    return sum;
+  }
 
   bool chapterUnlocked(int c) =>
-      c == 1 || chapterStars(c - 1) >= kChapterUnlockStars;
+      c == 1 || chapterClearedCount(c - 1) >= kChapterUnlockClears;
 
   // ── 설정
   bool get soundOn => _p.getBool('opt.sound') ?? true;
