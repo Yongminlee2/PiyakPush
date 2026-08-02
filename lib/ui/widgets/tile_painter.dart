@@ -3,6 +3,8 @@
 /// 모든 도형은 진갈색 외곽선 + 파스텔 채움 — 기존 삐약 에셋과 톤 일치.
 library;
 
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../../engine/board.dart';
@@ -51,7 +53,20 @@ class BoardPainter extends CustomPainter {
     }
     switch (t) {
       case Tile.floor:
-        break;
+        // 좌표 해시로 무늬를 고정한다 — 난수를 쓰면 프레임마다 흔들린다.
+        final h = (p.x * 31 + p.y * 17) % 4;
+        if (h < 2) {
+          final blade = Paint()
+            ..color = PiyakColors.grassDark
+            ..strokeWidth = cell * 0.05
+            ..strokeCap = StrokeCap.round
+            ..style = PaintingStyle.stroke;
+          final bx = r.left + r.width * (h == 0 ? 0.30 : 0.62);
+          final by = r.top + r.height * (h == 0 ? 0.68 : 0.40);
+          final s = cell * 0.10;
+          canvas.drawLine(Offset(bx, by), Offset(bx - s, by - s), blade);
+          canvas.drawLine(Offset(bx, by), Offset(bx + s, by - s), blade);
+        }
       case Tile.wall:
         canvas.drawRRect(rr, _fill(PiyakColors.wallBrown));
         canvas.drawRRect(rr, _line);
@@ -64,6 +79,15 @@ class BoardPainter extends CustomPainter {
           ..strokeCap = StrokeCap.round;
         canvas.drawLine(Offset(r.left + 3, y1), Offset(r.right - 3, y1), plank);
         canvas.drawLine(Offset(r.left + 3, y2), Offset(r.right - 3, y2), plank);
+        // 아래쪽 그림자 띠로 입체감
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromLTRB(
+                r.left, r.bottom - r.height * 0.16, r.right, r.bottom),
+            Radius.circular(cell * 0.14),
+          ),
+          Paint()..color = PiyakColors.outline.withValues(alpha: 0.18),
+        );
       case Tile.nest:
         // 지푸라기 둥지 링
         final c = r.center;
@@ -72,6 +96,21 @@ class BoardPainter extends CustomPainter {
         canvas.drawCircle(c, r.width * 0.34, _line);
         canvas.drawCircle(c, r.width * 0.18,
             Paint()..color = PiyakColors.nestDark);
+        // 지푸라기 결
+        final straw = Paint()
+          ..color = PiyakColors.outline.withValues(alpha: 0.35)
+          ..strokeWidth = 1.4
+          ..strokeCap = StrokeCap.round;
+        for (var k = 0; k < 3; k++) {
+          final a = 0.6 + k * 1.9;
+          canvas.drawLine(
+            Offset(c.dx + math.cos(a) * r.width * 0.20,
+                c.dy + math.sin(a) * r.width * 0.20),
+            Offset(c.dx + math.cos(a) * r.width * 0.33,
+                c.dy + math.sin(a) * r.width * 0.33),
+            straw,
+          );
+        }
       case Tile.ice:
         canvas.drawRRect(rr, _fill(PiyakColors.iceBlue));
         canvas.drawRRect(rr, _line);
@@ -173,6 +212,15 @@ class _EggPainter extends CustomPainter {
       ..strokeWidth = kOutlineWidth;
     canvas.drawOval(rect, fill);
     canvas.drawOval(rect, line);
+    // 좌상단 광택
+    canvas.save();
+    canvas.translate(w * 0.38, h * 0.30);
+    canvas.rotate(-0.5);
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset.zero, width: w * 0.16, height: h * 0.10),
+      Paint()..color = Colors.white.withValues(alpha: 0.85),
+    );
+    canvas.restore();
     // 볼터치
     final blush = Paint()..color = PiyakColors.blush;
     canvas.drawOval(
