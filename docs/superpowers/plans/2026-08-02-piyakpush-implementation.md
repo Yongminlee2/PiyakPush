@@ -19,7 +19,8 @@
 - 레벨 파일 수정 후엔 반드시 `dart run tool/validate_levels.dart` 통과 후 커밋
 - 한국어 UI 문자열은 전부 `lib/ui/strings.dart` 상수로만 사용
 - 커밋 메시지는 한국어 요약 + `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`
-- 모든 셸 명령은 PowerShell 기준. 매 세션 시작 시 `$env:Path = "C:\flutter\bin;$env:Path"; $env:PUB_CACHE = "C:\flutter\.pub-cache"; $env:GRADLE_USER_HOME = "C:\workAndroid\gradle-user-ascii"` 선행
+- 모든 셸 명령은 PowerShell 기준. 매 세션 시작 시 `$env:Path = "C:\flutter\bin;$env:Path"; $env:PUB_CACHE = "C:\flutter\.pub-cache"; $env:GRADLE_USER_HOME = "C:\workAndroid\gradle-user-ascii"; $env:TEMP = "C:\workAndroid\tmp-ascii"; $env:TMP = "C:\workAndroid\tmp-ascii"` 선행
+- **TEMP/TMP 재지정은 필수**: 기본 temp가 한글 경로(`C:\Users\사용자\...`)라 flutter_tester가 0xC0000409로 크래시함 (2026-08-02 실측). ASCII temp로만 `flutter test`가 동작한다.
 
 ### ASCII 레벨 기호 (전 태스크 공통)
 
