@@ -67,6 +67,11 @@ class _ClearPopupState extends State<ClearPopup>
         children: [
           Positioned.fill(child: ConfettiOverlay(progress: _ctrl)),
           Center(
+        child: ScaleTransition(
+          scale: CurvedAnimation(
+            parent: _ctrl,
+            curve: const Interval(0.0, 0.30, curve: Curves.elasticOut),
+          ),
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 40),
           padding: const EdgeInsets.all(24),
@@ -133,6 +138,7 @@ class _ClearPopupState extends State<ClearPopup>
             ],
           ),
             ),
+          ),
           ),
         ],
       ),

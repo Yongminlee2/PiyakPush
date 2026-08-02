@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/progression.dart';
 import '../../services/save_service.dart';
+import '../nav.dart';
 import '../strings.dart';
 import '../theme.dart';
 import '../widgets/act_background.dart';
@@ -154,11 +155,7 @@ class ChapterScreen extends StatelessWidget {
                             ),
                       onTap: unlocked
                           ? () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => StageScreen(chapter: c),
-                              ),
-                            )
+                              context, piyakRoute(StageScreen(chapter: c)))
                           : null,
                     ),
                   ),

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../services/save_service.dart';
 import '../../services/tile_art.dart';
+import '../nav.dart';
 import '../strings.dart';
 import '../theme.dart';
 import '../widgets/act_background.dart';
@@ -40,11 +41,12 @@ class TitleScreen extends StatelessWidget {
                 color: Color(0x335D4037), offset: Offset(0, 4), blurRadius: 0),
           ],
         ),
-        child: FilledButton(
-          style: style,
-          onPressed: () => Navigator.push(
-              context, MaterialPageRoute(builder: (_) => page)),
-          child: Text(label),
+        child: _Bouncy(
+          child: FilledButton(
+            style: style,
+            onPressed: () => Navigator.push(context, piyakRoute(page)),
+            child: Text(label),
+          ),
         ),
       ),
     );
@@ -130,6 +132,33 @@ class TitleScreen extends StatelessWidget {
         ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// 눌리는 동안 살짝 줄어드는 반동.
+class _Bouncy extends StatefulWidget {
+  final Widget child;
+  const _Bouncy({required this.child});
+
+  @override
+  State<_Bouncy> createState() => _BouncyState();
+}
+
+class _BouncyState extends State<_Bouncy> {
+  bool _down = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Listener(
+      onPointerDown: (_) => setState(() => _down = true),
+      onPointerUp: (_) => setState(() => _down = false),
+      onPointerCancel: (_) => setState(() => _down = false),
+      child: AnimatedScale(
+        scale: _down ? 0.96 : 1.0,
+        duration: const Duration(milliseconds: 90),
+        child: widget.child,
       ),
     );
   }
