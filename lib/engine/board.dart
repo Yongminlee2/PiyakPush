@@ -122,26 +122,49 @@ class Board {
         chick: chick ?? this.chick,
       );
 
-  /// 기본 타일(벽·바닥·둥지)만 있는 보드를 ASCII로 직렬화. 데일리 생성용.
-  /// 기믹 타일 위에 알·병아리가 겹치면 표현할 수 없으므로 허용하지 않는다.
+  /// 보드를 ASCII 행으로 직렬화한다. 기믹 타일 위에 알·병아리가 있으면
+  /// 표현할 수 없으므로 던진다 — 레벨 저장 시점엔 그런 배치를 만들지 않는다.
   List<String> toAsciiRows() {
+    const base = {
+      Tile.wall: '#',
+      Tile.floor: '.',
+      Tile.nest: 'o',
+      Tile.ice: 'i',
+      Tile.cracked: 'c',
+      Tile.hole: '#',
+      Tile.portal1: '1',
+      Tile.portal2: '2',
+      Tile.portal3: '3',
+      Tile.portal4: '4',
+      Tile.buttonB: 'b',
+      Tile.buttonD: 'd',
+      Tile.doorB: 'B',
+      Tile.doorD: 'D',
+    };
     final rows = <String>[];
     for (var y = 0; y < height; y++) {
       final sb = StringBuffer();
       for (var x = 0; x < width; x++) {
         final p = Point(x, y);
         final t = tileAt(p);
-        final hasEgg = eggs.contains(p);
-        final hasChick = chick == p;
-        switch (t) {
-          case Tile.wall:
-            sb.write('#');
-          case Tile.floor:
-            sb.write(hasEgg ? '\$' : (hasChick ? '@' : '.'));
-          case Tile.nest:
-            sb.write(hasEgg ? '*' : (hasChick ? '+' : 'o'));
-          default:
-            throw StateError('기믹 타일은 직렬화 불가: $t at $p');
+        if (eggs.contains(p)) {
+          if (t == Tile.floor) {
+            sb.write('\$');
+          } else if (t == Tile.nest) {
+            sb.write('*');
+          } else {
+            throw StateError('기믹 타일 위의 알은 직렬화 불가: $t at $p');
+          }
+        } else if (chick == p) {
+          if (t == Tile.floor) {
+            sb.write('@');
+          } else if (t == Tile.nest) {
+            sb.write('+');
+          } else {
+            throw StateError('기믹 타일 위의 병아리는 직렬화 불가: $t at $p');
+          }
+        } else {
+          sb.write(base[t]!);
         }
       }
       rows.add(sb.toString());
