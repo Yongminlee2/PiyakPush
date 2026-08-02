@@ -32,6 +32,9 @@ class BoardView extends StatefulWidget {
   /// 막힌 입력 피드백: 토큰이 바뀌면 병아리가 그 방향으로 살짝 밀렸다 돌아온다.
   final Dir? bumpDir;
   final int bumpToken;
+
+  /// 홀드 연속 이동 중 — 곡선을 등속으로 바꿔 칸 경계에서 멈칫하지 않게 한다.
+  final bool gliding;
   const BoardView({
     required this.board,
     required this.cellSize,
@@ -39,6 +42,7 @@ class BoardView extends StatefulWidget {
     this.hintMoves,
     this.bumpDir,
     this.bumpToken = 0,
+    this.gliding = false,
     super.key,
   });
 
@@ -88,12 +92,13 @@ class _BoardViewState extends State<BoardView> {
             AnimatedPositioned(
               key: ValueKey('egg$i'),
               duration: kMoveAnim,
-              curve: Curves.easeInOut,
+              curve: widget.gliding ? Curves.linear : Curves.easeOut,
               left: _eggOrder[i].x * cell,
               top: _eggOrder[i].y * cell,
               width: cell,
               height: cell,
-              child: EggWidget(
+              child: EggSprite(
+                pos: _eggOrder[i],
                 size: cell,
                 onNest: b.tileAt(_eggOrder[i]) == Tile.nest,
               ),
@@ -101,7 +106,7 @@ class _BoardViewState extends State<BoardView> {
           AnimatedPositioned(
             key: const ValueKey('chick'),
             duration: kMoveAnim,
-            curve: Curves.easeInOut,
+            curve: widget.gliding ? Curves.linear : Curves.easeOut,
             left: b.chick.x * cell,
             top: b.chick.y * cell - cell * 0.12, // 살짝 위로 — 입체감
             width: cell,
@@ -200,15 +205,30 @@ class _ChickSpriteState extends State<ChickSprite>
     vsync: this,
     duration: const Duration(milliseconds: 140),
   );
+  late final AnimationController _land = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 80),
+  );
   int _tiltSign = 0;
+  int _stepParity = 1;
   Dir? _lastBumpDir;
+
+  @override
+  void initState() {
+    super.initState();
+    _hop.addStatusListener((s) {
+      if (s == AnimationStatus.completed) _land.forward(from: 0);
+    });
+  }
 
   @override
   void didUpdateWidget(ChickSprite old) {
     super.didUpdateWidget(old);
     if (old.pos != widget.pos) {
+      // 좌우 이동은 진행 방향으로, 상하 이동은 걸음마다 교차로 기울여 뒤뚱거린다.
       final dx = widget.pos.x - old.pos.x;
-      _tiltSign = dx == 0 ? _tiltSign : (dx > 0 ? 1 : -1);
+      _stepParity = -_stepParity;
+      _tiltSign = dx != 0 ? (dx > 0 ? 1 : -1) : _stepParity;
       _hop.forward(from: 0);
     }
     if (widget.bumpToken != old.bumpToken && widget.bumpDir != null) {
@@ -222,13 +242,14 @@ class _ChickSpriteState extends State<ChickSprite>
     _bob.dispose();
     _hop.dispose();
     _bump.dispose();
+    _land.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: Listenable.merge([_bob, _hop, _bump]),
+      animation: Listenable.merge([_bob, _hop, _bump, _land]),
       builder: (context, child) {
         final hopT = _hop.value;
         final arc = math.sin(math.pi * hopT);
@@ -236,6 +257,9 @@ class _ChickSpriteState extends State<ChickSprite>
         final tilt = _tiltSign * 0.12 * arc;
         // 숨쉬기: 세로로 살짝 늘었다 줄었다
         final breathe = 1.0 + 0.03 * _bob.value;
+        // 착지: 홉이 끝나는 순간 살짝 눌린다
+        final landT = math.sin(math.pi * _land.value);
+        final squashY = 1.0 - 0.08 * landT;
         // 막힘: 그 방향으로 밀렸다 제자리로
         final push = widget.cell * 0.12 * math.sin(math.pi * _bump.value);
         final bump = switch (_lastBumpDir) {
@@ -252,7 +276,7 @@ class _ChickSpriteState extends State<ChickSprite>
             child: Transform(
               alignment: Alignment.bottomCenter,
               transform: Matrix4.diagonal3Values(
-                  2.0 - breathe, breathe, 1.0),
+                  (2.0 - breathe) / squashY, breathe * squashY, 1.0),
               child: child,
             ),
           ),
