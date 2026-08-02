@@ -10,6 +10,7 @@ import '../../engine/move.dart';
 import '../../models/level.dart';
 import '../game_controller.dart';
 import '../strings.dart';
+import '../theme.dart';
 import '../widgets/board_view.dart';
 import '../widgets/clear_popup.dart';
 import '../widgets/dpad.dart';
@@ -170,34 +171,58 @@ class _GameScreenState extends State<GameScreen> {
                           : (_drag.dy > 0 ? Dir.down : Dir.up);
                       _input(d);
                     },
-                    child: LayoutBuilder(
-                      builder: (context, box) {
-                        final b = c.board;
-                        final cell = (box.maxWidth - 24) / b.width <
-                                (box.maxHeight - 24) / b.height
-                            ? (box.maxWidth - 24) / b.width
-                            : (box.maxHeight - 24) / b.height;
-                        return Center(
-                          child: BoardView(
-                            board: b,
-                            cellSize: cell.clamp(20.0, 72.0),
-                            chickMood: mood,
-                            hintMoves: _hintMoves,
-                            bumpDir: _bumpDir,
-                            bumpToken: _bumpToken,
+                    child: Stack(
+                      children: [
+                        Positioned.fill(
+                          child: LayoutBuilder(
+                            builder: (context, box) {
+                              final b = c.board;
+                              // 패널 안쪽 여백(10*2)과 화면 여백(12*2)을 뺀 뒤 나눈다
+                              final avail = Size(
+                                  box.maxWidth - 44, box.maxHeight - 44);
+                              final cell = (avail.width / b.width <
+                                      avail.height / b.height)
+                                  ? avail.width / b.width
+                                  : avail.height / b.height;
+                              return Center(
+                                child: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: PiyakColors.boardPanel,
+                                    borderRadius: BorderRadius.circular(22),
+                                    border: Border.all(
+                                        color: PiyakColors.outline, width: 3),
+                                  ),
+                                  child: BoardView(
+                                    board: b,
+                                    cellSize: cell.clamp(20.0, 96.0),
+                                    chickMood: mood,
+                                    hintMoves: _hintMoves,
+                                    bumpDir: _bumpDir,
+                                    bumpToken: _bumpToken,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
+                        ),
+                        // 말풍선은 겹쳐 띄운다 — 나타났다 사라져도 방향키가 밀리지 않도록.
+                        if (bubble != null)
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            child: SpeechBubble(text: bubble),
+                          ),
+                      ],
                     ),
                   ),
                 ),
                 if (widget.showDpad)
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
+                    padding: const EdgeInsets.only(bottom: 10),
                     child: DPad(onDir: _input),
                   ),
-                if (bubble != null) SpeechBubble(text: bubble),
-                const SizedBox(height: 8),
               ],
             ),
             if (c.cleared)
