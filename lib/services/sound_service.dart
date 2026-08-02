@@ -15,9 +15,18 @@ class SoundService {
 
   SoundService({required this.isMuted, this.playOverride});
 
+  /// 이동음은 처프 3종을 돌려써서 걸을 때 기계음처럼 들리지 않게 한다.
+  int _chirp = 0;
+
+  String _assetFor(Sfx s) {
+    if (s != Sfx.move) return 'audio/${s.name}.wav';
+    _chirp = (_chirp % 3) + 1;
+    return 'audio/chirp$_chirp.wav';
+  }
+
   Future<void> play(Sfx s) async {
-    if (isMuted()) return;
-    final asset = 'audio/${s.name}.wav';
+    if (isMuted()) return; // 음소거면 처프 순번도 진행하지 않는다
+    final asset = _assetFor(s);
     if (playOverride != null) {
       await playOverride!(asset);
       return;

@@ -20,6 +20,32 @@ void main() {
     expect(played, ['audio/nest.wav']);
   });
 
+  test('이동음은 처프 3종을 순환한다', () async {
+    final played = <String>[];
+    final s = SoundService(
+        isMuted: () => false, playOverride: (a) async => played.add(a));
+    for (var i = 0; i < 4; i++) {
+      await s.play(Sfx.move);
+    }
+    expect(played, [
+      'audio/chirp1.wav',
+      'audio/chirp2.wav',
+      'audio/chirp3.wav',
+      'audio/chirp1.wav',
+    ]);
+  });
+
+  test('음소거 중엔 처프 순번이 진행하지 않는다', () async {
+    var muted = true;
+    final played = <String>[];
+    final s = SoundService(
+        isMuted: () => muted, playOverride: (a) async => played.add(a));
+    await s.play(Sfx.move);
+    muted = false;
+    await s.play(Sfx.move);
+    expect(played, ['audio/chirp1.wav']);
+  });
+
   test('이벤트 매핑: 우선순위 (클리어 > 둥지 > 텔레포트 > 슬라이드 > 밀기 > 이동)', () async {
     final played = <String>[];
     final s = SoundService(
@@ -36,7 +62,7 @@ void main() {
     await s.playForEvents(
         [ev(GameEventType.eggPushed), ev(GameEventType.eggNested)], true);
     expect(played, [
-      'audio/move.wav',
+      'audio/chirp1.wav',
       'audio/push.wav',
       'audio/slide.wav',
       'audio/clear.wav',
