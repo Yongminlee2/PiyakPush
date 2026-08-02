@@ -55,5 +55,5 @@ ThemeData piyakTheme() => ThemeData(
         seedColor: PiyakColors.chickYellow,
         surface: PiyakColors.creamBg,
       ),
-      fontFamily: null, // 시스템 기본(한글 지원)
+      fontFamily: 'Jua', // 둥글둥글한 한글 폰트 (OFL, assets/fonts)
     );
