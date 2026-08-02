@@ -64,7 +64,7 @@ class _DPadButtonState extends State<_DPadButton> {
     widget.onFire();
     _delay = Timer(const Duration(milliseconds: 320), () {
       _repeat = Timer.periodic(
-          const Duration(milliseconds: 160), (_) => widget.onFire());
+          const Duration(milliseconds: 170), (_) => widget.onFire());
     });
   }
 

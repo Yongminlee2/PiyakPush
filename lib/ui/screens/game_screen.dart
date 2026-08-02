@@ -58,6 +58,8 @@ class _GameScreenState extends State<GameScreen> {
   Offset _drag = Offset.zero;
   bool _clearedNotified = false;
   List<Dir>? _hintMoves;
+  Dir? _bumpDir;
+  int _bumpToken = 0;
 
   @override
   void initState() {
@@ -92,9 +94,14 @@ class _GameScreenState extends State<GameScreen> {
   void _input(Dir d) {
     _resetIdleTimers();
     _hintMoves = null;
-    final ok = c.move(d);
-    if (ok) {
+    if (c.move(d)) {
       widget.onEvents?.call(c.lastEvents, c.cleared);
+    } else {
+      // 막힌 입력에 아무 반응이 없으면 조작이 뻣뻣하게 느껴진다.
+      setState(() {
+        _bumpDir = d;
+        _bumpToken++;
+      });
     }
   }
 
@@ -176,6 +183,8 @@ class _GameScreenState extends State<GameScreen> {
                             cellSize: cell.clamp(20.0, 72.0),
                             chickMood: mood,
                             hintMoves: _hintMoves,
+                            bumpDir: _bumpDir,
+                            bumpToken: _bumpToken,
                           ),
                         );
                       },

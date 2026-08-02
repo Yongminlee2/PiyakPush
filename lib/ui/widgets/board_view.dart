@@ -15,7 +15,9 @@ import '../../engine/tile.dart';
 import '../theme.dart';
 import 'tile_painter.dart';
 
-const kMoveAnim = Duration(milliseconds: 120);
+/// 한 칸 이동 시간. DPad 연속 간격(170ms)과 거의 맞물려야 꾹 눌러 이동할 때
+/// 칸마다 멈칫하지 않는다.
+const kMoveAnim = Duration(milliseconds: 160);
 
 class BoardView extends StatefulWidget {
   final Board board;
@@ -26,11 +28,17 @@ class BoardView extends StatefulWidget {
 
   /// 힌트: 다음 이동들 — 실제 tryMove 시뮬레이션으로 병아리 경로에 화살표 표시.
   final List<Dir>? hintMoves;
+
+  /// 막힌 입력 피드백: 토큰이 바뀌면 병아리가 그 방향으로 살짝 밀렸다 돌아온다.
+  final Dir? bumpDir;
+  final int bumpToken;
   const BoardView({
     required this.board,
     required this.cellSize,
     this.chickMood = 'idle',
     this.hintMoves,
+    this.bumpDir,
+    this.bumpToken = 0,
     super.key,
   });
 
@@ -80,7 +88,7 @@ class _BoardViewState extends State<BoardView> {
             AnimatedPositioned(
               key: ValueKey('egg$i'),
               duration: kMoveAnim,
-              curve: Curves.easeOut,
+              curve: Curves.easeInOut,
               left: _eggOrder[i].x * cell,
               top: _eggOrder[i].y * cell,
               width: cell,
@@ -93,7 +101,7 @@ class _BoardViewState extends State<BoardView> {
           AnimatedPositioned(
             key: const ValueKey('chick'),
             duration: kMoveAnim,
-            curve: Curves.easeOut,
+            curve: Curves.easeInOut,
             left: b.chick.x * cell,
             top: b.chick.y * cell - cell * 0.12, // 살짝 위로 — 입체감
             width: cell,
@@ -102,6 +110,8 @@ class _BoardViewState extends State<BoardView> {
               pos: b.chick,
               cell: cell,
               mood: widget.chickMood,
+              bumpDir: widget.bumpDir,
+              bumpToken: widget.bumpToken,
             ),
           ),
           for (final (i, step) in _hintSteps.indexed)
@@ -159,10 +169,16 @@ class ChickSprite extends StatefulWidget {
   final Point pos;
   final double cell;
   final String mood;
+
+  /// 벽·알에 막혔을 때 밀리는 방향. [bumpToken]이 바뀔 때만 반응한다.
+  final Dir? bumpDir;
+  final int bumpToken;
   const ChickSprite({
     required this.pos,
     required this.cell,
     required this.mood,
+    this.bumpDir,
+    this.bumpToken = 0,
     super.key,
   });
 
@@ -178,9 +194,14 @@ class _ChickSpriteState extends State<ChickSprite>
   )..repeat(reverse: true);
   late final AnimationController _hop = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 220),
+    duration: const Duration(milliseconds: 160),
+  );
+  late final AnimationController _bump = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 140),
   );
   int _tiltSign = 0;
+  Dir? _lastBumpDir;
 
   @override
   void didUpdateWidget(ChickSprite old) {
@@ -190,19 +211,24 @@ class _ChickSpriteState extends State<ChickSprite>
       _tiltSign = dx == 0 ? _tiltSign : (dx > 0 ? 1 : -1);
       _hop.forward(from: 0);
     }
+    if (widget.bumpToken != old.bumpToken && widget.bumpDir != null) {
+      _lastBumpDir = widget.bumpDir;
+      _bump.forward(from: 0);
+    }
   }
 
   @override
   void dispose() {
     _bob.dispose();
     _hop.dispose();
+    _bump.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: Listenable.merge([_bob, _hop]),
+      animation: Listenable.merge([_bob, _hop, _bump]),
       builder: (context, child) {
         final hopT = _hop.value;
         final arc = math.sin(math.pi * hopT);
@@ -210,8 +236,17 @@ class _ChickSpriteState extends State<ChickSprite>
         final tilt = _tiltSign * 0.12 * arc;
         // 숨쉬기: 세로로 살짝 늘었다 줄었다
         final breathe = 1.0 + 0.03 * _bob.value;
+        // 막힘: 그 방향으로 밀렸다 제자리로
+        final push = widget.cell * 0.12 * math.sin(math.pi * _bump.value);
+        final bump = switch (_lastBumpDir) {
+          Dir.up => Offset(0, -push),
+          Dir.down => Offset(0, push),
+          Dir.left => Offset(-push, 0),
+          Dir.right => Offset(push, 0),
+          null => Offset.zero,
+        };
         return Transform.translate(
-          offset: Offset(0, hopY),
+          offset: Offset(bump.dx, hopY + bump.dy),
           child: Transform.rotate(
             angle: tilt,
             child: Transform(
