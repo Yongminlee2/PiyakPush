@@ -83,29 +83,10 @@ def mix(a, b, offset_ms=0):
     return [max(-1, min(1, v)) for v in out]
 
 
-def chirp(base, ms=110, vol=0.42):
-    """2음절 삐약: 앞 40% 상승, 뒤 60% 하강."""
-    n = int(SR * ms / 1000)
-    out = []
-    phase = 0.0
-    for i in range(n):
-        t = i / n
-        if t < 0.4:
-            f = base * (1.0 + 0.55 * (t / 0.4))
-        else:
-            f = base * (1.55 - 0.85 * ((t - 0.4) / 0.6))
-        phase += 2 * math.pi * f / SR
-        v = math.sin(phase) + 0.25 * math.sin(2 * phase)
-        out.append(v * vol * env(i, n, attack=0.008))
-    return out
-
-
 random.seed(42)
 
-# 이동: 삐약 울음소리 3종 (SoundService가 번갈아 재생)
-write_wav("chirp1", chirp(900))
-write_wav("chirp2", chirp(980))
-write_wav("chirp3", chirp(850))
+# 이동음(삐약)은 합성하지 않는다 — 오리 소리처럼 들려서, 삐약영어 앱의
+# sfx_piyak.ogg를 assets/audio/chirp.ogg로 가져다 쓴다.
 # 밀기: 낮은 통통
 write_wav("push", tone(220, 110, 0.5, "tri"))
 # 미끄럼: 슉— 노이즈 페이드

@@ -15,14 +15,10 @@ class SoundService {
 
   SoundService({required this.isMuted, this.playOverride});
 
-  /// 이동음은 처프 3종을 돌려써서 걸을 때 기계음처럼 들리지 않게 한다.
-  int _chirp = 0;
-
-  String _assetFor(Sfx s) {
-    if (s != Sfx.move) return 'audio/${s.name}.wav';
-    _chirp = (_chirp % 3) + 1;
-    return 'audio/chirp$_chirp.wav';
-  }
+  /// 이동음은 삐약영어 앱에서 쓰던 진짜 삐약 소리(sfx_piyak.ogg)를 그대로 쓴다.
+  /// 직접 합성한 처프는 오리 소리처럼 들려서 교체했다.
+  String _assetFor(Sfx s) =>
+      s == Sfx.move ? 'audio/chirp.ogg' : 'audio/${s.name}.wav';
 
   Future<void> play(Sfx s) async {
     if (isMuted()) return; // 음소거면 처프 순번도 진행하지 않는다
