@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../strings.dart';
 import '../theme.dart';
+import 'confetti.dart';
 
 class ClearPopup extends StatefulWidget {
   final int stars;
@@ -36,37 +37,36 @@ class ClearPopup extends StatefulWidget {
 }
 
 class _ClearPopupState extends State<ClearPopup>
-    with TickerProviderStateMixin {
-  late final List<AnimationController> _starCtrls;
-
-  @override
-  void initState() {
-    super.initState();
-    _starCtrls = List.generate(
-      3,
-      (i) => AnimationController(
-          vsync: this, duration: const Duration(milliseconds: 350)),
-    );
-    for (var i = 0; i < widget.stars; i++) {
-      Future.delayed(Duration(milliseconds: 250 + i * 280), () {
-        if (mounted) _starCtrls[i].forward();
-      });
-    }
-  }
+    with SingleTickerProviderStateMixin {
+  // 별마다 컨트롤러를 두고 Future.delayed로 시작하던 구조는 리빌드에 취약해
+  // 실기기에서 별이 하나도 안 보이는 일이 있었다. 컨트롤러 하나를 즉시
+  // 돌리고 Interval로 순서를 나눈다.
+  late final AnimationController _ctrl = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1400),
+  )..forward();
 
   @override
   void dispose() {
-    for (final c in _starCtrls) {
-      c.dispose();
-    }
+    _ctrl.dispose();
     super.dispose();
   }
+
+  /// i번째 별이 튀어나오는 구간.
+  Animation<double> _starAnim(int i) => CurvedAnimation(
+        parent: _ctrl,
+        curve: Interval(0.10 + i * 0.16, 0.10 + i * 0.16 + 0.34,
+            curve: Curves.elasticOut),
+      );
 
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
       color: Colors.black.withValues(alpha: 0.35),
-      child: Center(
+      child: Stack(
+        children: [
+          Positioned.fill(child: ConfettiOverlay(progress: _ctrl)),
+          Center(
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 40),
           padding: const EdgeInsets.all(24),
@@ -87,17 +87,17 @@ class _ClearPopupState extends State<ClearPopup>
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: List.generate(3, (i) {
-                  return ScaleTransition(
-                    scale: CurvedAnimation(
-                        parent: _starCtrls[i], curve: Curves.elasticOut),
-                    child: Icon(
-                      Icons.star_rounded,
-                      size: 52,
-                      color: i < widget.stars
-                          ? PiyakColors.starYellow
-                          : PiyakColors.outline.withValues(alpha: 0.2),
-                    ),
+                  final earned = i < widget.stars;
+                  final star = Icon(
+                    Icons.star_rounded,
+                    size: 56,
+                    color: earned
+                        ? PiyakColors.starYellow
+                        : PiyakColors.outline.withValues(alpha: 0.18),
                   );
+                  // 미획득 별은 연출로 감싸지 않는다 — 늘 자리에 보여야 한다.
+                  if (!earned) return star;
+                  return ScaleTransition(scale: _starAnim(i), child: star);
                 }),
               ),
               const SizedBox(height: 8),
@@ -132,7 +132,9 @@ class _ClearPopupState extends State<ClearPopup>
               ),
             ],
           ),
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
