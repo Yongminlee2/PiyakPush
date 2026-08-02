@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 
 import '../../engine/board.dart';
 import '../../engine/geometry.dart';
+import '../../engine/move.dart';
 import '../../engine/tile.dart';
+import '../theme.dart';
 import 'tile_painter.dart';
 
 const kMoveAnim = Duration(milliseconds: 120);
@@ -19,10 +21,14 @@ class BoardView extends StatefulWidget {
 
   /// 'idle' | 'think' | 'sleep' | 'cheer' | 'sad' | 'speak' ...
   final String chickMood;
+
+  /// 힌트: 다음 이동들 — 실제 tryMove 시뮬레이션으로 병아리 경로에 화살표 표시.
+  final List<Dir>? hintMoves;
   const BoardView({
     required this.board,
     required this.cellSize,
     this.chickMood = 'idle',
+    this.hintMoves,
     super.key,
   });
 
@@ -96,8 +102,51 @@ class _BoardViewState extends State<BoardView> {
               fit: BoxFit.contain,
             ),
           ),
+          for (final (i, step) in _hintSteps.indexed)
+            Positioned(
+              left: step.$1.x * cell,
+              top: step.$1.y * cell,
+              width: cell,
+              height: cell,
+              child: IgnorePointer(
+                child: Opacity(
+                  opacity: (1.0 - i * 0.15).clamp(0.3, 1.0),
+                  child: Transform.rotate(
+                    angle: switch (step.$2) {
+                      Dir.up => -1.5708,
+                      Dir.down => 1.5708,
+                      Dir.left => 3.1416,
+                      Dir.right => 0,
+                    },
+                    child: Icon(
+                      Icons.arrow_forward_rounded,
+                      size: cell * 0.6,
+                      color: PiyakColors.starYellow,
+                      shadows: const [
+                        Shadow(color: PiyakColors.outline, blurRadius: 3),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
+  }
+
+  /// 힌트 이동을 실제 엔진으로 시뮬레이션해 (도착 칸, 방향) 목록을 만든다.
+  List<(Point, Dir)> get _hintSteps {
+    final moves = widget.hintMoves;
+    if (moves == null) return const [];
+    final steps = <(Point, Dir)>[];
+    var b = widget.board;
+    for (final d in moves) {
+      final o = b.tryMove(d);
+      if (o.blocked) break;
+      b = o.board!;
+      steps.add((b.chick, d));
+    }
+    return steps;
   }
 }
