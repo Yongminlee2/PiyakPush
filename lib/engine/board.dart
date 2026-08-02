@@ -121,4 +121,31 @@ class Board {
         eggs: eggs ?? this.eggs,
         chick: chick ?? this.chick,
       );
+
+  /// 기본 타일(벽·바닥·둥지)만 있는 보드를 ASCII로 직렬화. 데일리 생성용.
+  /// 기믹 타일 위에 알·병아리가 겹치면 표현할 수 없으므로 허용하지 않는다.
+  List<String> toAsciiRows() {
+    final rows = <String>[];
+    for (var y = 0; y < height; y++) {
+      final sb = StringBuffer();
+      for (var x = 0; x < width; x++) {
+        final p = Point(x, y);
+        final t = tileAt(p);
+        final hasEgg = eggs.contains(p);
+        final hasChick = chick == p;
+        switch (t) {
+          case Tile.wall:
+            sb.write('#');
+          case Tile.floor:
+            sb.write(hasEgg ? '\$' : (hasChick ? '@' : '.'));
+          case Tile.nest:
+            sb.write(hasEgg ? '*' : (hasChick ? '+' : 'o'));
+          default:
+            throw StateError('기믹 타일은 직렬화 불가: $t at $p');
+        }
+      }
+      rows.add(sb.toString());
+    }
+    return rows;
+  }
 }
