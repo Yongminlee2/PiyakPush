@@ -49,8 +49,16 @@ class SaveService extends ChangeNotifier {
     return sum;
   }
 
+  /// 확인용 전체 해금 — 켜면 모든 챕터가 열린다 (설정에서 토글).
+  bool get unlockAll => _p.getBool('opt.unlockAll') ?? false;
+
+  Future<void> setUnlockAll(bool v) async {
+    await _p.setBool('opt.unlockAll', v);
+    notifyListeners();
+  }
+
   bool chapterUnlocked(int c) =>
-      c == 1 || chapterClearedCount(c - 1) >= kChapterUnlockClears;
+      unlockAll || c == 1 || chapterClearedCount(c - 1) >= kChapterUnlockClears;
 
   // ── 설정
   bool get soundOn => _p.getBool('opt.sound') ?? true;

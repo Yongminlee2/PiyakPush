@@ -54,6 +54,12 @@ class SettingsScreen extends StatelessWidget {
               ],
             ),
           ),
+          SwitchListTile(
+            title: const Text(S.unlockAll,
+                style: TextStyle(color: PiyakColors.outline)),
+            value: save.unlockAll,
+            onChanged: (v) => save.setUnlockAll(v),
+          ),
           const SizedBox(height: 24),
           OutlinedButton.icon(
             icon: const Icon(Icons.delete_outline_rounded, color: Colors.red),
