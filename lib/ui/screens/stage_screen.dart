@@ -8,6 +8,7 @@ import '../../models/level.dart';
 import '../../services/hint_service.dart';
 import '../../services/level_repository.dart';
 import '../../services/save_service.dart';
+import '../../services/sound_service.dart';
 import '../strings.dart';
 import '../theme.dart';
 import 'game_screen.dart';
@@ -18,6 +19,7 @@ class StageScreen extends StatelessWidget {
 
   Route _gameRoute(BuildContext context, List<Level> levels, int idx) {
     final save = context.read<SaveService>();
+    final sound = context.read<SoundService>();
     final level = levels[idx];
     return MaterialPageRoute(
       builder: (_) => GameScreen(
@@ -25,6 +27,7 @@ class StageScreen extends StatelessWidget {
         level: level,
         showDpad: save.dpadOn,
         hintProvider: (c) => hintFor(c.board),
+        onEvents: sound.playForEvents,
         onCleared: (stars) => save.setStars(level.id, stars),
         onNext: idx + 1 < levels.length
             ? () => Navigator.pushReplacement(

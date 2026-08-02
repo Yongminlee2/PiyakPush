@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'services/save_service.dart';
+import 'services/sound_service.dart';
 import 'ui/screens/title_screen.dart';
 import 'ui/strings.dart';
 import 'ui/theme.dart';
@@ -19,8 +20,12 @@ class PiyakPushApp extends StatelessWidget {
   const PiyakPushApp({required this.save, super.key});
 
   @override
-  Widget build(BuildContext context) => ChangeNotifierProvider.value(
-        value: save,
+  Widget build(BuildContext context) => MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: save),
+          Provider(
+              create: (_) => SoundService(isMuted: () => !save.soundOn)),
+        ],
         child: MaterialApp(
           title: S.appTitle,
           theme: piyakTheme(),
