@@ -77,7 +77,7 @@ class _DecoBoardScreenState extends State<DecoBoardScreen> {
                         render?.globalToLocal(d.offset) ?? Offset.zero;
                     _place(d.data, local, size);
                   },
-                  builder: (context, _, __) => Container(
+                  builder: (context, _, _) => Container(
                     color: PiyakColors.creamBg,
                     child: Stack(
                       children: [
