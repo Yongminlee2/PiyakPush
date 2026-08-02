@@ -237,15 +237,9 @@ class _EggSpriteState extends State<EggSprite>
           child: child,
         );
       },
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Padding(
-            padding: EdgeInsets.all(widget.size * 0.10),
-            child: Image.asset('assets/images/egg.png', fit: BoxFit.contain),
-          ),
-          CustomPaint(painter: _EggPainter(widget.onNest)),
-        ],
+      child: CustomPaint(
+        size: Size(widget.size, widget.size),
+        painter: _EggPainter(widget.onNest),
       ),
     );
   }
@@ -255,11 +249,26 @@ class _EggPainter extends CustomPainter {
   final bool happy;
   _EggPainter(this.happy);
 
-  /// 몸통은 assets/images/egg.png(기존 codex 그림)가 그리고,
-  /// 여기서는 그 위에 눈·볼터치·행복 표정만 얹는다.
   @override
   void paint(Canvas canvas, Size size) {
     final w = size.width, h = size.height;
+    final rect = Rect.fromLTWH(w * 0.18, h * 0.10, w * 0.64, h * 0.78);
+    final fill = Paint()..color = PiyakColors.eggWhite;
+    final line = Paint()
+      ..color = PiyakColors.outline
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = kOutlineWidth;
+    canvas.drawOval(rect, fill);
+    canvas.drawOval(rect, line);
+    // 좌상단 광택
+    canvas.save();
+    canvas.translate(w * 0.38, h * 0.30);
+    canvas.rotate(-0.5);
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset.zero, width: w * 0.16, height: h * 0.10),
+      Paint()..color = Colors.white.withValues(alpha: 0.85),
+    );
+    canvas.restore();
     // 볼터치
     final blush = Paint()..color = PiyakColors.blush;
     canvas.drawOval(
