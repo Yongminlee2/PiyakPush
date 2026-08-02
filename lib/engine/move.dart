@@ -129,10 +129,20 @@ extension BoardMove on Board {
   }
 
   /// 알이 [from]에서 [d] 방향으로 밀렸을 때 최종 착지 칸. 못 밀면 null.
+  ///
+  /// 얼음 칸에 있는 동안 같은 방향으로 계속 미끄러지고, 비얼음 칸에
+  /// 들어서거나 전방이 막히면 멈춘다.
   Point? _resolveEggLanding(Point from, Dir d, List<GameEvent> events) {
     final dest = from.step(d);
     if (!_eggCanEnter(dest)) return null;
-    return dest;
+    var cur = dest;
+    while (tileAt(cur) == Tile.ice) {
+      final nxt = cur.step(d);
+      if (!_eggCanEnter(nxt)) break;
+      events.add(GameEvent(GameEventType.eggSlid, cur, nxt));
+      cur = nxt;
+    }
+    return cur;
   }
 
   /// 병아리가 [dest]로 걸어 들어갈 때 최종 위치. 못 들어가면 null.
