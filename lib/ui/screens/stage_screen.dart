@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/level.dart';
+import '../../models/progression.dart';
 import '../../services/hint_service.dart';
 import '../../services/level_repository.dart';
 import '../../services/save_service.dart';
@@ -29,12 +30,45 @@ class StageScreen extends StatelessWidget {
         hintProvider: (c) => hintFor(c.board),
         onEvents: sound.playForEvents,
         onCleared: (stars) => save.setStars(level.id, stars),
-        onNext: idx + 1 < levels.length
-            ? () => Navigator.pushReplacement(
-                context, _gameRoute(context, levels, idx + 1))
-            : () => Navigator.pop(context),
+        clearOutcome: () => _outcomeFor(context, levels, idx),
       ),
     );
+  }
+
+  /// 팝업이 그려질 때 호출된다 — 방금 딴 별까지 반영된 상태로 판정한다.
+  ClearOutcome _outcomeFor(BuildContext context, List<Level> levels, int idx) {
+    final save = context.read<SaveService>();
+    final step = resolveNextStep(
+      chapter: chapter,
+      index: idx,
+      levelCount: levels.length,
+      currentChapterStars: save.chapterStars(chapter),
+    );
+    return switch (step) {
+      NextInChapter(:final index) => ClearOutcome(
+          nextLabel: S.next,
+          onNext: () => Navigator.pushReplacement(
+              context, _gameRoute(context, levels, index)),
+        ),
+      NextChapter(:final chapter) => ClearOutcome(
+          nextLabel: S.nextChapter,
+          note: S.chapterCleared,
+          onNext: () {
+            Navigator.pop(context); // 게임 화면을 닫고
+            Navigator.pushReplacement( // 스테이지 목록을 다음 챕터로 교체
+                context,
+                MaterialPageRoute(
+                    builder: (_) => StageScreen(chapter: chapter)));
+          },
+        ),
+      ChapterLocked(:final starsNeeded) =>
+        ClearOutcome(note: S.needMoreStars(starsNeeded)),
+      AllChaptersCleared() => ClearOutcome(
+          nextLabel: S.toTitle,
+          note: S.allCleared,
+          onNext: () => Navigator.popUntil(context, (r) => r.isFirst),
+        ),
+    };
   }
 
   @override

@@ -21,6 +21,12 @@ abstract final class S {
   static const next = '다음';
   static const list = '목록';
   static const clear = '클리어!';
+  static const nextChapter = '다음 챕터';
+  static const chapterCleared = '챕터 클리어!';
+  static const allCleared = '모든 챕터 클리어! 대단해요!';
+  static const toTitle = '처음으로';
+
+  static String needMoreStars(int n) => '별 $n개만 더 모으면 다음 챕터가 열려요';
 
   static const tutorial1 = '화면을 밀어서(스와이프) 삐약이를 움직여요!';
   static const tutorial2 = '알을 밀어서 둥지에 쏙! 넣어주세요';

@@ -68,6 +68,38 @@ void main() {
     await cleanup(tester);
   });
 
+  testWidgets('clearOutcome의 문구와 버튼이 팝업에 반영된다', (tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: GameScreen(
+        level: lv(['#####', '#@\$o#', '#####'], optimal: 1),
+        clearOutcome: () =>
+            const ClearOutcome(note: '별 3개만 더 모으면 다음 챕터가 열려요'),
+      ),
+    ));
+    await tester.pump();
+    await tester.tap(find.byIcon(Icons.keyboard_arrow_right_rounded));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.text('별 3개만 더 모으면 다음 챕터가 열려요'), findsOneWidget);
+    expect(find.text('다음'), findsNothing); // onNext 없으면 다음 버튼도 없다
+    await tester.pump(const Duration(seconds: 2));
+    await cleanup(tester);
+  });
+
+  testWidgets('clearOutcome이 없으면 기존 onNext가 다음 버튼으로 뜬다', (tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: GameScreen(
+        level: lv(['#####', '#@\$o#', '#####'], optimal: 1),
+        onNext: () {},
+      ),
+    ));
+    await tester.pump();
+    await tester.tap(find.byIcon(Icons.keyboard_arrow_right_rounded));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.text('다음'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 2));
+    await cleanup(tester);
+  });
+
   testWidgets('튜토리얼 말풍선은 c1s01에서 표시', (tester) async {
     await tester.pumpWidget(MaterialApp(
       home: GameScreen(

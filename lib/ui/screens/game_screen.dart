@@ -16,6 +16,14 @@ import '../widgets/dpad.dart';
 import '../widgets/hud.dart';
 import '../widgets/speech_bubble.dart';
 
+/// 클리어 팝업이 무엇을 보여줄지 — 진행 판정 결과를 화면이 이해하는 형태로 옮긴 것.
+class ClearOutcome {
+  final String? nextLabel;
+  final VoidCallback? onNext;
+  final String? note;
+  const ClearOutcome({this.nextLabel, this.onNext, this.note});
+}
+
 class GameScreen extends StatefulWidget {
   final Level level;
   final VoidCallback? onNext;
@@ -25,6 +33,10 @@ class GameScreen extends StatefulWidget {
   final bool showDpad;
   final Future<List<Dir>?> Function(GameController)? hintProvider;
   final void Function(List<GameEvent> events, bool cleared)? onEvents;
+
+  /// 팝업을 그리는 시점에 호출된다 — 이 스테이지의 별이 저장된 뒤라야
+  /// 다음 챕터 해금 여부를 정확히 판정할 수 있기 때문이다.
+  final ClearOutcome Function()? clearOutcome;
   const GameScreen({
     required this.level,
     this.onNext,
@@ -32,6 +44,7 @@ class GameScreen extends StatefulWidget {
     this.showDpad = true,
     this.hintProvider,
     this.onEvents,
+    this.clearOutcome,
     super.key,
   });
 
@@ -179,18 +192,24 @@ class _GameScreenState extends State<GameScreen> {
               ],
             ),
             if (c.cleared)
-              Positioned.fill(
-                child: ClearPopup(
-                  stars: c.stars,
-                  moves: c.moves,
-                  optimal: widget.level.optimal,
-                  onNext: widget.onNext,
-                  onRetry: _restart,
-                  onList: Navigator.canPop(context)
-                      ? () => Navigator.pop(context)
-                      : null,
-                ),
-              ),
+              Builder(builder: (context) {
+                final outcome = widget.clearOutcome?.call() ??
+                    ClearOutcome(nextLabel: S.next, onNext: widget.onNext);
+                return Positioned.fill(
+                  child: ClearPopup(
+                    stars: c.stars,
+                    moves: c.moves,
+                    optimal: widget.level.optimal,
+                    nextLabel: outcome.nextLabel ?? S.next,
+                    note: outcome.note,
+                    onNext: outcome.onNext,
+                    onRetry: _restart,
+                    onList: Navigator.canPop(context)
+                        ? () => Navigator.pop(context)
+                        : null,
+                  ),
+                );
+              }),
           ],
         ),
       ),
