@@ -128,17 +128,41 @@ extension BoardMove on Board {
     return MoveOutcome(next, events);
   }
 
+  /// [t] 타일이 처음 나오는 위치. 굴 짝 찾기에 사용 (레벨당 굴은 쌍당 1개씩).
+  Point? _findTile(Tile t) {
+    final idx = tiles.indexOf(t);
+    if (idx < 0) return null;
+    return Point(idx % width, idx ~/ width);
+  }
+
+  /// [p] 칸 진입을 해석해 실제 도착 칸을 돌려준다. 굴이면 짝 굴로 치환.
+  /// 진입 불가(막힘·출구 점유)면 null.
+  Point? _enterResolved(Point p, GameEventType teleportEvent,
+      List<GameEvent> events, bool Function(Point) canEnter) {
+    if (!canEnter(p)) return null;
+    final pair = portalPair(tileAt(p));
+    if (pair == null) return p;
+    final exit = _findTile(pair);
+    if (exit == null) return p; // 짝 없는 굴은 바닥 취급
+    if (occupied(exit)) return null; // 출구 막힘 → 진입 자체 불가
+    events.add(GameEvent(teleportEvent, p, exit));
+    return exit;
+  }
+
   /// 알이 [from]에서 [d] 방향으로 밀렸을 때 최종 착지 칸. 못 밀면 null.
   ///
   /// 얼음 칸에 있는 동안 같은 방향으로 계속 미끄러지고, 비얼음 칸에
-  /// 들어서거나 전방이 막히면 멈춘다.
+  /// 들어서거나 전방이 막히면 멈춘다. 굴에 들어가면 짝 굴에서 정지
+  /// (굴 칸은 얼음이 아니므로 슬라이드 루프가 자연히 끝난다).
   Point? _resolveEggLanding(Point from, Dir d, List<GameEvent> events) {
-    final dest = from.step(d);
-    if (!_eggCanEnter(dest)) return null;
+    final dest =
+        _enterResolved(from.step(d), GameEventType.eggTeleported, events, _eggCanEnter);
+    if (dest == null) return null;
     var cur = dest;
     while (tileAt(cur) == Tile.ice) {
-      final nxt = cur.step(d);
-      if (!_eggCanEnter(nxt)) break;
+      final nxt = _enterResolved(
+          cur.step(d), GameEventType.eggTeleported, events, _eggCanEnter);
+      if (nxt == null) break;
       events.add(GameEvent(GameEventType.eggSlid, cur, nxt));
       cur = nxt;
     }
@@ -147,7 +171,8 @@ extension BoardMove on Board {
 
   /// 병아리가 [dest]로 걸어 들어갈 때 최종 위치. 못 들어가면 null.
   Point? _resolveChickLanding(Point dest, List<GameEvent> events) {
-    return dest;
+    return _enterResolved(
+        dest, GameEventType.chickTeleported, events, _walkable);
   }
 
   /// 이동 전후로 문 열림 상태가 바뀌었으면 이벤트 발행.
