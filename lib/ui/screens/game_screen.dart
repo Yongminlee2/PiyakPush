@@ -155,7 +155,7 @@ class _GameScreenState extends State<GameScreen> {
     if (c.deadlocked) return S.deadlockHint;
     switch (widget.level.id) {
       case 'c1s01':
-        return S.tutorial1;
+        return widget.useDpad ? S.tutorial1Dpad : S.tutorial1;
       case 'c1s02':
         return S.tutorial2;
       case 'c1s03':
@@ -194,10 +194,13 @@ class _GameScreenState extends State<GameScreen> {
                               // 패널 안쪽 여백(10*2)과 화면 여백(12*2)을 뺀 뒤 나눈다
                               final avail = Size(
                                   box.maxWidth - 44, box.maxHeight - 44);
-                              final cell = (avail.width / b.width <
+                              // 기준 44 고정 — 판이 그보다 커서 안 들어갈 때만 줄인다.
+                              // (레벨마다 크기가 널뛰지 않게)
+                              final fit = (avail.width / b.width <
                                       avail.height / b.height)
                                   ? avail.width / b.width
                                   : avail.height / b.height;
+                              final cell = fit < 44.0 ? fit : 44.0;
                               return Center(
                                 child: Container(
                                   padding: const EdgeInsets.all(10),
@@ -209,7 +212,7 @@ class _GameScreenState extends State<GameScreen> {
                                   ),
                                   child: BoardView(
                                     board: b,
-                                    cellSize: cell.clamp(20.0, 96.0),
+                                    cellSize: cell.clamp(20.0, 44.0),
                                     chickMood: mood,
                                     hintMoves: _hintMoves,
                                     bumpDir: _bumpDir,
@@ -232,14 +235,18 @@ class _GameScreenState extends State<GameScreen> {
                       ],
                   ),
                 ),
-                SizedBox(
-                  height: 180,
-                  child: widget.useDpad
-                      ? Center(
-                          child:
-                              DPad(onDirDown: holdDir, onRelease: releaseDir))
-                      : Joystick(onDir: holdDir, onRelease: releaseDir),
-                ),
+                // 방향키는 제 키(약 240px)대로 두고 아래 여백으로 띄운다 —
+                // 고정 높이 띠에 넣으면 잘리고 너무 바닥에 붙는다.
+                widget.useDpad
+                    ? Padding(
+                        padding: const EdgeInsets.only(bottom: 36),
+                        child: DPad(onDirDown: holdDir, onRelease: releaseDir),
+                      )
+                    : SizedBox(
+                        height: 180,
+                        child:
+                            Joystick(onDir: holdDir, onRelease: releaseDir),
+                      ),
               ],
             ),
             if (c.cleared)
