@@ -6,6 +6,8 @@ library;
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/progression.dart';
+
 class SaveService extends ChangeNotifier {
   final SharedPreferences _p;
   SaveService._(this._p);
@@ -33,7 +35,8 @@ class SaveService extends ChangeNotifier {
   int get totalStars =>
       [1, 2, 3, 4, 5].fold(0, (acc, c) => acc + chapterStars(c));
 
-  bool chapterUnlocked(int c) => c == 1 || chapterStars(c - 1) >= 12;
+  bool chapterUnlocked(int c) =>
+      c == 1 || chapterStars(c - 1) >= kChapterUnlockStars;
 
   // ── 설정
   bool get soundOn => _p.getBool('opt.sound') ?? true;
