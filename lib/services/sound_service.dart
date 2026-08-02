@@ -15,10 +15,7 @@ class SoundService {
 
   SoundService({required this.isMuted, this.playOverride});
 
-  /// 이동음은 삐약영어 앱에서 쓰던 진짜 삐약 소리(sfx_piyak.ogg)를 그대로 쓴다.
-  /// 직접 합성한 처프는 오리 소리처럼 들려서 교체했다.
-  String _assetFor(Sfx s) =>
-      s == Sfx.move ? 'audio/chirp.ogg' : 'audio/${s.name}.wav';
+  String _assetFor(Sfx s) => 'audio/${s.name}.wav';
 
   Future<void> play(Sfx s) async {
     if (isMuted()) return; // 음소거면 처프 순번도 진행하지 않는다

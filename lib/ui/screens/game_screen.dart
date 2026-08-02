@@ -224,7 +224,7 @@ class _GameScreenState extends State<GameScreen> {
                             },
                           ),
                         ),
-                        // 말풍선은 겹쳐 띄운다 — 나타났다 사라져도 조이스틱이 밀리지 않도록.
+                        // 말풍선은 겹쳐 띄운다 — 나타났다 사라져도 조작부가 밀리지 않도록.
                         if (bubble != null)
                           Positioned(
                             left: 0,
@@ -232,21 +232,23 @@ class _GameScreenState extends State<GameScreen> {
                             bottom: 0,
                             child: SpeechBubble(text: bubble),
                           ),
+                        // 조이스틱은 화면 어디를 눌러도 그 자리에 떠야 한다 —
+                        // 보드 영역까지 통째로 덮는다 (보드엔 터치 상호작용이 없다).
+                        if (!widget.useDpad)
+                          Positioned.fill(
+                            child:
+                                Joystick(onDir: holdDir, onRelease: releaseDir),
+                          ),
                       ],
                   ),
                 ),
                 // 방향키는 제 키(약 240px)대로 두고 아래 여백으로 띄운다 —
                 // 고정 높이 띠에 넣으면 잘리고 너무 바닥에 붙는다.
-                widget.useDpad
-                    ? Padding(
-                        padding: const EdgeInsets.only(bottom: 36),
-                        child: DPad(onDirDown: holdDir, onRelease: releaseDir),
-                      )
-                    : SizedBox(
-                        height: 180,
-                        child:
-                            Joystick(onDir: holdDir, onRelease: releaseDir),
-                      ),
+                if (widget.useDpad)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 36),
+                    child: DPad(onDirDown: holdDir, onRelease: releaseDir),
+                  ),
               ],
             ),
             if (c.cleared)

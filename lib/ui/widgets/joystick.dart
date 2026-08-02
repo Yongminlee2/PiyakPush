@@ -61,7 +61,9 @@ class _JoystickState extends State<Joystick> {
       onPanCancel: _end,
       child: SizedBox.expand(
         child: _base == null
-            ? Center(
+            ? Align(
+                // 이제 화면 전체가 조작 영역이라, 안내는 하단에만 살짝 둔다
+                alignment: const Alignment(0, 0.92),
                 child: Text(
                   S.joystickHint,
                   style: TextStyle(
