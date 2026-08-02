@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:piyak_push/main.dart';
 import 'package:piyak_push/services/save_service.dart';
+import 'package:piyak_push/services/sound_service.dart';
 import 'package:piyak_push/ui/screens/chapter_screen.dart';
 import 'package:piyak_push/ui/screens/title_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,7 +11,9 @@ void main() {
   testWidgets('앱 부팅 → 타이틀 → 챕터 화면 이동', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final save = await SaveService.load();
-    await tester.pumpWidget(PiyakPushApp(save: save));
+    final sound = SoundService(
+        isMuted: () => true, playOverride: (_) async {});
+    await tester.pumpWidget(PiyakPushApp(save: save, sound: sound));
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.byType(TitleScreen), findsOneWidget);
     expect(find.text('삐약푸시'), findsOneWidget);

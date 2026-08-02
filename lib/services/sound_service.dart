@@ -15,18 +15,28 @@ class SoundService {
 
   SoundService({required this.isMuted, this.playOverride});
 
+  /// 미리 로드해 둔 플레이어 풀. 소리 낼 때마다 새 플레이어를 만들고
+  /// 파일을 그때 로드하면, 버튼을 누르고 소리가 날 때까지 지연이 생긴다.
+  final Map<Sfx, AudioPool> _pools = {};
+
+  /// 앱 시작 때 한 번 호출 — 효과음 전부를 미리 올려 둔다.
+  Future<void> init() async {
+    if (playOverride != null) return;
+    for (final s in Sfx.values) {
+      _pools[s] =
+          await AudioPool.createFromAsset(path: _assetFor(s), maxPlayers: 2);
+    }
+  }
+
   String _assetFor(Sfx s) => 'audio/${s.name}.wav';
 
   Future<void> play(Sfx s) async {
-    if (isMuted()) return; // 음소거면 처프 순번도 진행하지 않는다
-    final asset = _assetFor(s);
+    if (isMuted()) return;
     if (playOverride != null) {
-      await playOverride!(asset);
+      await playOverride!(_assetFor(s));
       return;
     }
-    final p = AudioPlayer();
-    p.onPlayerComplete.listen((_) => p.dispose());
-    await p.play(AssetSource(asset), mode: PlayerMode.lowLatency);
+    await _pools[s]?.start();
   }
 
   /// 한 이동의 이벤트 묶음 → 대표음 1개 + 부가음(붕괴·문).

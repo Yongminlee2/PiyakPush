@@ -14,19 +14,21 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await TileArt.load();
   final save = await SaveService.load();
-  runApp(PiyakPushApp(save: save));
+  final sound = SoundService(isMuted: () => !save.soundOn);
+  await sound.init(); // 효과음 선로드 — 첫 입력부터 지연 없이
+  runApp(PiyakPushApp(save: save, sound: sound));
 }
 
 class PiyakPushApp extends StatelessWidget {
   final SaveService save;
-  const PiyakPushApp({required this.save, super.key});
+  final SoundService sound;
+  const PiyakPushApp({required this.save, required this.sound, super.key});
 
   @override
   Widget build(BuildContext context) => MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: save),
-          Provider(
-              create: (_) => SoundService(isMuted: () => !save.soundOn)),
+          Provider.value(value: sound),
         ],
         child: MaterialApp(
           title: S.appTitle,
