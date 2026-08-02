@@ -76,6 +76,7 @@ flutter:
     - assets/images/sticker/
     - assets/images/bg/
     - assets/images/egg.png
+    - assets/images/tiles/
     - assets/audio/
 
   fonts:
