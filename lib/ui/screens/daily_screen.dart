@@ -11,6 +11,7 @@ import '../../services/save_service.dart';
 import '../../services/sound_service.dart';
 import '../strings.dart';
 import '../theme.dart';
+import '../widgets/act_background.dart';
 import 'game_screen.dart';
 
 class DailyScreen extends StatelessWidget {
@@ -60,7 +61,10 @@ class DailyScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold, color: PiyakColors.outline)),
         backgroundColor: PiyakColors.creamBg,
       ),
-      body: ListView(
+      body: Stack(
+        children: [
+          const ActBackground(),
+          ListView(
         padding: const EdgeInsets.all(20),
         children: [
           Card(
@@ -134,6 +138,8 @@ class DailyScreen extends StatelessWidget {
                       .dailyCleared(DateTime(today.year, today.month, d)),
                 ),
             ],
+          ),
+        ],
           ),
         ],
       ),
