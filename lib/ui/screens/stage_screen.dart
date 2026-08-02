@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/level.dart';
+import '../../services/hint_service.dart';
 import '../../services/level_repository.dart';
 import '../../services/save_service.dart';
 import '../strings.dart';
@@ -23,6 +24,7 @@ class StageScreen extends StatelessWidget {
         key: ValueKey(level.id),
         level: level,
         showDpad: save.dpadOn,
+        hintProvider: (c) => hintFor(c.board),
         onCleared: (stars) => save.setStars(level.id, stars),
         onNext: idx + 1 < levels.length
             ? () => Navigator.pushReplacement(
