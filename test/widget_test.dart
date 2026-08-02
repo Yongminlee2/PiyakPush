@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:piyak_push/main.dart';
-import 'package:piyak_push/ui/screens/game_screen.dart';
+import 'package:piyak_push/services/save_service.dart';
+import 'package:piyak_push/ui/screens/chapter_screen.dart';
+import 'package:piyak_push/ui/screens/title_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  testWidgets('앱 부팅 → 게임 화면 표시', (tester) async {
-    await tester.pumpWidget(const PiyakPushApp());
-    await tester.pump(); // FutureBuilder 레벨 로드
+  testWidgets('앱 부팅 → 타이틀 → 챕터 화면 이동', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final save = await SaveService.load();
+    await tester.pumpWidget(PiyakPushApp(save: save));
     await tester.pump(const Duration(milliseconds: 300));
-    expect(find.byType(GameScreen), findsOneWidget);
-    await tester.pumpWidget(const SizedBox()); // 타이머 정리
+    expect(find.byType(TitleScreen), findsOneWidget);
+    expect(find.text('삐약푸시'), findsOneWidget);
+
+    await tester.tap(find.text('시작'));
+    await tester.pumpAndSettle();
+    expect(find.byType(ChapterScreen), findsOneWidget);
+    expect(find.textContaining('풀밭'), findsOneWidget);
+    // 챕터 2는 잠금
+    expect(find.byIcon(Icons.lock_rounded), findsNWidgets(4));
   });
 }
