@@ -12,6 +12,7 @@ import '../../engine/board.dart';
 import '../../engine/geometry.dart';
 import '../../engine/move.dart';
 import '../../engine/tile.dart';
+import '../../services/tile_art.dart';
 import '../theme.dart';
 import 'tile_painter.dart';
 
@@ -86,8 +87,21 @@ class _BoardViewState extends State<BoardView> {
         children: [
           CustomPaint(
             size: Size(b.width * cell, b.height * cell),
-            painter: BoardPainter(b, cell),
+            painter: BoardPainter(b, cell, skip: {
+              for (final t in b.tiles)
+                if (TileArt.of(t) != null) t,
+            }),
           ),
+          for (var i = 0; i < b.tiles.length; i++)
+            if (TileArt.of(b.tiles[i]) != null)
+              Positioned(
+                left: (i % b.width) * cell,
+                top: (i ~/ b.width) * cell,
+                width: cell,
+                height: cell,
+                child: Image(
+                    image: TileArt.of(b.tiles[i])!, fit: BoxFit.contain),
+              ),
           for (var i = 0; i < _eggOrder.length; i++)
             AnimatedPositioned(
               key: ValueKey('egg$i'),
