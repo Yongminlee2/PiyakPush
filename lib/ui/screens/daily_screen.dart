@@ -34,7 +34,6 @@ class DailyScreen extends StatelessWidget {
       MaterialPageRoute(
         builder: (_) => GameScreen(
           level: level,
-          showDpad: save.dpadOn,
           hintProvider: (c) => hintFor(c.board),
           onEvents: sound.playForEvents,
           onCleared: (_) => save.setDailyCleared(today),

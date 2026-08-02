@@ -30,12 +30,6 @@ class SettingsScreen extends StatelessWidget {
             value: save.soundOn,
             onChanged: (v) => save.setSoundOn(v),
           ),
-          SwitchListTile(
-            title: const Text(S.dpadOn,
-                style: TextStyle(color: PiyakColors.outline)),
-            value: save.dpadOn,
-            onChanged: (v) => save.setDpadOn(v),
-          ),
           const SizedBox(height: 24),
           OutlinedButton.icon(
             icon: const Icon(Icons.delete_outline_rounded, color: Colors.red),

@@ -26,7 +26,6 @@ class StageScreen extends StatelessWidget {
       builder: (_) => GameScreen(
         key: ValueKey(level.id),
         level: level,
-        showDpad: save.dpadOn,
         hintProvider: (c) => hintFor(c.board),
         onEvents: sound.playForEvents,
         onCleared: (stars) => save.setStars(level.id, stars),
