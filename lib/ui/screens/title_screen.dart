@@ -19,33 +19,34 @@ import 'sticker_book_screen.dart';
 class TitleScreen extends StatelessWidget {
   const TitleScreen({super.key});
 
-  Widget _menuButton(BuildContext context, String label, Widget page,
+  Widget _menuButton(
+      BuildContext context, IconData icon, String label, Widget page,
       {bool primary = false}) {
     final style = FilledButton.styleFrom(
       backgroundColor: primary ? PiyakColors.chickYellow : Colors.white,
       foregroundColor: PiyakColors.outline,
-      minimumSize: const Size(220, 52),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: PiyakColors.outline, width: 2.5),
+      minimumSize: const Size(230, 54),
+      shape: const StadiumBorder(
+        side: BorderSide(color: PiyakColors.outline, width: 2.5),
       ),
       textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
     );
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: DecoratedBox(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: const [
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(27)),
+          boxShadow: [
             BoxShadow(
                 color: Color(0x335D4037), offset: Offset(0, 4), blurRadius: 0),
           ],
         ),
         child: _Bouncy(
-          child: FilledButton(
+          child: FilledButton.icon(
             style: style,
             onPressed: () => Navigator.push(context, piyakRoute(page)),
-            child: Text(label),
+            icon: Icon(icon, size: 24),
+            label: Text(label),
           ),
         ),
       ),
@@ -120,12 +121,17 @@ class TitleScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                _menuButton(context, S.start, const ChapterScreen(),
+                _menuButton(context, Icons.play_arrow_rounded, S.start,
+                    const ChapterScreen(),
                     primary: true),
-                _menuButton(context, S.daily, const DailyScreen()),
-                _menuButton(context, S.stickerBook, const StickerBookScreen()),
-                _menuButton(context, S.decoBoard, const DecoBoardScreen()),
-                _menuButton(context, S.settings, const SettingsScreen()),
+                _menuButton(context, Icons.calendar_month_rounded, S.daily,
+                    const DailyScreen()),
+                _menuButton(context, Icons.collections_bookmark_rounded,
+                    S.stickerBook, const StickerBookScreen()),
+                _menuButton(context, Icons.brush_rounded, S.decoBoard,
+                    const DecoBoardScreen()),
+                _menuButton(context, Icons.settings_rounded, S.settings,
+                    const SettingsScreen()),
               ],
             ),
           ),
