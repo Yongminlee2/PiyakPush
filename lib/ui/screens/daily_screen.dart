@@ -35,6 +35,7 @@ class DailyScreen extends StatelessWidget {
       context,
       piyakRoute(GameScreen(
         level: level,
+        useDpad: save.dpadOn,
         hintProvider: (c) => hintFor(c.board),
         onEvents: sound.playForEvents,
         onCleared: (_) => save.setDailyCleared(today),

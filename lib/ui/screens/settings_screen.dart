@@ -30,6 +30,30 @@ class SettingsScreen extends StatelessWidget {
             value: save.soundOn,
             onChanged: (v) => save.setSoundOn(v),
           ),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
+            child: Text(S.controlScheme,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, color: PiyakColors.outline)),
+          ),
+          RadioGroup<bool>(
+            groupValue: save.dpadOn,
+            onChanged: (v) => save.setDpadOn(v ?? false),
+            child: const Column(
+              children: [
+                RadioListTile<bool>(
+                  title: Text(S.ctlJoystick,
+                      style: TextStyle(color: PiyakColors.outline)),
+                  value: false,
+                ),
+                RadioListTile<bool>(
+                  title: Text(S.ctlDpad,
+                      style: TextStyle(color: PiyakColors.outline)),
+                  value: true,
+                ),
+              ],
+            ),
+          ),
           const SizedBox(height: 24),
           OutlinedButton.icon(
             icon: const Icon(Icons.delete_outline_rounded, color: Colors.red),

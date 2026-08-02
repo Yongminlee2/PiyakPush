@@ -44,6 +44,9 @@ abstract final class S {
 
   static const soundOn = '소리';
   static const joystickHint = '아무 데나 누르고 기울여 보세요';
+  static const controlScheme = '조작 방식';
+  static const ctlJoystick = '조이스틱 — 아무 데나 눌러서 기울이기';
+  static const ctlDpad = '방향키 — 십자 버튼 누르기';
   static const resetAll = '진행 기록 지우기';
   static const resetConfirm = '정말 모든 기록을 지울까요?';
   static const cancel = '취소';
