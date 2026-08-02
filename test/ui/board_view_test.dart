@@ -15,7 +15,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 200));
     expect(find.byType(BoardView), findsOneWidget);
     expect(find.byType(EggSprite), findsOneWidget);
-    expect(find.byType(Image), findsOneWidget); // 병아리
+    expect(find.byType(Image), findsNWidgets(2)); // 병아리 + 알 몸통 PNG
     expect(tester.takeException(), isNull);
   });
 }

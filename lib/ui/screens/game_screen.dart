@@ -11,6 +11,7 @@ import '../../models/level.dart';
 import '../game_controller.dart';
 import '../strings.dart';
 import '../theme.dart';
+import '../widgets/act_background.dart';
 import '../widgets/board_view.dart';
 import '../widgets/clear_popup.dart';
 import '../widgets/hud.dart';
@@ -167,6 +168,7 @@ class _GameScreenState extends State<GameScreen> {
       body: SafeArea(
         child: Stack(
           children: [
+            ActBackground(chapter: widget.level.chapter),
             Column(
               children: [
                 GameHud(

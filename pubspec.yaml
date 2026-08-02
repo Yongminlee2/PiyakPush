@@ -74,6 +74,8 @@ flutter:
     - assets/levels/
     - assets/images/chick/
     - assets/images/sticker/
+    - assets/images/bg/
+    - assets/images/egg.png
     - assets/audio/
 
   fonts:

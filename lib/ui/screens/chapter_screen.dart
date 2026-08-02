@@ -8,6 +8,7 @@ import '../../models/progression.dart';
 import '../../services/save_service.dart';
 import '../strings.dart';
 import '../theme.dart';
+import '../widgets/act_background.dart';
 import 'stage_screen.dart';
 
 class ChapterScreen extends StatelessWidget {
@@ -42,7 +43,10 @@ class ChapterScreen extends StatelessWidget {
         ),
         backgroundColor: PiyakColors.creamBg,
       ),
-      body: ListView.builder(
+      body: Stack(
+        children: [
+          const ActBackground(),
+          ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: kChapterCount + S.actNames.length,
         itemBuilder: (context, row) {
@@ -163,6 +167,8 @@ class ChapterScreen extends StatelessWidget {
             ),
           );
         },
+          ),
+        ],
       ),
     );
   }

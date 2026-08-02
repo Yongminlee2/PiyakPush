@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../services/save_service.dart';
 import '../strings.dart';
 import '../theme.dart';
+import '../widgets/act_background.dart';
 import 'chapter_screen.dart';
 import 'daily_screen.dart';
 import 'deco_board_screen.dart';
@@ -52,7 +53,10 @@ class TitleScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final save = context.watch<SaveService>();
     return Scaffold(
-      body: SafeArea(
+      body: Stack(
+        children: [
+          const ActBackground(),
+          SafeArea(
         child: Center(
           child: SingleChildScrollView(
             child: Column(
@@ -120,6 +124,8 @@ class TitleScreen extends StatelessWidget {
             ),
           ),
         ),
+          ),
+        ],
       ),
     );
   }
