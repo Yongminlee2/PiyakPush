@@ -10,6 +10,7 @@ import '../../services/hint_service.dart';
 import '../../services/level_repository.dart';
 import '../../services/save_service.dart';
 import '../../services/sound_service.dart';
+import '../nav.dart';
 import '../strings.dart';
 import '../theme.dart';
 import 'game_screen.dart';
@@ -22,16 +23,14 @@ class StageScreen extends StatelessWidget {
     final save = context.read<SaveService>();
     final sound = context.read<SoundService>();
     final level = levels[idx];
-    return MaterialPageRoute(
-      builder: (_) => GameScreen(
-        key: ValueKey(level.id),
-        level: level,
-        hintProvider: (c) => hintFor(c.board),
-        onEvents: sound.playForEvents,
-        onCleared: (stars) => save.setStars(level.id, stars),
-        clearOutcome: () => _outcomeFor(context, levels, idx),
-      ),
-    );
+    return piyakRoute(GameScreen(
+      key: ValueKey(level.id),
+      level: level,
+      hintProvider: (c) => hintFor(c.board),
+      onEvents: sound.playForEvents,
+      onCleared: (stars) => save.setStars(level.id, stars),
+      clearOutcome: () => _outcomeFor(context, levels, idx),
+    ));
   }
 
   /// 팝업이 그려질 때 호출된다 — 방금 딴 별까지 반영된 상태로 판정한다.
@@ -55,9 +54,7 @@ class StageScreen extends StatelessWidget {
           onNext: () {
             Navigator.pop(context); // 게임 화면을 닫고
             Navigator.pushReplacement( // 스테이지 목록을 다음 챕터로 교체
-                context,
-                MaterialPageRoute(
-                    builder: (_) => StageScreen(chapter: chapter)));
+                context, piyakRoute(StageScreen(chapter: chapter)));
           },
         ),
       ChapterLocked(:final clearsNeeded) =>

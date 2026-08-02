@@ -9,6 +9,7 @@ import '../../services/daily_service.dart';
 import '../../services/hint_service.dart';
 import '../../services/save_service.dart';
 import '../../services/sound_service.dart';
+import '../nav.dart';
 import '../strings.dart';
 import '../theme.dart';
 import '../widgets/act_background.dart';
@@ -32,15 +33,13 @@ class DailyScreen extends StatelessWidget {
     if (!context.mounted) return;
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => GameScreen(
-          level: level,
-          hintProvider: (c) => hintFor(c.board),
-          onEvents: sound.playForEvents,
-          onCleared: (_) => save.setDailyCleared(today),
-          onNext: () => Navigator.pop(context),
-        ),
-      ),
+      piyakRoute(GameScreen(
+        level: level,
+        hintProvider: (c) => hintFor(c.board),
+        onEvents: sound.playForEvents,
+        onCleared: (_) => save.setDailyCleared(today),
+        onNext: () => Navigator.pop(context),
+      )),
     );
   }
 

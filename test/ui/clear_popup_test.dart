@@ -40,7 +40,8 @@ void main() {
   // 존재 여부가 아니라 실제 배율을 확인한다.
   testWidgets('미획득 별은 애니메이션 없이 항상 보인다', (tester) async {
     await pumpPopup(tester, 2);
-    expect(find.byType(ScaleTransition), findsNWidgets(2)); // 획득한 별만 등장 연출
+    // 획득한 별 2개 + 카드 등장 연출 1개 — 미획득 별은 연출 없이 그려진다
+    expect(find.byType(ScaleTransition), findsNWidgets(3));
     await tester.pumpWidget(const SizedBox());
   });
 
