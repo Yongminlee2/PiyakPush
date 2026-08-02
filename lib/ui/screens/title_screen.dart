@@ -30,11 +30,20 @@ class TitleScreen extends StatelessWidget {
     );
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
-      child: FilledButton(
-        style: style,
-        onPressed: () => Navigator.push(
-            context, MaterialPageRoute(builder: (_) => page)),
-        child: Text(label),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: const [
+            BoxShadow(
+                color: Color(0x335D4037), offset: Offset(0, 4), blurRadius: 0),
+          ],
+        ),
+        child: FilledButton(
+          style: style,
+          onPressed: () => Navigator.push(
+              context, MaterialPageRoute(builder: (_) => page)),
+          child: Text(label),
+        ),
       ),
     );
   }
@@ -49,31 +58,58 @@ class TitleScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  S.appTitle,
-                  style: TextStyle(
-                    fontSize: 44,
-                    fontWeight: FontWeight.w900,
-                    color: PiyakColors.outline,
-                    letterSpacing: 2,
+                Container(
+                  padding: const EdgeInsets.fromLTRB(28, 18, 28, 22),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(28),
+                    border:
+                        Border.all(color: PiyakColors.outline, width: 3),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        S.appTitle,
+                        style: TextStyle(
+                          fontSize: 44,
+                          fontWeight: FontWeight.w900,
+                          color: PiyakColors.outline,
+                          letterSpacing: 2,
+                        ),
+                      ),
+                      Image.asset('assets/images/chick/chick_cheer.png',
+                          height: 120),
+                      SizedBox(
+                        width: 200,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: LinearProgressIndicator(
+                            value: save.totalStars / 150,
+                            minHeight: 12,
+                            backgroundColor: PiyakColors.creamBg,
+                            valueColor: const AlwaysStoppedAnimation(
+                                PiyakColors.starYellow),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.star_rounded,
+                              color: PiyakColors.starYellow, size: 20),
+                          Text(' ${save.totalStars} / 150',
+                              style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: PiyakColors.outline)),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 4),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.star_rounded,
-                        color: PiyakColors.starYellow, size: 22),
-                    Text(' ${save.totalStars} / 150',
-                        style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: PiyakColors.outline)),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Image.asset('assets/images/chick/chick_cheer.png', height: 140),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
                 _menuButton(context, S.start, const ChapterScreen(),
                     primary: true),
                 _menuButton(context, S.daily, const DailyScreen()),
