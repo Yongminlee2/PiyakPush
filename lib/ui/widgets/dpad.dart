@@ -10,6 +10,10 @@ import 'package:flutter/material.dart';
 import '../../engine/geometry.dart';
 import '../theme.dart';
 
+const double _kBtn = 76; // 버튼 한 변
+const double _kIcon = 48;
+const double _kPad = 6; // 보이는 크기 밖 터치 여유
+
 class DPad extends StatelessWidget {
   final void Function(Dir) onDir;
   const DPad({required this.onDir, super.key});
@@ -28,7 +32,7 @@ class DPad extends StatelessWidget {
             _DPadButton(
                 icon: Icons.keyboard_arrow_left_rounded,
                 onFire: () => onDir(Dir.left)),
-            const SizedBox(width: 60),
+            const SizedBox(width: _kBtn),
             _DPadButton(
                 icon: Icons.keyboard_arrow_right_rounded,
                 onFire: () => onDir(Dir.right)),
@@ -83,27 +87,30 @@ class _DPadButtonState extends State<_DPadButton> {
       onPointerDown: _down,
       onPointerUp: (_) => _up(),
       onPointerCancel: (_) => _up(),
-      child: Container(
-        width: 60,
-        height: 60,
-        margin: const EdgeInsets.all(2),
-        decoration: BoxDecoration(
-          color: _pressed
-              ? PiyakColors.chickYellow
-              : Colors.white.withValues(alpha: 0.9),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: PiyakColors.outline, width: 2.5),
-          boxShadow: _pressed
-              ? const []
-              : const [
-                  BoxShadow(
-                    color: Color(0x335D4037),
-                    offset: Offset(0, 3),
-                    blurRadius: 0,
-                  ),
-                ],
+      behavior: HitTestBehavior.opaque, // 여백까지 터치를 받는다
+      child: Padding(
+        padding: const EdgeInsets.all(_kPad),
+        child: Container(
+          width: _kBtn,
+          height: _kBtn,
+          decoration: BoxDecoration(
+            color: _pressed
+                ? PiyakColors.chickYellow
+                : Colors.white.withValues(alpha: 0.9),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: PiyakColors.outline, width: 2.5),
+            boxShadow: _pressed
+                ? const []
+                : const [
+                    BoxShadow(
+                      color: Color(0x335D4037),
+                      offset: Offset(0, 4),
+                      blurRadius: 0,
+                    ),
+                  ],
+          ),
+          child: Icon(widget.icon, size: _kIcon, color: PiyakColors.outline),
         ),
-        child: Icon(widget.icon, size: 40, color: PiyakColors.outline),
       ),
     );
   }
