@@ -36,7 +36,7 @@ abstract final class S {
 
   static String needMoreClears(int n) => '이 챕터에서 $n개만 더 깨면 다음 챕터가 열려요';
 
-  static const tutorial1 = '아래쪽을 누른 채 기울여서 삐약이를 움직여요!';
+  static const tutorial1 = '화면을 누른 채 기울여서 삐약이를 움직여요!';
   static const tutorial1Dpad = '방향 버튼을 눌러서 삐약이를 움직여요!';
   static const tutorial2 = '알을 밀어서 둥지에 쏙! 넣어주세요';
   static const tutorial3 = '실수했다면 되돌리기를 눌러요';

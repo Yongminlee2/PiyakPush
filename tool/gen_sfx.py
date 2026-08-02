@@ -85,8 +85,8 @@ def mix(a, b, offset_ms=0):
 
 random.seed(42)
 
-# 이동음(삐약)은 합성하지 않는다 — 오리 소리처럼 들려서, 삐약영어 앱의
-# sfx_piyak.ogg를 assets/audio/chirp.ogg로 가져다 쓴다.
+# 이동: 짧은 쉬익 — 발걸음 스치는 노이즈. (삐약 소리는 걸음마다 나니 금방 질렸다)
+write_wav("move", noise(85, 0.30, lowpass=0.55))
 # 밀기: 낮은 통통
 write_wav("push", tone(220, 110, 0.5, "tri"))
 # 미끄럼: 슉— 노이즈 페이드
