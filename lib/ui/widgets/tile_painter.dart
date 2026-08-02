@@ -16,7 +16,10 @@ import '../theme.dart';
 class BoardPainter extends CustomPainter {
   final Board board;
   final double cell;
-  BoardPainter(this.board, this.cell);
+
+  /// PNG 아트가 대신 그리는 타일 — 바탕 잔디만 깔고 장식은 건너뛴다.
+  final Set<Tile> skip;
+  BoardPainter(this.board, this.cell, {this.skip = const {}});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -51,6 +54,7 @@ class BoardPainter extends CustomPainter {
       canvas.drawRRect(
           rr, _fill(alt ? PiyakColors.grass : PiyakColors.grassDark));
     }
+    if (skip.contains(t) && t != Tile.floor) return; // 그림이 대신 그린다
     switch (t) {
       case Tile.floor:
         // 좌표 해시로 무늬를 고정한다 — 난수를 쓰면 프레임마다 흔들린다.

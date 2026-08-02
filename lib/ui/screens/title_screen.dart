@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../services/save_service.dart';
+import '../../services/tile_art.dart';
 import '../strings.dart';
 import '../theme.dart';
 import '../widgets/act_background.dart';
@@ -73,15 +74,18 @@ class TitleScreen extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text(
-                        S.appTitle,
-                        style: TextStyle(
-                          fontSize: 44,
-                          fontWeight: FontWeight.w900,
-                          color: PiyakColors.outline,
-                          letterSpacing: 2,
-                        ),
-                      ),
+                      // codex 로고 그림이 도착하면 이미지로, 그전엔 텍스트로
+                      TileArt.logo != null
+                          ? Image(image: TileArt.logo!, height: 90)
+                          : const Text(
+                              S.appTitle,
+                              style: TextStyle(
+                                fontSize: 44,
+                                fontWeight: FontWeight.w900,
+                                color: PiyakColors.outline,
+                                letterSpacing: 2,
+                              ),
+                            ),
                       Image.asset('assets/images/chick/chick_cheer.png',
                           height: 120),
                       SizedBox(
