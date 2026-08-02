@@ -182,17 +182,61 @@ class BoardPainter extends CustomPainter {
       old.board != board || old.cell != cell;
 }
 
-/// 알 — 흰 타원 + 외곽선 + 볼터치. 둥지 위에선 행복한 얼굴.
-class EggWidget extends StatelessWidget {
+/// 알 — 밀리기 시작하면 이동 축으로 살짝 찌그러졌다 복원된다.
+/// 둥지 위에선 행복한 얼굴.
+class EggSprite extends StatefulWidget {
+  final Point pos;
   final double size;
   final bool onNest;
-  const EggWidget({required this.size, this.onNest = false, super.key});
+  const EggSprite(
+      {required this.pos, required this.size, this.onNest = false, super.key});
+
+  @override
+  State<EggSprite> createState() => _EggSpriteState();
+}
+
+class _EggSpriteState extends State<EggSprite>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _recoil = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 120),
+  );
+  bool _horizontal = true;
+
+  @override
+  void didUpdateWidget(EggSprite old) {
+    super.didUpdateWidget(old);
+    if (old.pos != widget.pos) {
+      _horizontal = widget.pos.y == old.pos.y;
+      _recoil.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _recoil.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size(size, size),
-      painter: _EggPainter(onNest),
+    return AnimatedBuilder(
+      animation: _recoil,
+      builder: (context, child) {
+        final t = math.sin(math.pi * _recoil.value);
+        final s = 1.0 - 0.10 * t;
+        return Transform(
+          alignment: Alignment.center,
+          transform: _horizontal
+              ? Matrix4.diagonal3Values(s, 2.0 - s, 1.0)
+              : Matrix4.diagonal3Values(2.0 - s, s, 1.0),
+          child: child,
+        );
+      },
+      child: CustomPaint(
+        size: Size(widget.size, widget.size),
+        painter: _EggPainter(widget.onNest),
+      ),
     );
   }
 }

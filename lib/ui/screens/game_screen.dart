@@ -61,6 +61,27 @@ class _GameScreenState extends State<GameScreen> {
   List<Dir>? _hintMoves;
   Dir? _bumpDir;
   int _bumpToken = 0;
+  Dir? _heldDir;
+  Timer? _glide;
+
+  bool get _gliding => _heldDir != null;
+
+  /// 조이스틱이 방향을 잡거나 바꿀 때. 같은 방향이면 무시.
+  void holdDir(Dir d) {
+    if (_heldDir == d) return;
+    _heldDir = d;
+    _glide?.cancel();
+    _input(d);
+    _glide = Timer.periodic(kMoveAnim, (_) => _input(d));
+    setState(() {});
+  }
+
+  /// 손을 뗐거나 데드존으로 돌아왔을 때 — 마지막 칸은 easeOut으로 감속.
+  void releaseDir() {
+    _glide?.cancel();
+    _glide = null;
+    if (_heldDir != null) setState(() => _heldDir = null);
+  }
 
   @override
   void initState() {
@@ -73,6 +94,7 @@ class _GameScreenState extends State<GameScreen> {
   void dispose() {
     _t10?.cancel();
     _t30?.cancel();
+    _glide?.cancel();
     c.dispose();
     super.dispose();
   }
@@ -200,6 +222,7 @@ class _GameScreenState extends State<GameScreen> {
                                     hintMoves: _hintMoves,
                                     bumpDir: _bumpDir,
                                     bumpToken: _bumpToken,
+                                    gliding: _gliding,
                                   ),
                                 ),
                               );
