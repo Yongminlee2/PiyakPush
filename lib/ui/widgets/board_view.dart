@@ -4,6 +4,8 @@
 /// 이전 프레임과 비교해 "사라진 위치→나타난 위치"를 같은 id로 매칭한다.
 library;
 
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../../engine/board.dart';
@@ -96,10 +98,10 @@ class _BoardViewState extends State<BoardView> {
             top: b.chick.y * cell - cell * 0.12, // 살짝 위로 — 입체감
             width: cell,
             height: cell * 1.12,
-            child: Image.asset(
-              'assets/images/chick/chick_${widget.chickMood}.png',
-              gaplessPlayback: true,
-              fit: BoxFit.contain,
+            child: ChickSprite(
+              pos: b.chick,
+              cell: cell,
+              mood: widget.chickMood,
             ),
           ),
           for (final (i, step) in _hintSteps.indexed)
@@ -148,5 +150,84 @@ class _BoardViewState extends State<BoardView> {
       steps.add((b.chick, d));
     }
     return steps;
+  }
+}
+
+/// 살아있는 병아리: 평소엔 숨쉬기 보브, 이동할 때마다 총총 뛰는 홉 +
+/// 이동 방향으로 살짝 기울어진다.
+class ChickSprite extends StatefulWidget {
+  final Point pos;
+  final double cell;
+  final String mood;
+  const ChickSprite({
+    required this.pos,
+    required this.cell,
+    required this.mood,
+    super.key,
+  });
+
+  @override
+  State<ChickSprite> createState() => _ChickSpriteState();
+}
+
+class _ChickSpriteState extends State<ChickSprite>
+    with TickerProviderStateMixin {
+  late final AnimationController _bob = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 900),
+  )..repeat(reverse: true);
+  late final AnimationController _hop = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 220),
+  );
+  int _tiltSign = 0;
+
+  @override
+  void didUpdateWidget(ChickSprite old) {
+    super.didUpdateWidget(old);
+    if (old.pos != widget.pos) {
+      final dx = widget.pos.x - old.pos.x;
+      _tiltSign = dx == 0 ? _tiltSign : (dx > 0 ? 1 : -1);
+      _hop.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _bob.dispose();
+    _hop.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: Listenable.merge([_bob, _hop]),
+      builder: (context, child) {
+        final hopT = _hop.value;
+        final arc = math.sin(math.pi * hopT);
+        final hopY = -arc * widget.cell * 0.22;
+        final tilt = _tiltSign * 0.12 * arc;
+        // 숨쉬기: 세로로 살짝 늘었다 줄었다
+        final breathe = 1.0 + 0.03 * _bob.value;
+        return Transform.translate(
+          offset: Offset(0, hopY),
+          child: Transform.rotate(
+            angle: tilt,
+            child: Transform(
+              alignment: Alignment.bottomCenter,
+              transform: Matrix4.diagonal3Values(
+                  2.0 - breathe, breathe, 1.0),
+              child: child,
+            ),
+          ),
+        );
+      },
+      child: Image.asset(
+        'assets/images/chick/chick_${widget.mood}.png',
+        gaplessPlayback: true,
+        fit: BoxFit.contain,
+      ),
+    );
   }
 }

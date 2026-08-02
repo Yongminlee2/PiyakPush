@@ -20,6 +20,8 @@ class GameScreen extends StatefulWidget {
   final Level level;
   final VoidCallback? onNext;
   final void Function(int stars)? onCleared;
+
+  /// 방향키가 기본 조작 (스와이프도 계속 동작).
   final bool showDpad;
   final Future<List<Dir>?> Function(GameController)? hintProvider;
   final void Function(List<GameEvent> events, bool cleared)? onEvents;
@@ -27,7 +29,7 @@ class GameScreen extends StatefulWidget {
     required this.level,
     this.onNext,
     this.onCleared,
-    this.showDpad = false,
+    this.showDpad = true,
     this.hintProvider,
     this.onEvents,
     super.key,
@@ -167,16 +169,15 @@ class _GameScreenState extends State<GameScreen> {
                     ),
                   ),
                 ),
+                if (widget.showDpad)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: DPad(onDir: _input),
+                  ),
                 if (bubble != null) SpeechBubble(text: bubble),
                 const SizedBox(height: 8),
               ],
             ),
-            if (widget.showDpad)
-              Positioned(
-                right: 16,
-                bottom: 24,
-                child: DPad(onDir: _input),
-              ),
             if (c.cleared)
               Positioned.fill(
                 child: ClearPopup(

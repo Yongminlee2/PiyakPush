@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:piyak_push/models/level.dart';
 import 'package:piyak_push/ui/screens/game_screen.dart';
 import 'package:piyak_push/ui/widgets/clear_popup.dart';
+import 'package:piyak_push/ui/widgets/dpad.dart';
 
 Level lv(List<String> rows, {int optimal = 0, String id = 'test'}) => Level(
     id: id, chapter: 1, title: '테스트', rows: rows, optimal: optimal);
@@ -52,6 +53,18 @@ void main() {
     await tester.tap(find.byTooltip('되돌리기'));
     await tester.pump(const Duration(milliseconds: 200));
     expect(find.textContaining('이동 0'), findsOneWidget);
+    await cleanup(tester);
+  });
+
+  testWidgets('방향키가 기본 표시되고 탭으로 이동', (tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: GameScreen(level: lv(['######', '#@\$.o#', '######'], optimal: 2)),
+    ));
+    await tester.pump();
+    expect(find.byType(DPad), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.keyboard_arrow_right_rounded));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.textContaining('이동 1'), findsOneWidget);
     await cleanup(tester);
   });
 

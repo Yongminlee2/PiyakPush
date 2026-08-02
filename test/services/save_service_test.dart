@@ -44,16 +44,17 @@ void main() {
     expect(s2.chapterUnlocked(2), false);
   });
 
-  test('설정 토글과 초기화', () async {
+  test('설정 토글과 초기화 (방향키는 기본 켜짐)', () async {
     final s = await SaveService.load();
     expect(s.soundOn, true);
-    expect(s.dpadOn, false);
+    expect(s.dpadOn, true); // 스와이프보다 방향키가 기본
     await s.setSoundOn(false);
-    await s.setDpadOn(true);
+    await s.setDpadOn(false);
     expect(s.soundOn, false);
-    expect(s.dpadOn, true);
+    expect(s.dpadOn, false);
     await s.resetAll();
     expect(s.soundOn, true);
+    expect(s.dpadOn, true);
     expect(s.starsOf('c1s01'), 0);
   });
 }
