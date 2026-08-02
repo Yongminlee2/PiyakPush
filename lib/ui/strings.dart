@@ -43,7 +43,7 @@ abstract final class S {
   static const noHint = '지금은 길이 없어요… 되돌리기!';
 
   static const soundOn = '소리';
-  static const dpadOn = '방향 버튼 보이기';
+  static const joystickHint = '아무 데나 누르고 기울여 보세요';
   static const resetAll = '진행 기록 지우기';
   static const resetConfirm = '정말 모든 기록을 지울까요?';
   static const cancel = '취소';

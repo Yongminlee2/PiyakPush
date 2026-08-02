@@ -13,8 +13,8 @@ import '../strings.dart';
 import '../theme.dart';
 import '../widgets/board_view.dart';
 import '../widgets/clear_popup.dart';
-import '../widgets/dpad.dart';
 import '../widgets/hud.dart';
+import '../widgets/joystick.dart';
 import '../widgets/speech_bubble.dart';
 
 /// 클리어 팝업이 무엇을 보여줄지 — 진행 판정 결과를 화면이 이해하는 형태로 옮긴 것.
@@ -30,8 +30,6 @@ class GameScreen extends StatefulWidget {
   final VoidCallback? onNext;
   final void Function(int stars)? onCleared;
 
-  /// 방향키가 기본 조작 (스와이프도 계속 동작).
-  final bool showDpad;
   final Future<List<Dir>?> Function(GameController)? hintProvider;
   final void Function(List<GameEvent> events, bool cleared)? onEvents;
 
@@ -42,7 +40,6 @@ class GameScreen extends StatefulWidget {
     required this.level,
     this.onNext,
     this.onCleared,
-    this.showDpad = true,
     this.hintProvider,
     this.onEvents,
     this.clearOutcome,
@@ -56,7 +53,6 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> {
   late GameController c;
   Timer? _t10, _t30;
-  Offset _drag = Offset.zero;
   bool _clearedNotified = false;
   List<Dir>? _hintMoves;
   Dir? _bumpDir;
@@ -182,18 +178,7 @@ class _GameScreenState extends State<GameScreen> {
                   onHint: widget.hintProvider != null ? _hint : null,
                 ),
                 Expanded(
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onPanStart: (_) => _drag = Offset.zero,
-                    onPanUpdate: (d) => _drag += d.delta,
-                    onPanEnd: (_) {
-                      if (_drag.distance < 24) return;
-                      final d = _drag.dx.abs() > _drag.dy.abs()
-                          ? (_drag.dx > 0 ? Dir.right : Dir.left)
-                          : (_drag.dy > 0 ? Dir.down : Dir.up);
-                      _input(d);
-                    },
-                    child: Stack(
+                  child: Stack(
                       children: [
                         Positioned.fill(
                           child: LayoutBuilder(
@@ -229,7 +214,7 @@ class _GameScreenState extends State<GameScreen> {
                             },
                           ),
                         ),
-                        // 말풍선은 겹쳐 띄운다 — 나타났다 사라져도 방향키가 밀리지 않도록.
+                        // 말풍선은 겹쳐 띄운다 — 나타났다 사라져도 조이스틱이 밀리지 않도록.
                         if (bubble != null)
                           Positioned(
                             left: 0,
@@ -238,14 +223,12 @@ class _GameScreenState extends State<GameScreen> {
                             child: SpeechBubble(text: bubble),
                           ),
                       ],
-                    ),
                   ),
                 ),
-                if (widget.showDpad)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: DPad(onDir: _input),
-                  ),
+                SizedBox(
+                  height: 180,
+                  child: Joystick(onDir: holdDir, onRelease: releaseDir),
+                ),
               ],
             ),
             if (c.cleared)
