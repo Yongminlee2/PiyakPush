@@ -13,6 +13,7 @@ import '../../services/sound_service.dart';
 import '../nav.dart';
 import '../strings.dart';
 import '../theme.dart';
+import '../widgets/act_background.dart';
 import 'game_screen.dart';
 
 class StageScreen extends StatelessWidget {
@@ -101,73 +102,85 @@ class StageScreen extends StatelessWidget {
         ),
         backgroundColor: PiyakColors.creamBg,
       ),
-      body: FutureBuilder<List<Level>>(
-        future: LevelRepository.loadChapter(chapter),
-        builder: (context, snap) {
-          if (!snap.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final levels = snap.data!;
-          return GridView.builder(
-            padding: const EdgeInsets.all(20),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 14,
-              crossAxisSpacing: 14,
-              childAspectRatio: 1.5,
-            ),
-            itemCount: levels.length,
-            itemBuilder: (context, i) {
-              final stars = save.starsOf(levels[i].id);
-              return Material(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18),
-                  side: const BorderSide(color: PiyakColors.outline, width: 2),
+      body: Stack(
+        children: [
+          ActBackground(chapter: chapter, wide: true),
+          FutureBuilder<List<Level>>(
+            future: LevelRepository.loadChapter(chapter),
+            builder: (context, snap) {
+              if (!snap.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              final levels = snap.data!;
+              return GridView.builder(
+                padding: const EdgeInsets.all(20),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 14,
+                  crossAxisSpacing: 14,
+                  childAspectRatio: 1.5,
                 ),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(18),
-                  onTap: () =>
-                      Navigator.push(context, _gameRoute(context, levels, i)),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '${i + 1}',
-                        style: const TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w900,
-                          color: PiyakColors.outline,
-                        ),
+                itemCount: levels.length,
+                itemBuilder: (context, i) {
+                  final stars = save.starsOf(levels[i].id);
+                  return Material(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                      side: const BorderSide(
+                        color: PiyakColors.outline,
+                        width: 2,
                       ),
-                      Text(
-                        S.stageTitle(chapter, i + 1, levels[i].title),
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: PiyakColors.outline,
-                        ),
+                    ),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(18),
+                      onTap: () => Navigator.push(
+                        context,
+                        _gameRoute(context, levels, i),
                       ),
-                      const SizedBox(height: 4),
-                      Row(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(
-                          3,
-                          (s) => Icon(
-                            Icons.star_rounded,
-                            size: 20,
-                            color: s < stars
-                                ? PiyakColors.starYellow
-                                : PiyakColors.outline.withValues(alpha: 0.2),
+                        children: [
+                          Text(
+                            '${i + 1}',
+                            style: const TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.w900,
+                              color: PiyakColors.outline,
+                            ),
                           ),
-                        ),
+                          Text(
+                            S.stageTitle(chapter, i + 1, levels[i].title),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: PiyakColors.outline,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: List.generate(
+                              3,
+                              (s) => Icon(
+                                Icons.star_rounded,
+                                size: 20,
+                                color: s < stars
+                                    ? PiyakColors.starYellow
+                                    : PiyakColors.outline.withValues(
+                                        alpha: 0.2,
+                                      ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               );
             },
-          );
-        },
+          ),
+        ],
       ),
     );
   }

@@ -46,7 +46,7 @@ class ChapterScreen extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          const ActBackground(),
+          const ActBackground(wide: true),
           ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: kChapterCount + S.actNames.length,
