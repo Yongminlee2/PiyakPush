@@ -14,7 +14,8 @@ class ClearPopup extends StatefulWidget {
   final VoidCallback? onNext;
 
   /// 다음 버튼 라벨 — 챕터 마지막에선 '다음 챕터'/'처음으로'가 된다.
-  final String nextLabel;
+  /// null이면 기본값('다음'). 언어가 바뀔 수 있어 상수 기본값을 못 쓴다.
+  final String? nextLabel;
 
   /// 챕터 클리어 축하나 별 부족 안내 같은 한 줄 문구.
   final String? note;
@@ -25,7 +26,7 @@ class ClearPopup extends StatefulWidget {
     required this.moves,
     required this.optimal,
     this.onNext,
-    this.nextLabel = S.next,
+    this.nextLabel,
     this.note,
     required this.onRetry,
     this.onList,
@@ -83,7 +84,7 @@ class _ClearPopupState extends State<ClearPopup>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(S.clear,
+              Text(S.clear,
                   style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -126,13 +127,13 @@ class _ClearPopupState extends State<ClearPopup>
                 children: [
                   if (widget.onList != null)
                     TextButton(
-                        onPressed: widget.onList, child: const Text(S.list)),
+                        onPressed: widget.onList, child: Text(S.list)),
                   TextButton(
-                      onPressed: widget.onRetry, child: const Text(S.restart)),
+                      onPressed: widget.onRetry, child: Text(S.restart)),
                   if (widget.onNext != null)
                     FilledButton(
                         onPressed: widget.onNext,
-                        child: Text(widget.nextLabel)),
+                        child: Text(widget.nextLabel ?? S.next)),
                 ],
               ),
             ],

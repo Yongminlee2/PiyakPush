@@ -23,13 +23,21 @@ class StageScreen extends StatelessWidget {
     final save = context.read<SaveService>();
     final sound = context.read<SoundService>();
     final level = levels[idx];
+    final firstClear = save.starsOf(level.id) == 0;
     return piyakRoute(GameScreen(
       key: ValueKey(level.id),
       level: level,
+      title: S.stageTitle(chapter, idx + 1, level.title),
       useDpad: save.dpadOn,
       hintProvider: (c) => hintFor(c.board),
+      hintsLeft: save.hints,
+      onSpendHint: save.spendHint,
       onEvents: sound.playForEvents,
-      onCleared: (stars) => save.setStars(level.id, stars),
+      onCleared: (stars) async {
+        await save.setStars(level.id, stars);
+        // 처음 깬 판에서만 힌트를 준다 — 같은 판을 반복해 모을 수 없게.
+        if (firstClear) await save.addHints(SaveService.kHintPerStage);
+      },
       clearOutcome: () => _outcomeFor(context, levels, idx),
     ));
   }
@@ -116,7 +124,7 @@ class StageScreen extends StatelessWidget {
                               fontSize: 26,
                               fontWeight: FontWeight.w900,
                               color: PiyakColors.outline)),
-                      Text(levels[i].title,
+                      Text(S.stageTitle(chapter, i + 1, levels[i].title),
                           style: const TextStyle(
                               fontSize: 12, color: PiyakColors.outline)),
                       const SizedBox(height: 4),

@@ -30,11 +30,18 @@ class PiyakPushApp extends StatelessWidget {
           ChangeNotifierProvider.value(value: save),
           Provider.value(value: sound),
         ],
-        child: MaterialApp(
-          title: S.appTitle,
-          theme: piyakTheme(),
-          debugShowCheckedModeBanner: false,
-          home: const TitleScreen(),
-        ),
+        // 언어 설정이 바뀌면 save가 알려 주고, 여기서 다시 적용한 뒤
+        // 아래 화면 전체가 새 언어로 다시 그려진다.
+        child: Consumer<SaveService>(builder: (context, s, _) {
+          S.use(s.langCode);
+          return _app();
+        }),
+      );
+
+  Widget _app() => MaterialApp(
+        title: S.appTitle,
+        theme: piyakTheme(),
+        debugShowCheckedModeBanner: false,
+        home: const TitleScreen(),
       );
 }

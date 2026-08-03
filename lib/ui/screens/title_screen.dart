@@ -4,8 +4,8 @@ library;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/progression.dart';
 import '../../services/save_service.dart';
-import '../../services/tile_art.dart';
 import '../nav.dart';
 import '../strings.dart';
 import '../theme.dart';
@@ -77,18 +77,21 @@ class TitleScreen extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // codex 로고 그림이 도착하면 이미지로, 그전엔 텍스트로
-                      TileArt.logo != null
-                          ? Image(image: TileArt.logo!, height: 90)
-                          : const Text(
-                              S.appTitle,
-                              style: TextStyle(
-                                fontSize: 44,
-                                fontWeight: FontWeight.w900,
-                                color: PiyakColors.outline,
-                                letterSpacing: 2,
-                              ),
-                            ),
+                      // 로고를 그림으로 두면 언어를 바꿔도 제목이 안 바뀐다.
+                      // 그림 안에 병아리가 또 들어 있어 아래 병아리와 겹치기도
+                      // 했다 — 제목은 글자로 그리고 병아리는 하나만 둔다.
+                      Text(
+                        S.appTitle,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 44,
+                          fontWeight: FontWeight.w900,
+                          color: PiyakColors.outline,
+                          letterSpacing: 1,
+                          height: 1.1,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
                       Image.asset('assets/images/chick/chick_cheer.png',
                           height: 120),
                       SizedBox(
@@ -96,7 +99,7 @@ class TitleScreen extends StatelessWidget {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8),
                           child: LinearProgressIndicator(
-                            value: save.totalStars / 600,
+                            value: save.totalStars / kMaxStars,
                             minHeight: 12,
                             backgroundColor: PiyakColors.creamBg,
                             valueColor: const AlwaysStoppedAnimation(
@@ -110,7 +113,7 @@ class TitleScreen extends StatelessWidget {
                         children: [
                           const Icon(Icons.star_rounded,
                               color: PiyakColors.starYellow, size: 20),
-                          Text(' ${save.totalStars} / 600',
+                          Text(' ${save.totalStars} / $kMaxStars',
                               style: const TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,

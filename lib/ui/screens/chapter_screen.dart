@@ -35,9 +35,9 @@ class ChapterScreen extends StatelessWidget {
     final save = context.watch<SaveService>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           S.chapterTitle,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             color: PiyakColors.outline,
           ),
@@ -146,9 +146,9 @@ class ChapterScreen extends StatelessWidget {
                                 ),
                               ],
                             )
-                          : const Text(
+                          : Text(
                               S.lockedChapter,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: PiyakColors.outline,
                                 fontSize: 12,
                               ),

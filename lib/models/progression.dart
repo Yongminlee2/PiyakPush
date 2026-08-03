@@ -11,6 +11,12 @@ library;
 const int kChapterUnlockClears = 8;
 const int kChapterCount = 20;
 
+/// 챕터당 스테이지 수 — 기본 10판 + 도전 5판.
+const int kStagesPerChapter = 15;
+
+/// 전부 3별로 깼을 때의 별 개수 (진행도 막대의 분모).
+const int kMaxStars = kChapterCount * kStagesPerChapter * 3;
+
 sealed class NextStep {
   const NextStep();
 }

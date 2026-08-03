@@ -29,6 +29,10 @@ class ClearOutcome {
 
 class GameScreen extends StatefulWidget {
   final Level level;
+
+  /// 화면에 띄울 스테이지 이름. 레벨 파일의 제목은 한국어라, 다른 언어에서는
+  /// 챕터명으로 만든 이름이 들어온다.
+  final String? title;
   final VoidCallback? onNext;
   final void Function(int stars)? onCleared;
 
@@ -41,14 +45,24 @@ class GameScreen extends StatefulWidget {
 
   /// 설정의 조작 방식 — true면 십자 방향키, false면 조이스틱.
   final bool useDpad;
+
+  /// 남은 힌트 개수. null이면 배지를 숨긴다.
+  final int? hintsLeft;
+
+  /// 힌트를 한 개 소모한다. 못 쓰면 false. null이면 제한 없이 쓴다 —
+  /// 화면이 저장소를 직접 붙들지 않게 콜백으로 받는다.
+  final Future<bool> Function()? onSpendHint;
   const GameScreen({
     required this.level,
+    this.title,
     this.onNext,
     this.onCleared,
     this.hintProvider,
     this.onEvents,
     this.clearOutcome,
     this.useDpad = false,
+    this.hintsLeft,
+    this.onSpendHint,
     super.key,
   });
 
@@ -146,10 +160,34 @@ class _GameScreenState extends State<GameScreen> {
   Future<void> _hint() async {
     if (widget.hintProvider == null) return;
     _resetIdleTimers();
+    if ((widget.hintsLeft ?? 1) <= 0) {
+      await _sayNoHints();
+      return;
+    }
     final moves = await widget.hintProvider!.call(c);
+    if (!mounted) return;
+    // 길을 못 찾았으면(탐색 상한 초과 등) 힌트를 깎지 않는다 —
+    // 아무것도 못 받고 잃으면 억울하다.
+    if (moves == null || moves.isEmpty) {
+      setState(() => _hintMoves = null);
+      return;
+    }
+    await widget.onSpendHint?.call();
     if (!mounted) return;
     setState(() => _hintMoves = moves);
   }
+
+  Future<void> _sayNoHints() => showDialog<void>(
+        context: context,
+        builder: (dctx) => AlertDialog(
+          title: Text(S.hintEmpty),
+          content: Text(S.hintHowTo),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(dctx), child: Text(S.ok)),
+          ],
+        ),
+      );
 
   String? get _bubbleText {
     if (c.deadlocked) return S.deadlockHint;
@@ -182,12 +220,13 @@ class _GameScreenState extends State<GameScreen> {
             Column(
               children: [
                 GameHud(
-                  title: widget.level.title,
+                  title: widget.title ?? widget.level.title,
                   moves: c.moves,
                   optimal: widget.level.optimal,
                   onUndo: _undo,
                   onRestart: _restart,
                   onHint: widget.hintProvider != null ? _hint : null,
+                  hintsLeft: widget.hintsLeft,
                 ),
                 Expanded(
                   child: Stack(

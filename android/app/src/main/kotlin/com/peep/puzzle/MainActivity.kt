@@ -1,4 +1,4 @@
-package com.piyak.piyak_push
+package com.peep.puzzle
 
 import io.flutter.embedding.android.FlutterActivity
 

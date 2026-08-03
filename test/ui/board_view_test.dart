@@ -15,7 +15,9 @@ void main() {
     await tester.pump(const Duration(milliseconds: 200));
     expect(find.byType(BoardView), findsOneWidget);
     expect(find.byType(EggSprite), findsOneWidget);
-    expect(find.byType(Image), findsNWidgets(2)); // 병아리 + 알 몸통 PNG
+    // 알은 그림 대신 코드로 그리게 되돌렸고(EggSprite), 타일 그림은
+    // TileArt.load()를 부르지 않아 안 뜬다 — 남는 Image는 병아리뿐.
+    expect(find.byType(Image), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }
