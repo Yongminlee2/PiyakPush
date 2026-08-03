@@ -77,7 +77,7 @@ class DailyScreen extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          const ActBackground(),
+          const ActBackground(wide: true),
           ListView(
             padding: const EdgeInsets.all(20),
             children: [

@@ -59,7 +59,7 @@ class TitleScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          const ActBackground(),
+          const ActBackground(wide: true),
           SafeArea(
         child: Center(
           child: SingleChildScrollView(
