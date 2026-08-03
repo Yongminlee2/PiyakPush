@@ -1,6 +1,7 @@
 /// 설정: 언어, 소리·조작 방식, 진행 초기화.
 library;
 
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -65,11 +66,14 @@ class SettingsScreen extends StatelessWidget {
               ],
             ),
           ),
-          SwitchListTile(
-            title: Text(S.unlockAll, style: label),
-            value: save.unlockAll,
-            onChanged: save.setUnlockAll,
-          ),
+          // 모든 챕터를 여는 스위치는 개발 중 확인용이다. 배포판에 남으면
+          // 누구나 진행을 건너뛸 수 있어 챕터 구조가 무의미해진다.
+          if (kDebugMode)
+            SwitchListTile(
+              title: Text(S.unlockAll, style: label),
+              value: save.unlockAll,
+              onChanged: save.setUnlockAll,
+            ),
           const SizedBox(height: 24),
           OutlinedButton.icon(
             icon: const Icon(Icons.delete_outline_rounded, color: Colors.red),

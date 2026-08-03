@@ -40,9 +40,10 @@ class StickerBookScreen extends StatelessWidget {
               border: Border.all(color: PiyakColors.outline, width: 2),
             ),
             padding: const EdgeInsets.all(6),
+            // 스티커 이름은 한국어로만 있어 다른 언어에서 한글이 튀어나온다.
+            // 24개를 12개 언어로 옮길 값어치가 없어 그림만 보여 준다.
             child: unlocked
-                ? Tooltip(
-                    message: st.name, child: Image.asset(st.asset))
+                ? Image.asset(st.asset)
                 : Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
