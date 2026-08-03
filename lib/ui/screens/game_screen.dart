@@ -173,7 +173,12 @@ class _GameScreenState extends State<GameScreen> {
       body: SafeArea(
         child: Stack(
           children: [
-            ActBackground(chapter: widget.level.chapter),
+            // 방향키 모드에선 그림이 방향키 영역(약 276dp) 전체를 받치도록
+            // 높인다 — 비율대로 두면 150dp뿐이라 방향키 위쪽이 붕 뜬다.
+            ActBackground(
+              chapter: widget.level.chapter,
+              height: widget.useDpad ? 310 : null,
+            ),
             Column(
               children: [
                 GameHud(
