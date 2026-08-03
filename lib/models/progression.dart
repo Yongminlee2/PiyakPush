@@ -14,8 +14,11 @@ const int kChapterCount = 20;
 /// 챕터당 스테이지 수 — 기본 10판 + 도전 5판.
 const int kStagesPerChapter = 15;
 
+/// 한 챕터를 전부 3별로 깼을 때의 별 개수 (챕터 카드 진행도의 분모).
+const int kStarsPerChapter = kStagesPerChapter * 3;
+
 /// 전부 3별로 깼을 때의 별 개수 (진행도 막대의 분모).
-const int kMaxStars = kChapterCount * kStagesPerChapter * 3;
+const int kMaxStars = kChapterCount * kStarsPerChapter;
 
 sealed class NextStep {
   const NextStep();

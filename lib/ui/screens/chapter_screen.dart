@@ -119,7 +119,7 @@ class ChapterScreen extends StatelessWidget {
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(6),
                                   child: LinearProgressIndicator(
-                                    value: stars / 30,
+                                    value: stars / kStarsPerChapter,
                                     minHeight: 8,
                                     backgroundColor: PiyakColors.creamBg,
                                     valueColor: AlwaysStoppedAnimation(
@@ -136,7 +136,7 @@ class ChapterScreen extends StatelessWidget {
                                       size: 16,
                                     ),
                                     Text(
-                                      ' $stars / 30',
+                                      ' $stars / $kStarsPerChapter',
                                       style: const TextStyle(
                                         color: PiyakColors.outline,
                                         fontSize: 13,
