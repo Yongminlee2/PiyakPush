@@ -116,6 +116,34 @@ class DailyScreen extends StatelessWidget {
                           color: PiyakColors.outline,
                         ),
                       ),
+                      // 도전의 날엔 미리 알려 준다 — 짧은 퍼즐인 줄 알고
+                      // 들어갔다가 40수짜리를 만나면 당황스럽다.
+                      if (DailyService.isChallengeDay(today)) ...[
+                        const SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: PiyakColors.starYellow,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: PiyakColors.outline,
+                              width: 2,
+                            ),
+                          ),
+                          child: Text(
+                            S.dailyChallenge,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: PiyakColors.outline,
+                            ),
+                          ),
+                        ),
+                      ],
                       const SizedBox(height: 12),
                       FilledButton(
                         style: FilledButton.styleFrom(
