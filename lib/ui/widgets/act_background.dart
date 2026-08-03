@@ -19,41 +19,45 @@ class ActBackground extends StatelessWidget {
   /// 35%에서 줄였다.
   static const double fadeStop = 0.25;
 
+  /// 배경 그림의 가로세로비 (1080×1080 = 1.0).
+  static const double aspect = 1.0;
+
   @override
   Widget build(BuildContext context) {
     final act = ((chapter - 1) ~/ 5).clamp(0, 3) + 1;
     return Positioned.fill(
-      child: Column(
-        children: [
-          const Expanded(
-            child: DecoratedBox(
-              decoration: BoxDecoration(color: PiyakColors.creamBg),
-              child: SizedBox.expand(),
-            ),
-          ),
-          ShaderMask(
-            shaderCallback: (r) => const LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Colors.transparent, Colors.black],
-              stops: [0.0, fadeStop],
-            ).createShader(r),
-            blendMode: BlendMode.dstIn,
-            // 기본은 가로에 맞추고 높이는 비율대로 — 위아래가 안 잘린다.
-            child: height == null
-                ? Image.asset(
-                    'assets/images/bg/bg_act$act.png',
-                    width: double.infinity,
-                    fit: BoxFit.fitWidth,
-                  )
-                : Image.asset(
-                    'assets/images/bg/bg_act$act.png',
-                    width: double.infinity,
-                    height: height,
-                    fit: BoxFit.cover,
-                  ),
-          ),
-        ],
+      child: LayoutBuilder(
+        builder: (context, box) {
+          // 폭에 맞춘 높이가 화면보다 크면 화면에 맞춘다. 정사각 그림이라
+          // 가로로 넓거나 세로가 짧은 기기에서는 그냥 두면 넘친다.
+          final wide = box.maxWidth / aspect;
+          final h = height ?? (wide < box.maxHeight ? wide : box.maxHeight);
+          return Column(
+            children: [
+              const Expanded(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(color: PiyakColors.creamBg),
+                  child: SizedBox.expand(),
+                ),
+              ),
+              ShaderMask(
+                shaderCallback: (r) => const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.transparent, Colors.black],
+                  stops: [0.0, fadeStop],
+                ).createShader(r),
+                blendMode: BlendMode.dstIn,
+                child: Image.asset(
+                  'assets/images/bg/bg_act$act.png',
+                  width: double.infinity,
+                  height: h,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
