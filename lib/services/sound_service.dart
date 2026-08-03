@@ -51,31 +51,49 @@ class SoundService {
       await playOverride!(_assetFor(s));
       return;
     }
-    await _pools[s]?.start();
+    // 소리 하나 못 냈다고 게임이 멈추면 안 된다. 기기에 따라 오디오 세션이
+    // 뺏기거나(통화·다른 앱) 재생이 실패할 수 있다.
+    try {
+      await _pools[s]?.start();
+    } catch (_) {}
   }
 
   /// 한 이동의 이벤트 묶음 → 대표음 1개 + 부가음(붕괴·문).
-  Future<void> playForEvents(List<GameEvent> events, bool cleared) async {
+  ///
+  /// 둘을 이어서 await 하면 뒤엣것이 앞엣것의 재생 요청이 끝날 때까지
+  /// 기다린다 — 같은 순간에 나야 할 소리가 한 박자 밀린다.
+  /// 동시에 띄우고 함께 기다린다.
+  Future<void> playForEvents(List<GameEvent> events, bool cleared) {
     final types = events.map((e) => e.type).toSet();
-    if (cleared) {
-      await play(Sfx.clear);
-    } else if (types.contains(GameEventType.eggNested)) {
-      await play(Sfx.nest);
-    } else if (types.contains(GameEventType.eggTeleported) ||
+    final main = _mainSfx(types, cleared);
+    final extra = _extraSfx(types);
+    return Future.wait([
+      if (main != null) play(main),
+      if (extra != null) play(extra),
+    ]);
+  }
+
+  /// 이번 이동을 대표하는 소리 하나. 위쪽이 우선한다.
+  Sfx? _mainSfx(Set<GameEventType> types, bool cleared) {
+    if (cleared) return Sfx.clear;
+    if (types.contains(GameEventType.eggNested)) return Sfx.nest;
+    if (types.contains(GameEventType.eggTeleported) ||
         types.contains(GameEventType.chickTeleported)) {
-      await play(Sfx.teleport);
-    } else if (types.contains(GameEventType.eggSlid)) {
-      await play(Sfx.slide);
-    } else if (types.contains(GameEventType.eggPushed)) {
-      await play(Sfx.push);
-    } else if (types.contains(GameEventType.chickMoved)) {
-      await play(Sfx.move);
+      return Sfx.teleport;
     }
-    if (types.contains(GameEventType.floorBroke)) {
-      await play(Sfx.crack);
-    } else if (types.contains(GameEventType.doorOpened) ||
+    if (types.contains(GameEventType.eggSlid)) return Sfx.slide;
+    if (types.contains(GameEventType.eggPushed)) return Sfx.push;
+    if (types.contains(GameEventType.chickMoved)) return Sfx.move;
+    return null;
+  }
+
+  /// 대표음과 함께 나는 소리 (바닥 붕괴·문 여닫힘).
+  Sfx? _extraSfx(Set<GameEventType> types) {
+    if (types.contains(GameEventType.floorBroke)) return Sfx.crack;
+    if (types.contains(GameEventType.doorOpened) ||
         types.contains(GameEventType.doorClosed)) {
-      await play(Sfx.button);
+      return Sfx.button;
     }
+    return null;
   }
 }
