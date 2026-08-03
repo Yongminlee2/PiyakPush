@@ -8,11 +8,16 @@ import '../theme.dart';
 class ActBackground extends StatelessWidget {
   final int chapter;
 
-  /// 그림 띠의 높이. null이면 그림 비율대로(1080×400 배너 → 화면폭 기준
-  /// 약 150dp). 방향키 모드처럼 더 높은 영역을 받쳐야 할 때 지정한다 —
-  /// 배너(2.7:1)가 화면보다 넓어 이때도 잘리는 건 좌우뿐이다.
+  /// 그림 띠의 높이. null이면 그림 비율대로.
   final double? height;
   const ActBackground({this.chapter = 1, this.height, super.key});
+
+  /// 그림 위쪽에서 크림색으로 녹여 없애는 구간.
+  ///
+  /// 지울수록 그림이 덜 보인다. 배경 그림을 세로로 긴 정사각형(1080×1080)으로
+  /// 다시 그리면서, 화면 아래 조작 영역(276dp)을 또렷한 부분으로 덮을 수 있게
+  /// 35%에서 줄였다.
+  static const double fadeStop = 0.25;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +36,7 @@ class ActBackground extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [Colors.transparent, Colors.black],
-              stops: [0.0, 0.35],
+              stops: [0.0, fadeStop],
             ).createShader(r),
             blendMode: BlendMode.dstIn,
             // 기본은 가로에 맞추고 높이는 비율대로 — 위아래가 안 잘린다.
