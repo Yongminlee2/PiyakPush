@@ -19,6 +19,11 @@ import '../widgets/hud.dart';
 import '../widgets/joystick.dart';
 import '../widgets/speech_bubble.dart';
 
+/// 화면 아래 조작 영역의 높이. 방향키(버튼 3줄 240 + 아래 여백 36)에 맞췄고,
+/// 조이스틱일 때도 같은 높이를 비워 둬 보드 크기가 조작 방식에 따라 달라지지
+/// 않게 한다.
+const double kControlAreaHeight = 276;
+
 /// 클리어 팝업이 무엇을 보여줄지 — 진행 판정 결과를 화면이 이해하는 형태로 옮긴 것.
 class ClearOutcome {
   final String? nextLabel;
@@ -183,16 +188,15 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   Future<void> _sayNoHints() => showDialog<void>(
-        context: context,
-        builder: (dctx) => AlertDialog(
-          title: Text(S.hintEmpty),
-          content: Text(S.hintHowTo),
-          actions: [
-            TextButton(
-                onPressed: () => Navigator.pop(dctx), child: Text(S.ok)),
-          ],
-        ),
-      );
+    context: context,
+    builder: (dctx) => AlertDialog(
+      title: Text(S.hintEmpty),
+      content: Text(S.hintHowTo),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(dctx), child: Text(S.ok)),
+      ],
+    ),
+  );
 
   String? get _bubbleText {
     if (c.deadlocked) return S.deadlockHint;
@@ -210,18 +214,16 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     final bubble = _bubbleText;
-    final mood =
-        (bubble != null && !c.deadlocked && !c.cleared) ? 'speak' : c.mood.name;
+    final mood = (bubble != null && !c.deadlocked && !c.cleared)
+        ? 'speak'
+        : c.mood.name;
     return Scaffold(
       body: SafeArea(
         child: Stack(
           children: [
-            // 방향키 모드에선 그림이 방향키 영역(약 276dp) 전체를 받치도록
-            // 높인다 — 비율대로 두면 150dp뿐이라 방향키 위쪽이 붕 뜬다.
-            ActBackground(
-              chapter: widget.level.chapter,
-              height: widget.useDpad ? 310 : null,
-            ),
+            // 조작 방식에 따라 배경을 다르게 두면(한쪽만 늘리면) 같은 게임인데
+            // 화면이 달라 보인다. 두 모드 모두 그림 비율 그대로 깐다.
+            ActBackground(chapter: widget.level.chapter),
             Column(
               children: [
                 GameHud(
@@ -233,92 +235,122 @@ class _GameScreenState extends State<GameScreen> {
                   onHint: widget.hintProvider != null ? _hint : null,
                   hintsLeft: widget.hintsLeft,
                 ),
+                // HUD 아래 전체를 한 겹으로 묶는다. 조이스틱이 보드와 조작
+                // 영역을 함께 덮어야 "화면 아무 데나 눌러서 조작"이 성립한다.
                 Expanded(
                   child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: LayoutBuilder(
-                            builder: (context, box) {
-                              final b = c.board;
-                              // 패널 안쪽 여백(10*2)과 화면 여백(12*2)을 뺀 뒤 나눈다
-                              final avail = Size(
-                                  box.maxWidth - 44, box.maxHeight - 44);
-                              // 기준 44 고정 — 판이 그보다 커서 안 들어갈 때만 줄인다.
-                              // (레벨마다 크기가 널뛰지 않게)
-                              final fit = (avail.width / b.width <
-                                      avail.height / b.height)
-                                  ? avail.width / b.width
-                                  : avail.height / b.height;
-                              final cell = fit < 44.0 ? fit : 44.0;
-                              return Center(
-                                child: Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    color: PiyakColors.boardPanel,
-                                    borderRadius: BorderRadius.circular(22),
-                                    border: Border.all(
-                                        color: PiyakColors.outline, width: 3),
-                                  ),
-                                  child: BoardView(
-                                    board: b,
-                                    cellSize: cell.clamp(20.0, 44.0),
-                                    chickMood: mood,
-                                    hintMoves: _hintMoves,
-                                    bumpDir: _bumpDir,
-                                    bumpToken: _bumpToken,
-                                    gliding: _gliding,
+                    children: [
+                      Column(
+                        children: [
+                          Expanded(
+                            child: Stack(
+                              children: [
+                                Positioned.fill(
+                                  child: LayoutBuilder(
+                                    builder: (context, box) {
+                                      final b = c.board;
+                                      // 패널 안쪽 여백(10*2)과 화면 여백(12*2)을 뺀 뒤 나눈다
+                                      final avail = Size(
+                                        box.maxWidth - 44,
+                                        box.maxHeight - 44,
+                                      );
+                                      // 기준 44 고정 — 판이 그보다 커서 안 들어갈 때만 줄인다.
+                                      // (레벨마다 크기가 널뛰지 않게)
+                                      final fit =
+                                          (avail.width / b.width <
+                                              avail.height / b.height)
+                                          ? avail.width / b.width
+                                          : avail.height / b.height;
+                                      final cell = fit < 44.0 ? fit : 44.0;
+                                      return Center(
+                                        child: Container(
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            color: PiyakColors.boardPanel,
+                                            borderRadius: BorderRadius.circular(
+                                              22,
+                                            ),
+                                            border: Border.all(
+                                              color: PiyakColors.outline,
+                                              width: 3,
+                                            ),
+                                          ),
+                                          child: BoardView(
+                                            board: b,
+                                            cellSize: cell.clamp(20.0, 44.0),
+                                            chickMood: mood,
+                                            hintMoves: _hintMoves,
+                                            bumpDir: _bumpDir,
+                                            bumpToken: _bumpToken,
+                                            gliding: _gliding,
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
-                              );
-                            },
+                                // 말풍선은 겹쳐 띄운다 — 나타났다 사라져도 조작부가 밀리지 않도록.
+                                if (bubble != null)
+                                  Positioned(
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    child: SpeechBubble(text: bubble),
+                                  ),
+                              ],
+                            ),
+                          ),
+                          // 조작 영역은 두 방식 모두 같은 높이를 차지한다.
+                          // 조이스틱일 때만 비워 두면 보드에 남는 공간이 달라져
+                          // 같은 판인데 칸 크기가 바뀐다.
+                          SizedBox(
+                            height: kControlAreaHeight,
+                            child: widget.useDpad
+                                ? Padding(
+                                    padding: const EdgeInsets.only(bottom: 36),
+                                    child: DPad(
+                                      onDirDown: holdDir,
+                                      onRelease: releaseDir,
+                                    ),
+                                  )
+                                : null,
+                          ),
+                        ],
+                      ),
+                      if (!widget.useDpad)
+                        Positioned.fill(
+                          child: Joystick(
+                            onDir: holdDir,
+                            onRelease: releaseDir,
                           ),
                         ),
-                        // 말풍선은 겹쳐 띄운다 — 나타났다 사라져도 조작부가 밀리지 않도록.
-                        if (bubble != null)
-                          Positioned(
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            child: SpeechBubble(text: bubble),
-                          ),
-                        // 조이스틱은 화면 어디를 눌러도 그 자리에 떠야 한다 —
-                        // 보드 영역까지 통째로 덮는다 (보드엔 터치 상호작용이 없다).
-                        if (!widget.useDpad)
-                          Positioned.fill(
-                            child:
-                                Joystick(onDir: holdDir, onRelease: releaseDir),
-                          ),
-                      ],
+                    ],
                   ),
                 ),
-                // 방향키는 제 키(약 240px)대로 두고 아래 여백으로 띄운다 —
-                // 고정 높이 띠에 넣으면 잘리고 너무 바닥에 붙는다.
-                if (widget.useDpad)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 36),
-                    child: DPad(onDirDown: holdDir, onRelease: releaseDir),
-                  ),
               ],
             ),
             if (c.cleared)
-              Builder(builder: (context) {
-                final outcome = widget.clearOutcome?.call() ??
-                    ClearOutcome(nextLabel: S.next, onNext: widget.onNext);
-                return Positioned.fill(
-                  child: ClearPopup(
-                    stars: c.stars,
-                    moves: c.moves,
-                    optimal: widget.level.optimal,
-                    nextLabel: outcome.nextLabel ?? S.next,
-                    note: outcome.note,
-                    onNext: outcome.onNext,
-                    onRetry: _restart,
-                    onList: Navigator.canPop(context)
-                        ? () => Navigator.pop(context)
-                        : null,
-                  ),
-                );
-              }),
+              Builder(
+                builder: (context) {
+                  final outcome =
+                      widget.clearOutcome?.call() ??
+                      ClearOutcome(nextLabel: S.next, onNext: widget.onNext);
+                  return Positioned.fill(
+                    child: ClearPopup(
+                      stars: c.stars,
+                      moves: c.moves,
+                      optimal: widget.level.optimal,
+                      nextLabel: outcome.nextLabel ?? S.next,
+                      note: outcome.note,
+                      onNext: outcome.onNext,
+                      onRetry: _restart,
+                      onList: Navigator.canPop(context)
+                          ? () => Navigator.pop(context)
+                          : null,
+                    ),
+                  );
+                },
+              ),
           ],
         ),
       ),
