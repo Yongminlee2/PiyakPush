@@ -27,7 +27,6 @@ class TileArt {
   };
 
   static Map<Tile, ImageProvider>? _map;
-  static ImageProvider? logo;
 
   static Future<void> load() async {
     final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
@@ -37,9 +36,6 @@ class TileArt {
         if (assets.contains('$_dir/${e.value}.png'))
           e.key: AssetImage('$_dir/${e.value}.png'),
     };
-    logo = assets.contains('$_dir/logo.png')
-        ? const AssetImage('$_dir/logo.png')
-        : null;
   }
 
   static ImageProvider? of(Tile t) => _map?[t];

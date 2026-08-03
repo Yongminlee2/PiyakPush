@@ -58,7 +58,7 @@ class _DecoBoardScreenState extends State<DecoBoardScreen> {
     final unlocked = unlockedStickers(total);
     return Scaffold(
       appBar: AppBar(
-        title: const Text(S.decoBoard,
+        title: Text(S.decoBoard,
             style: TextStyle(
                 fontWeight: FontWeight.bold, color: PiyakColors.outline)),
         backgroundColor: PiyakColors.creamBg,
@@ -133,9 +133,9 @@ class _DecoBoardScreenState extends State<DecoBoardScreen> {
                   top: BorderSide(color: PiyakColors.outline, width: 2)),
             ),
             child: unlocked.isEmpty
-                ? const Center(
+                ? Center(
                     child: Text(S.stickerLocked,
-                        style: TextStyle(color: PiyakColors.outline)))
+                        style: const TextStyle(color: PiyakColors.outline)))
                 : ListView(
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.all(12),

@@ -22,6 +22,14 @@ _BoardMsg _toMsg(Board b) => (
       b.chick.y * b.width + b.chick.x,
     );
 
+/// 힌트를 풀 때의 탐색 상한.
+///
+/// 기본값(200만)으로 두면 폰에서 앱이 죽는다. 솔버는 상태마다 보드와
+/// 문자열 키 두 개를 들고 있어 1MB당 4천 상태 남짓밖에 못 담는데,
+/// 200만이면 수백 MB~1GB라 안드로이드가 프로세스를 죽인다.
+/// 도전 판이 실제로 그만큼 깊어서 힌트를 누르면 터졌다.
+const kHintMaxStates = 120000;
+
 List<int>? _solveEntry(_BoardMsg m) {
   final (w, h, tiles, eggs, chick) = m;
   final board = Board(
@@ -31,7 +39,7 @@ List<int>? _solveEntry(_BoardMsg m) {
     eggs: eggs.map((i) => Point(i % w, i ~/ w)).toSet(),
     chick: Point(chick % w, chick ~/ w),
   );
-  return Solver().solve(board)?.map((d) => d.index).toList();
+  return Solver(maxStates: kHintMaxStates).solve(board)?.map((d) => d.index).toList();
 }
 
 Future<List<Dir>?> hintFor(Board board, {int steps = 5}) async {

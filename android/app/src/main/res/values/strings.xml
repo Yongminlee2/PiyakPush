@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 런처에 뜨는 이름. 한국어만 삐약푸쉬(values-ko), 나머지 언어는 이 값을 쓴다.
+         스토어 노출명("Peep Push - Sokoban Puzzle")은 콘솔에서 따로 넣는다. -->
+    <string name="app_name">Peep Push</string>
+</resources>

@@ -7,9 +7,12 @@ void main() {
 
   test('타일 PNG가 없으면 null (페인터 폴백)', () async {
     await TileArt.load();
-    // 아직 codex 그림이 없으므로 전부 null이어야 한다
+    // 지형·기믹은 화풍을 맞추려고 전부 코드 렌더링으로 되돌렸고,
+    // 그림이 남아 있는 건 둥지뿐이다.
     expect(TileArt.of(Tile.wall), null);
     expect(TileArt.of(Tile.ice), null);
-    expect(TileArt.logo, null);
+    expect(TileArt.of(Tile.doorB), null);
+    expect(TileArt.of(Tile.portal1), null);
+    expect(TileArt.of(Tile.nest), isNotNull);
   });
 }

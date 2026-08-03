@@ -35,10 +35,17 @@ class DailyScreen extends StatelessWidget {
       context,
       piyakRoute(GameScreen(
         level: level,
+        title: S.dailyTitle,
         useDpad: save.dpadOn,
         hintProvider: (c) => hintFor(c.board),
+        hintsLeft: save.hints,
+        onSpendHint: save.spendHint,
         onEvents: sound.playForEvents,
-        onCleared: (_) => save.setDailyCleared(today),
+        onCleared: (_) async {
+          final first = !save.dailyCleared(today);
+          await save.setDailyCleared(today);
+          if (first) await save.addHints(SaveService.kHintPerDaily);
+        },
         onNext: () => Navigator.pop(context),
       )),
     );
@@ -56,7 +63,7 @@ class DailyScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(S.dailyTitle,
+        title: Text(S.dailyTitle,
             style: TextStyle(
                 fontWeight: FontWeight.bold, color: PiyakColors.outline)),
         backgroundColor: PiyakColors.creamBg,

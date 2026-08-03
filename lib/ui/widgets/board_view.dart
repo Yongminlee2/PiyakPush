@@ -133,29 +133,38 @@ class _BoardViewState extends State<BoardView> {
               bumpToken: widget.bumpToken,
             ),
           ),
-          for (final (i, step) in _hintSteps.indexed)
+          // 힌트는 "몇 번째로 어디에 서야 하는지"를 번호로 보여 준다.
+          // 방향 화살표만 띄우면 어느 칸 얘기인지 헷갈린다.
+          // 가까운 수가 위에 오도록 뒤에서부터 그린다.
+          for (final (i, step) in _hintSteps.indexed.toList().reversed)
             Positioned(
-              left: step.$1.x * cell,
-              top: step.$1.y * cell,
+              left: step.x * cell,
+              top: step.y * cell,
               width: cell,
               height: cell,
               child: IgnorePointer(
-                child: Opacity(
-                  opacity: (1.0 - i * 0.15).clamp(0.3, 1.0),
-                  child: Transform.rotate(
-                    angle: switch (step.$2) {
-                      Dir.up => -1.5708,
-                      Dir.down => 1.5708,
-                      Dir.left => 3.1416,
-                      Dir.right => 0,
-                    },
-                    child: Icon(
-                      Icons.arrow_forward_rounded,
-                      size: cell * 0.6,
-                      color: PiyakColors.starYellow,
-                      shadows: const [
-                        Shadow(color: PiyakColors.outline, blurRadius: 3),
-                      ],
+                child: Center(
+                  child: Opacity(
+                    opacity: (1.0 - i * 0.13).clamp(0.45, 1.0),
+                    child: Container(
+                      width: cell * 0.56,
+                      height: cell * 0.56,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: PiyakColors.starYellow,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                            color: PiyakColors.outline, width: 2.5),
+                      ),
+                      child: FittedBox(
+                        child: Text(
+                          '${i + 1}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w900,
+                            color: PiyakColors.outline,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -166,17 +175,17 @@ class _BoardViewState extends State<BoardView> {
     );
   }
 
-  /// 힌트 이동을 실제 엔진으로 시뮬레이션해 (도착 칸, 방향) 목록을 만든다.
-  List<(Point, Dir)> get _hintSteps {
+  /// 힌트 이동을 실제 엔진으로 시뮬레이션해, 병아리가 차례로 서게 될 칸을 낸다.
+  List<Point> get _hintSteps {
     final moves = widget.hintMoves;
     if (moves == null) return const [];
-    final steps = <(Point, Dir)>[];
+    final steps = <Point>[];
     var b = widget.board;
     for (final d in moves) {
       final o = b.tryMove(d);
       if (o.blocked) break;
       b = o.board!;
-      steps.add((b.chick, d));
+      steps.add(b.chick);
     }
     return steps;
   }
