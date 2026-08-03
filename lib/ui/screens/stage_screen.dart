@@ -24,22 +24,25 @@ class StageScreen extends StatelessWidget {
     final sound = context.read<SoundService>();
     final level = levels[idx];
     final firstClear = save.starsOf(level.id) == 0;
-    return piyakRoute(GameScreen(
-      key: ValueKey(level.id),
-      level: level,
-      title: S.stageTitle(chapter, idx + 1, level.title),
-      useDpad: save.dpadOn,
-      hintProvider: (c) => hintFor(c.board),
-      hintsLeft: save.hints,
-      onSpendHint: save.spendHint,
-      onEvents: sound.playForEvents,
-      onCleared: (stars) async {
-        await save.setStars(level.id, stars);
-        // 처음 깬 판에서만 힌트를 준다 — 같은 판을 반복해 모을 수 없게.
-        if (firstClear) await save.addHints(SaveService.kHintPerStage);
-      },
-      clearOutcome: () => _outcomeFor(context, levels, idx),
-    ));
+    return piyakRoute(
+      GameScreen(
+        key: ValueKey(level.id),
+        level: level,
+        title: S.stageTitle(chapter, idx + 1, level.title),
+        useDpad: save.dpadOn,
+        hintProvider: (c) => hintFor(c.board),
+        hintsLeft: save.hints,
+        onSpendHint: save.spendHint,
+        onEvents: sound.playForEvents,
+        onBlocked: () => sound.play(Sfx.bump),
+        onCleared: (stars) async {
+          await save.setStars(level.id, stars);
+          // 처음 깬 판에서만 힌트를 준다 — 같은 판을 반복해 모을 수 없게.
+          if (firstClear) await save.addHints(SaveService.kHintPerStage);
+        },
+        clearOutcome: () => _outcomeFor(context, levels, idx),
+      ),
+    );
   }
 
   /// 팝업이 그려질 때 호출된다 — 방금 딴 별까지 반영된 상태로 판정한다.
@@ -55,26 +58,32 @@ class StageScreen extends StatelessWidget {
     );
     return switch (step) {
       NextInChapter(:final index) => ClearOutcome(
-          nextLabel: S.next,
-          onNext: () => Navigator.pushReplacement(
-              context, _gameRoute(context, levels, index)),
+        nextLabel: S.next,
+        onNext: () => Navigator.pushReplacement(
+          context,
+          _gameRoute(context, levels, index),
         ),
+      ),
       NextChapter(:final chapter) => ClearOutcome(
-          nextLabel: S.nextChapter,
-          note: S.chapterCleared,
-          onNext: () {
-            Navigator.pop(context); // 게임 화면을 닫고
-            Navigator.pushReplacement( // 스테이지 목록을 다음 챕터로 교체
-                context, piyakRoute(StageScreen(chapter: chapter)));
-          },
-        ),
-      ChapterLocked(:final clearsNeeded) =>
-        ClearOutcome(note: S.needMoreClears(clearsNeeded)),
+        nextLabel: S.nextChapter,
+        note: S.chapterCleared,
+        onNext: () {
+          Navigator.pop(context); // 게임 화면을 닫고
+          Navigator.pushReplacement(
+            // 스테이지 목록을 다음 챕터로 교체
+            context,
+            piyakRoute(StageScreen(chapter: chapter)),
+          );
+        },
+      ),
+      ChapterLocked(:final clearsNeeded) => ClearOutcome(
+        note: S.needMoreClears(clearsNeeded),
+      ),
       AllChaptersCleared() => ClearOutcome(
-          nextLabel: S.toTitle,
-          note: S.allCleared,
-          onNext: () => Navigator.popUntil(context, (r) => r.isFirst),
-        ),
+        nextLabel: S.toTitle,
+        note: S.allCleared,
+        onNext: () => Navigator.popUntil(context, (r) => r.isFirst),
+      ),
     };
   }
 
@@ -83,9 +92,13 @@ class StageScreen extends StatelessWidget {
     final save = context.watch<SaveService>();
     return Scaffold(
       appBar: AppBar(
-        title: Text('${S.chapterTitle} $chapter. ${S.chapterNames[chapter - 1]}',
-            style: const TextStyle(
-                fontWeight: FontWeight.bold, color: PiyakColors.outline)),
+        title: Text(
+          '${S.chapterTitle} $chapter. ${S.chapterNames[chapter - 1]}',
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: PiyakColors.outline,
+          ),
+        ),
         backgroundColor: PiyakColors.creamBg,
       ),
       body: FutureBuilder<List<Level>>(
@@ -114,19 +127,26 @@ class StageScreen extends StatelessWidget {
                 ),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(18),
-                  onTap: () => Navigator.push(
-                      context, _gameRoute(context, levels, i)),
+                  onTap: () =>
+                      Navigator.push(context, _gameRoute(context, levels, i)),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('${i + 1}',
-                          style: const TextStyle(
-                              fontSize: 26,
-                              fontWeight: FontWeight.w900,
-                              color: PiyakColors.outline)),
-                      Text(S.stageTitle(chapter, i + 1, levels[i].title),
-                          style: const TextStyle(
-                              fontSize: 12, color: PiyakColors.outline)),
+                      Text(
+                        '${i + 1}',
+                        style: const TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w900,
+                          color: PiyakColors.outline,
+                        ),
+                      ),
+                      Text(
+                        S.stageTitle(chapter, i + 1, levels[i].title),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: PiyakColors.outline,
+                        ),
+                      ),
                       const SizedBox(height: 4),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

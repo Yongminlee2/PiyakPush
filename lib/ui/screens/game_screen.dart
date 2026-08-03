@@ -52,6 +52,9 @@ class GameScreen extends StatefulWidget {
   /// 힌트를 한 개 소모한다. 못 쓰면 false. null이면 제한 없이 쓴다 —
   /// 화면이 저장소를 직접 붙들지 않게 콜백으로 받는다.
   final Future<bool> Function()? onSpendHint;
+
+  /// 벽에 막혀 못 움직였을 때. 튕기는 연출에 맞춰 소리를 낸다.
+  final VoidCallback? onBlocked;
   const GameScreen({
     required this.level,
     this.title,
@@ -63,6 +66,7 @@ class GameScreen extends StatefulWidget {
     this.useDpad = false,
     this.hintsLeft,
     this.onSpendHint,
+    this.onBlocked,
     super.key,
   });
 
@@ -137,6 +141,7 @@ class _GameScreenState extends State<GameScreen> {
       widget.onEvents?.call(c.lastEvents, c.cleared);
     } else {
       // 막힌 입력에 아무 반응이 없으면 조작이 뻣뻣하게 느껴진다.
+      widget.onBlocked?.call();
       setState(() {
         _bumpDir = d;
         _bumpToken++;

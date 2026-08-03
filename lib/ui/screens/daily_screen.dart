@@ -33,21 +33,24 @@ class DailyScreen extends StatelessWidget {
     if (!context.mounted) return;
     Navigator.push(
       context,
-      piyakRoute(GameScreen(
-        level: level,
-        title: S.dailyTitle,
-        useDpad: save.dpadOn,
-        hintProvider: (c) => hintFor(c.board),
-        hintsLeft: save.hints,
-        onSpendHint: save.spendHint,
-        onEvents: sound.playForEvents,
-        onCleared: (_) async {
-          final first = !save.dailyCleared(today);
-          await save.setDailyCleared(today);
-          if (first) await save.addHints(SaveService.kHintPerDaily);
-        },
-        onNext: () => Navigator.pop(context),
-      )),
+      piyakRoute(
+        GameScreen(
+          level: level,
+          title: S.dailyTitle,
+          useDpad: save.dpadOn,
+          hintProvider: (c) => hintFor(c.board),
+          hintsLeft: save.hints,
+          onSpendHint: save.spendHint,
+          onEvents: sound.playForEvents,
+          onBlocked: () => sound.play(Sfx.bump),
+          onCleared: (_) async {
+            final first = !save.dailyCleared(today);
+            await save.setDailyCleared(today);
+            if (first) await save.addHints(SaveService.kHintPerDaily);
+          },
+          onNext: () => Navigator.pop(context),
+        ),
+      ),
     );
   }
 
@@ -63,90 +66,113 @@ class DailyScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.dailyTitle,
-            style: TextStyle(
-                fontWeight: FontWeight.bold, color: PiyakColors.outline)),
+        title: Text(
+          S.dailyTitle,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: PiyakColors.outline,
+          ),
+        ),
         backgroundColor: PiyakColors.creamBg,
       ),
       body: Stack(
         children: [
           const ActBackground(),
           ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          Card(
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-              side: const BorderSide(color: PiyakColors.outline, width: 2.5),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
+            padding: const EdgeInsets.all(20),
+            children: [
+              Card(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  side: const BorderSide(
+                    color: PiyakColors.outline,
+                    width: 2.5,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        cleared
+                            ? 'assets/images/chick/chick_cheer.png'
+                            : 'assets/images/chick/chick_think.png',
+                        height: 100,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '${today.month}월 ${today.day}일',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: PiyakColors.outline,
+                        ),
+                      ),
+                      Text(
+                        '${S.streak} $streak${S.day}',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: PiyakColors.outline,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      FilledButton(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: cleared
+                              ? Colors.white
+                              : PiyakColors.chickYellow,
+                          foregroundColor: PiyakColors.outline,
+                          minimumSize: const Size(180, 48),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            side: const BorderSide(
+                              color: PiyakColors.outline,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                        onPressed: () => _play(context),
+                        child: Text(
+                          cleared ? S.dailyDone : S.dailyPlay,
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              GridView.count(
+                crossAxisCount: 7,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  Image.asset(
-                    cleared
-                        ? 'assets/images/chick/chick_cheer.png'
-                        : 'assets/images/chick/chick_think.png',
-                    height: 100,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '${today.month}월 ${today.day}일',
-                    style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: PiyakColors.outline),
-                  ),
-                  Text('${S.streak} $streak${S.day}',
-                      style: const TextStyle(
-                          fontSize: 14, color: PiyakColors.outline)),
-                  const SizedBox(height: 12),
-                  FilledButton(
-                    style: FilledButton.styleFrom(
-                      backgroundColor: cleared
-                          ? Colors.white
-                          : PiyakColors.chickYellow,
-                      foregroundColor: PiyakColors.outline,
-                      minimumSize: const Size(180, 48),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        side: const BorderSide(
-                            color: PiyakColors.outline, width: 2),
+                  for (final w in ['일', '월', '화', '수', '목', '금', '토'])
+                    Center(
+                      child: Text(
+                        w,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: PiyakColors.outline,
+                        ),
                       ),
                     ),
-                    onPressed: () => _play(context),
-                    child: Text(cleared ? S.dailyDone : S.dailyPlay,
-                        style: const TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.bold)),
-                  ),
+                  for (var i = 0; i < leadingBlanks; i++) const SizedBox(),
+                  for (var d = 1; d <= daysInMonth; d++)
+                    _DayCell(
+                      day: d,
+                      isToday: d == today.day,
+                      stamped: save.dailyCleared(
+                        DateTime(today.year, today.month, d),
+                      ),
+                    ),
                 ],
               ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          GridView.count(
-            crossAxisCount: 7,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              for (final w in ['일', '월', '화', '수', '목', '금', '토'])
-                Center(
-                    child: Text(w,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: PiyakColors.outline))),
-              for (var i = 0; i < leadingBlanks; i++) const SizedBox(),
-              for (var d = 1; d <= daysInMonth; d++)
-                _DayCell(
-                  day: d,
-                  isToday: d == today.day,
-                  stamped: save
-                      .dailyCleared(DateTime(today.year, today.month, d)),
-                ),
             ],
-          ),
-        ],
           ),
         ],
       ),
@@ -158,8 +184,11 @@ class _DayCell extends StatelessWidget {
   final int day;
   final bool isToday;
   final bool stamped;
-  const _DayCell(
-      {required this.day, required this.isToday, required this.stamped});
+  const _DayCell({
+    required this.day,
+    required this.isToday,
+    required this.stamped,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -176,9 +205,13 @@ class _DayCell extends StatelessWidget {
       child: Center(
         child: stamped
             ? Image.asset('assets/images/sticker/sticker_01.png', width: 22)
-            : Text('$day',
+            : Text(
+                '$day',
                 style: const TextStyle(
-                    fontSize: 12, color: PiyakColors.outline)),
+                  fontSize: 12,
+                  color: PiyakColors.outline,
+                ),
+              ),
       ),
     );
   }

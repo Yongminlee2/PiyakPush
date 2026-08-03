@@ -40,7 +40,7 @@ class PiyakPushApp extends StatelessWidget {
 
   Widget _app() => MaterialApp(
         title: S.appTitle,
-        theme: piyakTheme(),
+        theme: piyakTheme(lang: S.code),
         debugShowCheckedModeBanner: false,
         home: const TitleScreen(),
       );
