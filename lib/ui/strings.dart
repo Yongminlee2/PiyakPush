@@ -96,6 +96,13 @@ abstract final class S {
   static String get dailyPlay => _('dailyPlay');
   static String get dailyDone => _('dailyDone');
   static String get dailyChallenge => _('dailyChallenge');
+
+  /// 언어마다 날짜 적는 순서가 다르다 (8월 4일 · 8/4 · 4/8 · 4.8.).
+  static String date(int month, int day) =>
+      _('dateFormat').replaceAll('{m}', '$month').replaceAll('{d}', '$day');
+
+  /// 달력 요일 머리글 7개, 일요일부터.
+  static List<String> get weekdays => _('weekdays').split(',');
   static String get streak => _('streak');
   static String get day => _('day');
 

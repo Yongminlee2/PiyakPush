@@ -102,7 +102,7 @@ class DailyScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        '${today.month}월 ${today.day}일',
+                        S.date(today.month, today.day),
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -179,7 +179,7 @@ class DailyScreen extends StatelessWidget {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  for (final w in ['일', '월', '화', '수', '목', '금', '토'])
+                  for (final w in S.weekdays)
                     Center(
                       child: Text(
                         w,
