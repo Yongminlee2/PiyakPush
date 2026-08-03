@@ -122,8 +122,13 @@ class _ClearPopupState extends State<ClearPopup>
                 ),
               ],
               const SizedBox(height: 16),
-              Row(
-                mainAxisSize: MainAxisSize.min,
+              // Row로 늘어놓으면 번역이 긴 언어에서 넘친다.
+              // ("다음 챕터" 4자 → "Siguiente capítulo" 18자, 349px 초과)
+              // 자리가 모자라면 아랫줄로 내린다.
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 4,
+                runSpacing: 4,
                 children: [
                   if (widget.onList != null)
                     TextButton(
