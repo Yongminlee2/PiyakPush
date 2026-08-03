@@ -31,8 +31,12 @@ class ActBackground extends StatelessWidget {
   /// 35%에서 줄였다.
   static const double fadeStop = 0.25;
 
-  /// 배경 그림의 가로세로비. 게임용은 1080×1080, 메뉴용은 1080×400.
-  static const double aspect = 1.0;
+  /// 배경 그림의 가로세로비. 게임용은 1080×800, 메뉴용은 1080×400.
+  ///
+  /// 게임용 원본은 1080×1080이지만 그대로 쓰면 화면 절반을 먹어 답답하다.
+  /// `tool/shrink_bg.py`로 세로만 눌러 넣는다 — 무지개·해·달이 모두 위쪽에
+  /// 있어 잘라내면 사라지기 때문이다.
+  static const double aspect = 1080 / 800;
   static const double wideAspect = 1080 / 400;
 
   @override
