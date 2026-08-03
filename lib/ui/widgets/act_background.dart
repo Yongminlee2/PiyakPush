@@ -29,11 +29,12 @@ class ActBackground extends StatelessWidget {
               stops: [0.0, 0.35],
             ).createShader(r),
             blendMode: BlendMode.dstIn,
+            // 높이를 고정하고 cover로 채우면 그림 위아래가 잘린다.
+            // 가로에만 맞추고 높이는 그림 비율대로 둔다.
             child: Image.asset(
               'assets/images/bg/bg_act$act.png',
               width: double.infinity,
-              fit: BoxFit.cover,
-              height: 260,
+              fit: BoxFit.fitWidth,
             ),
           ),
         ],
