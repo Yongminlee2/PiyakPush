@@ -9,7 +9,8 @@ void main() {
     for (var i = 0; i < kStickers.length; i++) {
       expect(kStickers[i].threshold, (i + 1) * 25);
     }
-    expect(kStickers.last.threshold, 600); // 200스테이지 × 별 3개
+    // 별 만점(900)이 아니라 600에서 다 열린다 — 만점은 전 판 3별이라 가혹하다.
+    expect(kStickers.last.threshold, 600);
   });
 
   test('해금 경계', () {
