@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """고른 아이콘을 안드로이드 런처 아이콘 전 해상도로 깔아 넣는다.
 
-    python tool/apply_icon.py c        # PiyakAssets/icon/icon_c.png 를 적용
+    python tool/apply_icon.py 6        # PiyakAssets/icon2/icon2_6.png 를 적용
 
 만드는 것:
   mipmap-*/ic_launcher.png              구형 런처용 (정사각 통짜)
@@ -19,7 +19,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 from PIL import Image
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SRC = os.path.join(os.path.dirname(ROOT), 'PiyakAssets', 'icon')
+SRC = os.path.join(os.path.dirname(ROOT), 'PiyakAssets', 'icon2')
 RES = os.path.join(ROOT, 'android', 'app', 'src', 'main', 'res')
 
 # 구형 런처 아이콘 크기 (dp = px, 48dp 기준)
@@ -36,9 +36,9 @@ def bg_color_of(im):
 
 
 def main():
-    which = (sys.argv[1] if len(sys.argv) > 1 else 'c').lower()
-    flat = Image.open(os.path.join(SRC, f'icon_{which}.png')).convert('RGB')
-    fg = Image.open(os.path.join(SRC, f'icon_{which}_fg.png')).convert('RGBA')
+    which = sys.argv[1] if len(sys.argv) > 1 else '6'
+    flat = Image.open(os.path.join(SRC, f'icon2_{which}.png')).convert('RGB')
+    fg = Image.open(os.path.join(SRC, f'icon2_{which}_fg.png')).convert('RGBA')
 
     for d, px in LEGACY.items():
         p = os.path.join(RES, f'mipmap-{d}', 'ic_launcher.png')
