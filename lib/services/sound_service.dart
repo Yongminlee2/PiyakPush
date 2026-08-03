@@ -5,7 +5,18 @@ import 'package:audioplayers/audioplayers.dart';
 
 import '../engine/move.dart';
 
-enum Sfx { move, push, slide, nest, clear, unlock, button, crack, teleport }
+enum Sfx {
+  move,
+  bump,
+  push,
+  slide,
+  nest,
+  clear,
+  unlock,
+  button,
+  crack,
+  teleport,
+}
 
 class SoundService {
   final bool Function() isMuted;
@@ -23,8 +34,12 @@ class SoundService {
   Future<void> init() async {
     if (playOverride != null) return;
     for (final s in Sfx.values) {
-      _pools[s] =
-          await AudioPool.createFromAsset(path: _assetFor(s), maxPlayers: 2);
+      // 걸음이 160ms 간격이라 그보다 긴 소리(둥지 230·굴 250·미끄럼 200)는
+      // 2개로는 다음 걸음에 밀려 잘린다. 넉넉히 4개씩 잡는다.
+      _pools[s] = await AudioPool.createFromAsset(
+        path: _assetFor(s),
+        maxPlayers: 4,
+      );
     }
   }
 

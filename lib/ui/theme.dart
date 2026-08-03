@@ -48,12 +48,21 @@ abstract final class PiyakColors {
 const double kTileGap = 1.5; // 타일 사이 실틈 — 아기자기한 보드게임 느낌
 const double kOutlineWidth = 2.5;
 
-ThemeData piyakTheme() => ThemeData(
+/// Jua로 온전히 그릴 수 있는 언어.
+///
+/// Jua는 한글용 폰트라 가나·한자·키릴·태국 글자가 통째로 없고, 라틴 언어도
+/// 악센트 글자(é ñ ü ç …)가 빠져 있다. 없는 글자는 기기 기본 폰트로 대체되는데
+/// 그러면 한 단어 안에서 글꼴이 섞여 망가져 보인다(`tool/check_font_coverage.py`).
+/// 그래서 완전히 커버되는 언어만 Jua를 쓰고 나머지는 기기 폰트로 그린다.
+const kJuaLanguages = {'ko', 'en', 'id'};
+
+ThemeData piyakTheme({String lang = 'ko'}) => ThemeData(
       useMaterial3: true,
       scaffoldBackgroundColor: PiyakColors.creamBg,
       colorScheme: ColorScheme.fromSeed(
         seedColor: PiyakColors.chickYellow,
         surface: PiyakColors.creamBg,
       ),
-      fontFamily: 'Jua', // 둥글둥글한 한글 폰트 (OFL, assets/fonts)
+      // 둥글둥글한 한글 폰트 (OFL, assets/fonts)
+      fontFamily: kJuaLanguages.contains(lang) ? 'Jua' : null,
     );
