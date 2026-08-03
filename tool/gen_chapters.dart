@@ -31,7 +31,19 @@ const _names = {
   20: '삐약 마스터',
 };
 
+/// 챕터별로 쓸 기믹.
+///
+/// 1~5막은 손으로 만든 판이라 원래 이 표에 없었는데, 도전 5판을 붙이면서
+/// 같은 표를 참조하는 바람에 **기믹이 하나도 안 들어간 도전판**이 나왔다
+/// (얼음길 챕터인데 얼음이 없는 식). 학습한 기믹으로 시험을 봐야 하므로
+/// 1~5도 여기에 적어 둔다.
 const _gimmicks = {
+  1: <Gimmick>[], // 풀밭 — 아직 배운 기믹이 없다
+  2: [Gimmick.ice],
+  3: [Gimmick.portal],
+  4: [Gimmick.door],
+  // 5막은 1막의 마무리다. 기본 10판이 이미 전 기믹을 복습하므로 도전도 그렇게.
+  5: [Gimmick.ice, Gimmick.portal, Gimmick.door, Gimmick.cracked],
   6: [Gimmick.ice, Gimmick.portal],
   7: [Gimmick.ice, Gimmick.door],
   8: [Gimmick.ice, Gimmick.cracked],

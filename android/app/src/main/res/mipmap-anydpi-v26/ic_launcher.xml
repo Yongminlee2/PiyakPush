@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 앞층 그림이 이미 가운데 안전영역(108dp 중 72dp) 안에 그려져 있다.
+     여기서 inset을 더 주면 홈 화면에서 그림이 눈에 띄게 작아진다. -->
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
   <background android:drawable="@color/ic_launcher_background"/>
-  <foreground>
-      <inset
-          android:drawable="@drawable/ic_launcher_foreground"
-          android:inset="16%" />
-  </foreground>
+  <foreground android:drawable="@drawable/ic_launcher_foreground"/>
 </adaptive-icon>
