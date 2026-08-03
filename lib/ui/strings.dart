@@ -95,6 +95,7 @@ abstract final class S {
   static String get dailyTitle => _('dailyTitle');
   static String get dailyPlay => _('dailyPlay');
   static String get dailyDone => _('dailyDone');
+  static String get dailyChallenge => _('dailyChallenge');
   static String get streak => _('streak');
   static String get day => _('day');
 
