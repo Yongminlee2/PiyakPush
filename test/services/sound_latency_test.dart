@@ -73,4 +73,26 @@ void main() {
     expect(played.length, 10);
     expect(played.every((p) => p == 'audio/move.wav'), true);
   });
+
+  test('재생이 실패해도 게임은 멈추지 않는다', () async {
+    // 오디오를 뺏기는 상황을 흉내 낸다. 예외가 밖으로 나가면
+    // 이동 처리까지 끊겨 게임이 멈춘다.
+    final s = SoundService(
+      isMuted: () => false,
+      playOverride: (_) async => throw StateError('오디오 없음'),
+    );
+    await expectLater(
+      s.playForEvents([_ev(GameEventType.chickMoved)], false),
+      completes,
+    );
+  });
+
+  test('음소거면 아무것도 재생하지 않는다', () async {
+    final played = <String>[];
+    final s = SoundService(
+        isMuted: () => true, playOverride: (a) async => played.add(a));
+    await s.playForEvents([_ev(GameEventType.chickMoved)], false);
+    await s.playForEvents([_ev(GameEventType.eggPushed)], true);
+    expect(played, isEmpty);
+  });
 }
