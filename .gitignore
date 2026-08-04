@@ -52,3 +52,7 @@ tmp/
 *.keystore
 /android/key.properties
 /android/keystore.properties
+
+# 빌드 산출물 — 저장소에 넣지 않는다 (56MB짜리가 커밋된 적 있다)
+store/업로드/*.aab
+store/업로드/*.apk
