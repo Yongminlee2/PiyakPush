@@ -1,0 +1,123 @@
+<ko-KR>
+삐약푸쉬 첫 출시입니다.
+
+병아리가 알을 밀어 둥지에 넣는 소코반 퍼즐, 300스테이지로 시작합니다.
+얼음·굴·단추와 문·금 간 바닥, 4가지 기믹과 챕터마다 도전 5판이 있습니다.
+매일 새 퍼즐도 함께 열립니다.
+
+즐겁게 플레이해 주세요!
+</ko-KR>
+<en-US>
+Peep Push launches today.
+
+A Sokoban puzzle where a chick pushes eggs into their nests — 300 levels
+to start, with 4 mechanics (ice, burrows, buttons and doors, cracked floor)
+and 5 challenge stages per chapter. A new daily puzzle unlocks every day.
+
+Thanks for playing!
+</en-US>
+<ja-JP>
+ピヨプッシュ、本日リリースです。
+
+ヒヨコがタマゴを押して巣に入れる倉庫番パズル。300ステージから始まり、
+氷・穴・ボタンとドア・ひび割れた床の4種の仕掛けと、
+チャプターごとにチャレンジ5面があります。毎日新しいパズルも登場します。
+
+ぜひ遊んでみてください!
+</ja-JP>
+<zh-CN>
+Peep Push 正式上线。
+
+小鸡把蛋推进窝里的推箱子谜题,首发300个关卡。
+冰、洞穴、按钮与门、裂开的地板共4种机关,每章还有5个挑战关。
+每天还会解锁新的每日谜题。
+
+祝你玩得开心!
+</zh-CN>
+<zh-TW>
+Peep Push 正式上線。
+
+小雞把蛋推進窩裡的推箱子謎題,首發300個關卡。
+冰、洞穴、按鈕與門、裂開的地板共4種機關,每章還有5個挑戰關。
+每天還會解鎖新的每日謎題。
+
+祝你玩得開心!
+</zh-TW>
+<es-ES>
+Peep Push ya está disponible.
+
+Un puzle Sokoban en el que un pollito empuja huevos hasta sus nidos —
+300 niveles para empezar, con 4 mecánicas (hielo, madrigueras, botones y
+puertas, suelo agrietado) y 5 niveles de reto por capítulo. Cada día se
+desbloquea un puzle nuevo.
+
+¡Que lo disfrutes!
+</es-ES>
+<fr-FR>
+Peep Push est disponible dès aujourd'hui.
+
+Un puzzle Sokoban où un poussin pousse des œufs jusqu'à leurs nids —
+300 niveaux pour commencer, avec 4 mécaniques (glace, terriers, boutons
+et portes, sol fissuré) et 5 niveaux défi par chapitre. Un nouveau puzzle
+se débloque chaque jour.
+
+Bon jeu !
+</fr-FR>
+<de-DE>
+Peep Push startet heute.
+
+Ein Sokoban-Puzzle, in dem ein Küken Eier in ihre Nester schiebt —
+300 Level zum Start, mit 4 Spielelementen (Eis, Baue, Knöpfe und Türen,
+rissiger Boden) und 5 Herausforderungs-Level pro Kapitel. Jeden Tag
+schaltet sich ein neues Rätsel frei.
+
+Viel Spaß!
+</de-DE>
+<pt-BR>
+Peep Push chega hoje.
+
+Um quebra-cabeça Sokoban em que um pintinho empurra ovos até seus ninhos —
+300 fases para começar, com 4 mecânicas (gelo, tocas, botões e portas,
+chão rachado) e 5 fases de desafio por capítulo. Todo dia um novo
+quebra-cabeça é desbloqueado.
+
+Bom jogo!
+</pt-BR>
+<ru-RU>
+Peep Push уже вышла.
+
+Головоломка сокобан, где цыплёнок толкает яйца в гнёзда — 300 уровней
+для начала, 4 механики (лёд, норы, кнопки и двери, треснувший пол)
+и 5 уровней-испытаний в каждой главе. Каждый день открывается новая
+головоломка.
+
+Приятной игры!
+</ru-RU>
+<th>
+Peep Push เปิดตัวแล้ววันนี้
+
+เกมปริศนาโซโคบันที่ลูกเจี๊ยบดันไข่เข้ารัง เริ่มต้นด้วย 300 ด่าน
+พร้อมกลไก 4 แบบ (น้ำแข็ง โพรง ปุ่มกับประตู พื้นแตกร้าว)
+และด่านท้าทาย 5 ด่านในทุกบท ทุกวันจะมีปริศนาใหม่ปลดล็อกด้วย
+
+ขอให้สนุกกับการเล่นนะครับ/คะ!
+</th>
+<vi>
+Peep Push ra mắt hôm nay.
+
+Trò giải đố Sokoban trong đó gà con đẩy trứng vào tổ — khởi đầu với
+300 màn chơi, 4 cơ chế (băng, hang, nút và cửa, sàn nứt) và 5 màn thử
+thách mỗi chương. Mỗi ngày còn mở khóa một câu đố mới.
+
+Chúc bạn chơi vui vẻ!
+</vi>
+<id>
+Peep Push resmi rilis hari ini.
+
+Teka-teki Sokoban di mana anak ayam mendorong telur ke sarangnya — mulai
+dengan 300 level, 4 mekanik (es, liang, tombol dan pintu, lantai retak),
+dan 5 level tantangan tiap bab. Setiap hari ada teka-teki baru yang
+terbuka juga.
+
+Selamat bermain!
+</id>
