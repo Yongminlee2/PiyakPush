@@ -37,8 +37,9 @@ void main() {
     }
   });
 
-  test('언어 선택 화면에 12개 언어 이름이 모두 있다', () {
-    expect(kLangCodes.length, 12);
+  test('언어 선택 화면에 모든 언어 이름이 있다', () {
+    // 12개 언어 + 번체 중국어
+    expect(kLangCodes.length, 13);
     for (final code in kLangCodes) {
       expect(kLangNames[code], isNotNull, reason: code);
       expect(kStrings[code], isNotNull, reason: code);
@@ -113,5 +114,26 @@ void main() {
     // 모르는 코드는 기기 언어로 — 테스트 환경에선 영어
     S.use('xx');
     expect(kLangCodes.contains(S.code), true);
+  });
+
+  test('대만·홍콩 기기는 번체, 중국 본토는 간체', () {
+    // 안드로이드가 표기(Hant)로 줄 때도, 국가(TW/HK/MO)로만 줄 때도 있다.
+    expect(S.codeForLocale('zh', 'Hant', null), 'zh_Hant');
+    expect(S.codeForLocale('zh', null, 'TW'), 'zh_Hant');
+    expect(S.codeForLocale('zh', null, 'HK'), 'zh_Hant');
+    expect(S.codeForLocale('zh', null, 'MO'), 'zh_Hant');
+    expect(S.codeForLocale('zh', 'Hans', 'CN'), 'zh');
+    expect(S.codeForLocale('zh', null, null), 'zh');
+    // 모르는 언어는 null — 부르는 쪽에서 영어로 떨어뜨린다
+    expect(S.codeForLocale('ar', null, null), null);
+    expect(S.codeForLocale('ja', null, 'JP'), 'ja');
+  });
+
+  test('번체와 간체가 실제로 다른 글자다', () {
+    S.use('zh_Hant');
+    final hant = S.settings;
+    S.use('zh');
+    expect(hant, isNot(S.settings), reason: '번체 칸이 간체 그대로면 넣은 의미가 없다');
+    S.use('ko');
   });
 }

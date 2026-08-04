@@ -33,9 +33,24 @@ abstract final class S {
   /// 기기 언어 중 우리가 가진 것 하나. 없으면 영어.
   static String _deviceCode() {
     for (final l in PlatformDispatcher.instance.locales) {
-      if (kStrings.containsKey(l.languageCode)) return l.languageCode;
+      final code = codeForLocale(l.languageCode, l.scriptCode, l.countryCode);
+      if (code != null) return code;
     }
     return fallback;
+  }
+
+  /// 기기 로케일 → 우리 언어 칸. 모르는 언어면 null.
+  ///
+  /// 중국어만 두 칸이다. 대만·홍콩·마카오는 번체를 쓰므로 간체를 보여 주면
+  /// 읽히긴 해도 남의 나라 글처럼 보인다. 안드로이드가 `zh-Hant`로 줄 때도,
+  /// 표기 없이 `zh-TW`로만 줄 때도 있어 둘 다 본다.
+  static String? codeForLocale(String lang, String? script, String? country) {
+    if (lang == 'zh') {
+      final hant = script == 'Hant' ||
+          const {'TW', 'HK', 'MO'}.contains(country?.toUpperCase());
+      return hant ? 'zh_Hant' : 'zh';
+    }
+    return kStrings.containsKey(lang) ? lang : null;
   }
 
   /// 빠진 키는 영어로 메운다 — 번역이 덜 돼도 화면이 비지 않게.
