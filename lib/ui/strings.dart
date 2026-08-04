@@ -10,7 +10,13 @@ import 'dart:ui' show PlatformDispatcher;
 import 'strings_data.dart';
 
 abstract final class S {
-  static String _code = 'ko';
+  /// 기준이 되는 언어. 아래 두 곳에서 쓰인다.
+  ///
+  /// ① 기기 언어가 우리가 가진 12개에 없을 때 (전 세계 어느 나라든 열린다)
+  /// ② 어떤 언어에 문자열이 빠져 있을 때 그 자리를 메울 때
+  static const fallback = 'en';
+
+  static String _code = fallback;
 
   /// 지금 쓰는 언어 코드.
   static String get code => _code;
@@ -29,12 +35,14 @@ abstract final class S {
     for (final l in PlatformDispatcher.instance.locales) {
       if (kStrings.containsKey(l.languageCode)) return l.languageCode;
     }
-    return 'en';
+    return fallback;
   }
 
   /// 빠진 키는 영어로 메운다 — 번역이 덜 돼도 화면이 비지 않게.
+  /// 영어에도 없으면 키 이름이 그대로 나오는데, 그건 넣는 걸 잊었다는 뜻이라
+  /// 화면에서 바로 눈에 띄어야 한다 (테스트가 미리 잡는다).
   static String _(String k) =>
-      kStrings[_code]?[k] ?? kStrings['en']![k] ?? k;
+      kStrings[_code]?[k] ?? kStrings[fallback]![k] ?? k;
 
   static String get appTitle => _('appTitle');
   static String get start => _('start');

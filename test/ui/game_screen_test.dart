@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:piyak_push/models/level.dart';
 import 'package:piyak_push/ui/screens/game_screen.dart';
+import 'package:piyak_push/ui/strings.dart';
 import 'package:piyak_push/ui/widgets/board_view.dart';
 import 'package:piyak_push/ui/widgets/clear_popup.dart';
 import 'package:piyak_push/ui/widgets/joystick.dart';
@@ -35,7 +36,7 @@ void main() {
     await tester.pump();
     await joyMove(tester, const Offset(40, 0));
     expect(find.byType(ClearPopup), findsOneWidget);
-    expect(find.text('클리어!'), findsOneWidget);
+    expect(find.text(S.clear), findsOneWidget);
     expect(gotStars, 3);
     await tester.pump(const Duration(seconds: 2)); // 별 애니메이션 소진
     await cleanup(tester);
@@ -47,10 +48,10 @@ void main() {
     ));
     await tester.pump();
     await joyMove(tester, const Offset(40, 0));
-    expect(find.textContaining('이동 1'), findsOneWidget);
-    await tester.tap(find.byTooltip('되돌리기'));
+    expect(find.textContaining('${S.moves} 1'), findsOneWidget);
+    await tester.tap(find.byTooltip(S.undo));
     await tester.pump(const Duration(milliseconds: 200));
-    expect(find.textContaining('이동 0'), findsOneWidget);
+    expect(find.textContaining('${S.moves} 0'), findsOneWidget);
     await cleanup(tester);
   });
 
@@ -66,12 +67,12 @@ void main() {
     final g = await tester.startGesture(band);
     await g.moveBy(const Offset(40, 0)); // 데드존(18px) 초과 → 오른쪽
     await tester.pump(const Duration(milliseconds: 50));
-    expect(find.textContaining('이동 1'), findsOneWidget);
+    expect(find.textContaining('${S.moves} 1'), findsOneWidget);
     await tester.pump(kMoveAnim); // 홀드 유지 → 두 번째 이동
-    expect(find.textContaining('이동 2'), findsOneWidget);
+    expect(find.textContaining('${S.moves} 2'), findsOneWidget);
     await g.up();
     await tester.pump(const Duration(milliseconds: 400));
-    expect(find.textContaining('이동 2'), findsOneWidget); // 더는 안 움직임
+    expect(find.textContaining('${S.moves} 2'), findsOneWidget); // 더는 안 움직임
     await cleanup(tester);
   });
 
@@ -85,7 +86,7 @@ void main() {
     final g = await tester.startGesture(band);
     await g.moveBy(const Offset(10, 0));
     await tester.pump(const Duration(milliseconds: 300));
-    expect(find.textContaining('이동 0'), findsOneWidget);
+    expect(find.textContaining('${S.moves} 0'), findsOneWidget);
     await g.up();
     await tester.pump(const Duration(milliseconds: 300));
     await cleanup(tester);
@@ -102,7 +103,7 @@ void main() {
     await tester.pump();
     await joyMove(tester, const Offset(40, 0));
     expect(find.text('별 3개만 더 모으면 다음 챕터가 열려요'), findsOneWidget);
-    expect(find.text('다음'), findsNothing); // onNext 없으면 다음 버튼도 없다
+    expect(find.text(S.next), findsNothing); // onNext 없으면 다음 버튼도 없다
     await tester.pump(const Duration(seconds: 2));
     await cleanup(tester);
   });
@@ -116,7 +117,7 @@ void main() {
     ));
     await tester.pump();
     await joyMove(tester, const Offset(40, 0));
-    expect(find.text('다음'), findsOneWidget);
+    expect(find.text(S.next), findsOneWidget);
     await tester.pump(const Duration(seconds: 2));
     await cleanup(tester);
   });
@@ -127,7 +128,7 @@ void main() {
           level: lv(['#####', '#@\$o#', '#####'], optimal: 1, id: 'c1s01')),
     ));
     await tester.pump();
-    expect(find.textContaining('기울여서'), findsOneWidget);
+    expect(find.text(S.tutorial1), findsOneWidget);
     await cleanup(tester);
   });
 }
