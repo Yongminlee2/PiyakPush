@@ -30,32 +30,59 @@ class SoundService {
   /// 파일을 그때 로드하면, 버튼을 누르고 소리가 날 때까지 지연이 생긴다.
   final Map<Sfx, AudioPool> _pools = {};
 
+  /// 지금 다시 만들고 있는 소리 — 한꺼번에 여러 번 만들지 않게.
+  final Set<Sfx> _rebuilding = {};
+
+  /// 되살린 횟수 (테스트에서 확인용).
+  int rebuildCount = 0;
+
   /// 앱 시작 때 한 번 호출 — 효과음 전부를 미리 올려 둔다.
   Future<void> init() async {
     if (playOverride != null) return;
     for (final s in Sfx.values) {
-      // 걸음이 160ms 간격이라 그보다 긴 소리(둥지 230·굴 250·미끄럼 200)는
-      // 2개로는 다음 걸음에 밀려 잘린다. 넉넉히 4개씩 잡는다.
-      _pools[s] = await AudioPool.createFromAsset(
-        path: _assetFor(s),
-        maxPlayers: 4,
-      );
+      await _make(s);
     }
+  }
+
+  Future<void> _make(Sfx s) async {
+    // 걸음이 160ms 간격이라 그보다 긴 소리(둥지 230·굴 250·미끄럼 200)는
+    // 2개로는 다음 걸음에 밀려 잘린다. 넉넉히 4개씩 잡는다.
+    _pools[s] =
+        await AudioPool.createFromAsset(path: _assetFor(s), maxPlayers: 4);
   }
 
   String _assetFor(Sfx s) => 'audio/${s.name}.wav';
 
   Future<void> play(Sfx s) async {
     if (isMuted()) return;
-    if (playOverride != null) {
-      await playOverride!(_assetFor(s));
-      return;
-    }
-    // 소리 하나 못 냈다고 게임이 멈추면 안 된다. 기기에 따라 오디오 세션이
-    // 뺏기거나(통화·다른 앱) 재생이 실패할 수 있다.
     try {
-      await _pools[s]?.start();
-    } catch (_) {}
+      if (playOverride != null) {
+        await playOverride!(_assetFor(s));
+      } else {
+        await _pools[s]?.start();
+      }
+    } catch (_) {
+      // 소리 하나 못 냈다고 게임이 멈추면 안 된다. 다만 **그냥 삼키면
+      // 그 소리는 영영 안 난다** — 풀은 재생이 끝나야 플레이어를 돌려받는데,
+      // 통화·다른 앱에 오디오를 뺏기거나 하면 그 신호를 놓쳐 자리가
+      // 하나씩 줄고, 넷이 다 막히면 그때부터 죽은 채로 남는다.
+      // 연속으로 누를 때 잘 생긴다 — 가장 자주 부르는 길이라서.
+      // 되살려 둔다.
+      await _revive(s);
+    }
+  }
+
+  /// 죽은 소리를 다시 만든다.
+  Future<void> _revive(Sfx s) async {
+    if (playOverride != null || !_rebuilding.add(s)) return;
+    try {
+      await _make(s);
+      rebuildCount++;
+    } catch (_) {
+      // 다시 만드는 것마저 실패하면 그 소리는 포기한다 (게임은 계속된다)
+    } finally {
+      _rebuilding.remove(s);
+    }
   }
 
   /// 한 이동의 이벤트 묶음 → 대표음 1개 + 부가음(붕괴·문).
