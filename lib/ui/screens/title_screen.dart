@@ -80,15 +80,20 @@ class TitleScreen extends StatelessWidget {
                       // 로고를 그림으로 두면 언어를 바꿔도 제목이 안 바뀐다.
                       // 그림 안에 병아리가 또 들어 있어 아래 병아리와 겹치기도
                       // 했다 — 제목은 글자로 그리고 병아리는 하나만 둔다.
-                      Text(
-                        S.appTitle,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 44,
-                          fontWeight: FontWeight.w900,
-                          color: PiyakColors.outline,
-                          letterSpacing: 1,
-                          height: 1.1,
+                      // 제목을 일곱 번 두드리면 개발자 모드 — 설정에
+                      // '모든 챕터 열기'가 나타난다. 배포판에서 아무 스테이지나
+                      // 테스트하려면 필요한데, 스위치를 그냥 두면 누구나 누른다.
+                      _DevTapArea(
+                        child: Text(
+                          S.appTitle,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 44,
+                            fontWeight: FontWeight.w900,
+                            color: PiyakColors.outline,
+                            letterSpacing: 1,
+                            height: 1.1,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 6),
@@ -144,6 +149,46 @@ class TitleScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+/// 일곱 번 두드리면 개발자 모드를 켠다 (안드로이드 빌드번호 방식).
+class _DevTapArea extends StatefulWidget {
+  final Widget child;
+  const _DevTapArea({required this.child});
+
+  @override
+  State<_DevTapArea> createState() => _DevTapAreaState();
+}
+
+class _DevTapAreaState extends State<_DevTapArea> {
+  static const _needed = 7;
+  int _taps = 0;
+  DateTime _last = DateTime.fromMillisecondsSinceEpoch(0);
+
+  void _tap() {
+    final now = DateTime.now();
+    // 한참 뒤에 누른 건 새로 세기 시작한다 — 우연히 쌓이지 않게
+    _taps = now.difference(_last) > const Duration(seconds: 2) ? 1 : _taps + 1;
+    _last = now;
+    if (_taps < _needed) return;
+    _taps = 0;
+
+    final save = context.read<SaveService>();
+    final on = !save.devMode;
+    save.setDevMode(on);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      duration: const Duration(seconds: 2),
+      content: Text(on ? '개발자 모드 켜짐 — 설정에서 모든 챕터를 열 수 있어요'
+          : '개발자 모드 꺼짐'),
+    ));
+  }
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: _tap,
+        child: widget.child,
+      );
 }
 
 /// 눌리는 동안 살짝 줄어드는 반동.

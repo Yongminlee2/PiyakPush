@@ -49,6 +49,19 @@ class SaveService extends ChangeNotifier {
     return sum;
   }
 
+  /// 개발자 모드. 타이틀 제목을 일곱 번 두드리면 켜진다.
+  ///
+  /// 배포판에서도 전 챕터를 열어 아무 스테이지나 테스트할 수 있어야 하는데,
+  /// 그 스위치를 설정에 그냥 두면 누구나 300스테이지를 건너뛴다.
+  /// 우연히는 못 누르고 알면 누를 수 있는 자리에 숨긴다.
+  bool get devMode => _p.getBool('opt.dev') ?? false;
+
+  Future<void> setDevMode(bool v) async {
+    await _p.setBool('opt.dev', v);
+    if (!v) await _p.remove('opt.unlockAll'); // 끄면 해금도 되돌린다
+    notifyListeners();
+  }
+
   /// 확인용 전체 해금 — 켜면 모든 챕터가 열린다 (설정에서 토글).
   bool get unlockAll => _p.getBool('opt.unlockAll') ?? false;
 

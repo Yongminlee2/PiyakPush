@@ -87,7 +87,19 @@ class _GameScreenState extends State<GameScreen> {
   Dir? _bumpDir;
   int _bumpToken = 0;
   Dir? _heldDir;
-  Timer? _glide;
+
+  /// 한 걸음이 그려지는 [kMoveAnim] 동안 살아 있는 타이머.
+  ///
+  /// 이게 없으면 걸음 도중에 들어온 입력이 애니메이션의 목적지만 바꿔치기해서
+  /// **첫 칸이 안 보인 채 두 칸을 한 번에** 미끄러진다(빠르게 두 번 누를 때).
+  /// 걸음이 끝날 때까지 다음 걸음을 미뤄, 누른 만큼 한 칸씩 보이게 한다.
+  ///
+  /// 연속 이동도 이 타이머가 몰고 간다 — 따로 주기 타이머를 두면 둘이
+  /// 같은 간격으로 어긋나 박자가 흔들린다.
+  Timer? _stepCooldown;
+
+  /// 걷는 중에 들어와 미뤄 둔 걸음 (하나만 기억한다).
+  Dir? _queuedDir;
 
   bool get _gliding => _heldDir != null;
 
@@ -95,16 +107,33 @@ class _GameScreenState extends State<GameScreen> {
   void holdDir(Dir d) {
     if (_heldDir == d) return;
     _heldDir = d;
-    _glide?.cancel();
-    _input(d);
-    _glide = Timer.periodic(kMoveAnim, (_) => _input(d));
+    _requestMove(d);
     setState(() {});
   }
 
+  /// 걸음 요청. 직전 걸음이 아직 그려지는 중이면 끝날 때까지 미룬다.
+  void _requestMove(Dir d) {
+    if (_stepCooldown != null) {
+      _queuedDir = d; // 입력을 버리지 않는다 — 반드시 한 칸으로 이어진다
+      return;
+    }
+    _step(d);
+  }
+
+  /// 한 걸음이 끝났다. 미뤄 둔 게 있으면 그걸, 아직 누르고 있으면 이어서.
+  void _afterStep() {
+    _stepCooldown = null;
+    if (!mounted) return;
+    final queued = _queuedDir;
+    _queuedDir = null;
+    final next = queued ?? _heldDir;
+    if (next != null) _step(next);
+  }
+
   /// 손을 뗐거나 데드존으로 돌아왔을 때 — 마지막 칸은 easeOut으로 감속.
+  ///
+  /// 진행 중인 걸음과 미뤄 둔 걸음은 그대로 둔다. 누른 건 이미 누른 것이다.
   void releaseDir() {
-    _glide?.cancel();
-    _glide = null;
     if (_heldDir != null) setState(() => _heldDir = null);
   }
 
@@ -119,7 +148,7 @@ class _GameScreenState extends State<GameScreen> {
   void dispose() {
     _t10?.cancel();
     _t30?.cancel();
-    _glide?.cancel();
+    _stepCooldown?.cancel();
     c.dispose();
     super.dispose();
   }
@@ -139,7 +168,8 @@ class _GameScreenState extends State<GameScreen> {
     _t30 = Timer(const Duration(seconds: 30), c.markIdle30s);
   }
 
-  void _input(Dir d) {
+  void _step(Dir d) {
+    _stepCooldown = Timer(kMoveAnim, _afterStep);
     _resetIdleTimers();
     _hintMoves = null;
     if (c.move(d)) {
