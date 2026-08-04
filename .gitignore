@@ -46,3 +46,8 @@ app.*.map.json
 
 # codex 작업용 임시 폴더
 tmp/
+
+# 서명 키 — 저장소에 올라가면 누구나 이 앱 이름으로 앱을 낼 수 있다
+*.jks
+*.keystore
+/android/key.properties
