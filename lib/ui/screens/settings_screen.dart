@@ -66,9 +66,10 @@ class SettingsScreen extends StatelessWidget {
               ],
             ),
           ),
-          // 모든 챕터를 여는 스위치는 개발 중 확인용이다. 배포판에 남으면
-          // 누구나 진행을 건너뛸 수 있어 챕터 구조가 무의미해진다.
-          if (kDebugMode)
+          // 모든 챕터를 여는 스위치는 확인용이다. 배포판에 그냥 두면 누구나
+          // 진행을 건너뛰므로, 개발자 모드를 켠 사람에게만 보인다
+          // (타이틀 제목 일곱 번 두드리기).
+          if (kDebugMode || save.devMode)
             SwitchListTile(
               title: Text(S.unlockAll, style: label),
               value: save.unlockAll,
