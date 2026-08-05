@@ -110,7 +110,7 @@ class _BoardViewState extends State<BoardView> {
                     image: TileArt.of(b.tiles[i])!, fit: BoxFit.contain),
               ),
           for (var i = 0; i < _eggOrder.length; i++)
-            AnimatedPositioned(
+            SmoothPositioned(
               key: ValueKey('egg$i'),
               duration: widget.eggTeleported ? Duration.zero : kMoveAnim,
               curve: widget.gliding ? Curves.linear : Curves.easeOut,
@@ -124,7 +124,7 @@ class _BoardViewState extends State<BoardView> {
                 onNest: b.tileAt(_eggOrder[i]) == Tile.nest,
               ),
             ),
-          AnimatedPositioned(
+          SmoothPositioned(
             key: const ValueKey('chick'),
             duration: widget.chickTeleported ? Duration.zero : kMoveAnim,
             curve: widget.gliding ? Curves.linear : Curves.easeOut,
@@ -198,6 +198,106 @@ class _BoardViewState extends State<BoardView> {
   }
 }
 
+/// [AnimatedPositioned]와 같은 일을 하되, **폰의 "애니메이션 끄기" 설정에
+/// 끌려가지 않는다.**
+///
+/// 안드로이드의 애니메이터 배율을 끄거나(개발자 옵션) 절전 모드가 켜지면
+/// OS가 앱에 "애니메이션을 꺼 달라"고 알린다. 그러면 Flutter는 기본값인
+/// [AnimationBehavior.normal]에 따라 **모든 애니메이션을 5% 길이로 줄인다.**
+/// 160ms짜리 걸음이 8ms — 한 프레임 — 이 되어 병아리가 칸에서 칸으로
+/// 순간이동하듯 딱딱 끊긴다. 기기마다 이 설정이 달라, 같은 앱인데
+/// 어떤 폰은 부드럽고 어떤 폰은 끊기는 일이 실제로 있었다.
+///
+/// 병아리가 걸어가는 모습은 장식이 아니라 "방금 무슨 일이 일어났는지"를
+/// 보여 주는 게임의 핵심 피드백이다. 한 칸을 걸었는지 두 칸을 갔는지,
+/// 알을 밀었는지가 그 움직임으로만 보인다. 그래서
+/// [AnimationBehavior.preserve]로 OS 설정과 무관하게 지킨다.
+/// 일부러 즉시 옮겨야 할 때(굴 순간이동)는 [duration]을 0으로 준다.
+class SmoothPositioned extends StatefulWidget {
+  final double left;
+  final double top;
+  final double width;
+  final double height;
+  final Duration duration;
+  final Curve curve;
+  final Widget child;
+  const SmoothPositioned({
+    required this.left,
+    required this.top,
+    required this.width,
+    required this.height,
+    required this.duration,
+    required this.curve,
+    required this.child,
+    super.key,
+  });
+
+  @override
+  State<SmoothPositioned> createState() => _SmoothPositionedState();
+}
+
+class _SmoothPositionedState extends State<SmoothPositioned>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(
+    vsync: this,
+    duration: widget.duration,
+    animationBehavior: AnimationBehavior.preserve,
+  );
+
+  late Offset _from = Offset(widget.left, widget.top);
+  late Offset _to = _from;
+
+  @override
+  void initState() {
+    super.initState();
+    _c.value = 1.0; // 시작할 땐 이미 제자리에 있다
+  }
+
+  @override
+  void didUpdateWidget(SmoothPositioned old) {
+    super.didUpdateWidget(old);
+    final target = Offset(widget.left, widget.top);
+    if (target == _to) return;
+    // 걷는 도중에 목적지가 바뀌면 지금 있는 자리에서 이어 간다 —
+    // 시작점으로 되돌아가면 튀어 보인다.
+    _from = _at(_c.value);
+    _to = target;
+    if (widget.duration <= Duration.zero) {
+      _c.value = 1.0; // 순간이동
+    } else {
+      _c.duration = widget.duration;
+      _c.forward(from: 0);
+    }
+  }
+
+  Offset _at(double t) =>
+      Offset.lerp(_from, _to, widget.curve.transform(t.clamp(0.0, 1.0)))!;
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _c,
+      child: widget.child,
+      builder: (context, child) {
+        final p = _at(_c.value);
+        return Positioned(
+          left: p.dx,
+          top: p.dy,
+          width: widget.width,
+          height: widget.height,
+          child: child!,
+        );
+      },
+    );
+  }
+}
+
 /// 살아있는 병아리: 평소엔 숨쉬기 보브, 이동할 때마다 총총 뛰는 홉 +
 /// 이동 방향으로 살짝 기울어진다.
 class ChickSprite extends StatefulWidget {
@@ -223,21 +323,28 @@ class ChickSprite extends StatefulWidget {
 
 class _ChickSpriteState extends State<ChickSprite>
     with TickerProviderStateMixin {
+  // 넷 다 preserve — 폰의 "애니메이션 끄기"를 켜 두면 기본값(normal)은
+  // 길이를 5%로 줄여서, 총총 뛰는 홉도 착지도 한 프레임 만에 끝나 버린다.
+  // 병아리가 걷는 동작 자체가 사라지는 셈이라 [SmoothPositioned]와 같이 지킨다.
   late final AnimationController _bob = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 900),
+    animationBehavior: AnimationBehavior.preserve,
   )..repeat(reverse: true);
   late final AnimationController _hop = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 160),
+    animationBehavior: AnimationBehavior.preserve,
   );
   late final AnimationController _bump = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 140),
+    animationBehavior: AnimationBehavior.preserve,
   );
   late final AnimationController _land = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 80),
+    animationBehavior: AnimationBehavior.preserve,
   );
   int _tiltSign = 0;
   int _stepParity = 1;
