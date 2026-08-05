@@ -313,6 +313,14 @@ class _GameScreenState extends State<GameScreen> {
                                             bumpDir: _bumpDir,
                                             bumpToken: _bumpToken,
                                             gliding: _gliding,
+                                            chickTeleported: c.lastEvents.any(
+                                              (e) => e.type ==
+                                                  GameEventType.chickTeleported,
+                                            ),
+                                            eggTeleported: c.lastEvents.any(
+                                              (e) => e.type ==
+                                                  GameEventType.eggTeleported,
+                                            ),
                                           ),
                                         ),
                                       );

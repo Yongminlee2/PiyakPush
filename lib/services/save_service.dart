@@ -113,8 +113,8 @@ class SaveService extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// 조작 방식 — true면 십자 방향키, false면 조이스틱(기본).
-  bool get dpadOn => _p.getBool('opt.dpad') ?? false;
+  /// 조작 방식 — true면 십자 방향키(기본), false면 조이스틱.
+  bool get dpadOn => _p.getBool('opt.dpad') ?? true;
 
   Future<void> setSoundOn(bool v) async {
     await _p.setBool('opt.sound', v);
