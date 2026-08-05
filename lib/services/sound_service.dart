@@ -18,20 +18,52 @@ enum Sfx {
   teleport,
 }
 
+/// 소리 하나가 쓰는 플레이어 묶음. 테스트에서 가짜로 갈아 끼울 수 있게
+/// 최소한만 드러낸다.
+abstract class SfxPool {
+  Future<void> start();
+  Future<void> dispose();
+}
+
+/// 실제 [AudioPool]을 감싼 것.
+class _AudioSfxPool implements SfxPool {
+  final AudioPool _pool;
+  _AudioSfxPool(this._pool);
+
+  @override
+  Future<void> start() => _pool.start();
+
+  @override
+  Future<void> dispose() => _pool.dispose();
+}
+
 class SoundService {
   final bool Function() isMuted;
 
   /// 테스트 주입용. null이면 실제 AudioPlayer 재생.
   final Future<void> Function(String asset)? playOverride;
 
-  SoundService({required this.isMuted, this.playOverride});
+  /// 테스트 주입용. null이면 실제 [AudioPool]을 만든다.
+  final Future<SfxPool> Function(String asset)? poolFactory;
+
+  SoundService({required this.isMuted, this.playOverride, this.poolFactory});
 
   /// 미리 로드해 둔 플레이어 풀. 소리 낼 때마다 새 플레이어를 만들고
   /// 파일을 그때 로드하면, 버튼을 누르고 소리가 날 때까지 지연이 생긴다.
-  final Map<Sfx, AudioPool> _pools = {};
+  final Map<Sfx, SfxPool> _pools = {};
 
   /// 지금 다시 만들고 있는 소리 — 한꺼번에 여러 번 만들지 않게.
   final Set<Sfx> _rebuilding = {};
+
+  /// 소리별로 되살린 횟수. 한없이 되살리면 안 되기 때문에 센다.
+  final Map<Sfx, int> _reviveCount = {};
+
+  /// 한 소리를 되살려 보는 최대 횟수.
+  ///
+  /// 오디오를 못 쓰는 상태가 계속되면 되살리기도 계속 실패한다. 그때
+  /// 무한정 다시 만들면 **네이티브 플레이어만 쌓여 앱이 통째로 죽는다.**
+  /// 몇 번 해 보고 안 되면 그 소리는 조용히 포기한다 — 게임은 계속된다.
+  static const kMaxRevives = 3;
 
   /// 되살린 횟수 (테스트에서 확인용).
   int rebuildCount = 0;
@@ -44,11 +76,27 @@ class SoundService {
     }
   }
 
+  Future<SfxPool> _createPool(String asset) async {
+    final custom = poolFactory;
+    if (custom != null) return custom(asset);
+    // maxPlayers는 "미리 만들어 두는 수"가 아니라 **재사용하려고 남겨 두는
+    // 상한**이다. 재생 요청이 몰리면 풀이 알아서 더 만들고, 다 끝나면
+    // 넷까지만 남기고 나머지는 반납한다. 걸음이 160ms 간격이라 그보다 긴
+    // 소리(둥지 230·굴 250·미끄럼 200)가 겹칠 수 있어 넷까지 남긴다.
+    return _AudioSfxPool(
+      await AudioPool.createFromAsset(path: asset, maxPlayers: 4),
+    );
+  }
+
   Future<void> _make(Sfx s) async {
-    // 걸음이 160ms 간격이라 그보다 긴 소리(둥지 230·굴 250·미끄럼 200)는
-    // 2개로는 다음 걸음에 밀려 잘린다. 넉넉히 4개씩 잡는다.
-    _pools[s] =
-        await AudioPool.createFromAsset(path: _assetFor(s), maxPlayers: 4);
+    // 갈아 끼우기 전에 **쓰던 풀을 반드시 반납한다.** 이걸 빼먹으면 되살릴
+    // 때마다 네이티브 오디오 플레이어가 회수되지 않고 그대로 남는다.
+    // 방향키로 계속 걸으면 걸음마다 되살리기가 돌 수 있어서, 몇십 초 만에
+    // 안드로이드의 동시 재생 한도를 넘기고 앱이 예고 없이 꺼진다.
+    // (Dart 예외가 아니라 네이티브 쪽에서 죽어서 아무 메시지도 안 남는다.)
+    final old = _pools.remove(s);
+    await old?.dispose();
+    _pools[s] = await _createPool(_assetFor(s));
   }
 
   String _assetFor(Sfx s) => 'audio/${s.name}.wav';
@@ -72,9 +120,12 @@ class SoundService {
     }
   }
 
-  /// 죽은 소리를 다시 만든다.
+  /// 죽은 소리를 다시 만든다. [kMaxRevives]번까지만.
   Future<void> _revive(Sfx s) async {
-    if (playOverride != null || !_rebuilding.add(s)) return;
+    if (playOverride != null) return;
+    if ((_reviveCount[s] ?? 0) >= kMaxRevives) return; // 포기한 소리
+    if (!_rebuilding.add(s)) return;
+    _reviveCount[s] = (_reviveCount[s] ?? 0) + 1;
     try {
       await _make(s);
       rebuildCount++;
