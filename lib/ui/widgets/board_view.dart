@@ -36,6 +36,11 @@ class BoardView extends StatefulWidget {
 
   /// 홀드 연속 이동 중 — 곡선을 등속으로 바꿔 칸 경계에서 멈칫하지 않게 한다.
   final bool gliding;
+
+  /// 이번 이동이 굴 순간이동이었는가 (병아리/알 따로). true면 그 칸은
+  /// 미끄러져 가지 않고 즉시 나타난다 — 굴은 순간이동이지 미끄럼이 아니다.
+  final bool chickTeleported;
+  final bool eggTeleported;
   const BoardView({
     required this.board,
     required this.cellSize,
@@ -44,6 +49,8 @@ class BoardView extends StatefulWidget {
     this.bumpDir,
     this.bumpToken = 0,
     this.gliding = false,
+    this.chickTeleported = false,
+    this.eggTeleported = false,
     super.key,
   });
 
@@ -105,7 +112,7 @@ class _BoardViewState extends State<BoardView> {
           for (var i = 0; i < _eggOrder.length; i++)
             AnimatedPositioned(
               key: ValueKey('egg$i'),
-              duration: kMoveAnim,
+              duration: widget.eggTeleported ? Duration.zero : kMoveAnim,
               curve: widget.gliding ? Curves.linear : Curves.easeOut,
               left: _eggOrder[i].x * cell,
               top: _eggOrder[i].y * cell,
@@ -119,7 +126,7 @@ class _BoardViewState extends State<BoardView> {
             ),
           AnimatedPositioned(
             key: const ValueKey('chick'),
-            duration: kMoveAnim,
+            duration: widget.chickTeleported ? Duration.zero : kMoveAnim,
             curve: widget.gliding ? Curves.linear : Curves.easeOut,
             left: b.chick.x * cell,
             top: b.chick.y * cell - cell * 0.12, // 살짝 위로 — 입체감

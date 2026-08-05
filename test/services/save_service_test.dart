@@ -62,17 +62,17 @@ void main() {
     expect(s.totalStars, 8);
   });
 
-  test('설정 토글과 초기화 (조작은 조이스틱이 기본)', () async {
+  test('설정 토글과 초기화 (조작은 방향키가 기본)', () async {
     final s = await SaveService.load();
     expect(s.soundOn, true);
-    expect(s.dpadOn, false); // 기본 조이스틱, 설정에서 방향키 선택 가능
+    expect(s.dpadOn, true); // 기본 방향키, 설정에서 조이스틱 선택 가능
     await s.setSoundOn(false);
-    await s.setDpadOn(true);
+    await s.setDpadOn(false);
     expect(s.soundOn, false);
-    expect(s.dpadOn, true);
+    expect(s.dpadOn, false);
     await s.resetAll();
     expect(s.soundOn, true);
-    expect(s.dpadOn, false);
+    expect(s.dpadOn, true);
     expect(s.starsOf('c1s01'), 0);
   });
 }
