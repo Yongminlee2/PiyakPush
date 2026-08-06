@@ -79,7 +79,7 @@ class DailyScreen extends StatelessWidget {
         children: [
           const ActBackground(wide: true),
           ListView(
-            padding: const EdgeInsets.all(20),
+            padding: scrollPadding(context, all: 20),
             children: [
               Card(
                 color: Colors.white,

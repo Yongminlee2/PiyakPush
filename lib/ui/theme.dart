@@ -56,6 +56,24 @@ const double kOutlineWidth = 2.5;
 /// 그래서 완전히 커버되는 언어만 Jua를 쓰고 나머지는 기기 폰트로 그린다.
 const kJuaLanguages = {'ko', 'en', 'id'};
 
+/// 스크롤 목록 여백 — 아래쪽에 **시스템 내비게이션 바 몫을 더한다.**
+///
+/// targetSdk 35(안드로이드 15)부터 앱은 시스템 바 뒤까지 그리는 게 기본이다
+/// (edge-to-edge 강제). 예전에는 OS가 아래를 비워 줬지만 이제는 앱이 직접
+/// 피해야 한다. 안 피하면 **목록 마지막 항목이 내비게이션 바에 덮여**
+/// 끝까지 내려도 다 안 보이고 누르기도 어렵다.
+///
+/// 배경 그림은 바 뒤까지 이어져 보이는 편이 예쁘다. 그래서 SafeArea로
+/// 통째로 잘라내지 않고 **스크롤 여백만** 늘려서, 끝까지 내리면 마지막
+/// 항목이 바 위로 올라오게 한다.
+EdgeInsets scrollPadding(BuildContext context, {double all = 16}) =>
+    EdgeInsets.fromLTRB(
+      all,
+      all,
+      all,
+      all + MediaQuery.paddingOf(context).bottom,
+    );
+
 ThemeData piyakTheme({String lang = 'ko'}) => ThemeData(
       useMaterial3: true,
       scaffoldBackgroundColor: PiyakColors.creamBg,

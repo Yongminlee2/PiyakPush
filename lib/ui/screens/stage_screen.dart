@@ -113,7 +113,7 @@ class StageScreen extends StatelessWidget {
               }
               final levels = snap.data!;
               return GridView.builder(
-                padding: const EdgeInsets.all(20),
+                padding: scrollPadding(context, all: 20),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   mainAxisSpacing: 14,
