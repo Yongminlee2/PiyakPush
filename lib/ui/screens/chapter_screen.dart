@@ -48,7 +48,7 @@ class ChapterScreen extends StatelessWidget {
         children: [
           const ActBackground(wide: true),
           ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: scrollPadding(context, all: 16),
         itemCount: kChapterCount + S.actNames.length,
         itemBuilder: (context, row) {
           // 5챕터마다 막 헤더가 하나씩 앞에 붙는다 — 0·6·12·18번 행이 헤더다.

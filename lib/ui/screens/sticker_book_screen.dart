@@ -23,7 +23,7 @@ class StickerBookScreen extends StatelessWidget {
         backgroundColor: PiyakColors.creamBg,
       ),
       body: GridView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: scrollPadding(context, all: 16),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
           mainAxisSpacing: 12,
