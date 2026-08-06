@@ -1,123 +1,130 @@
 <ko-KR>
-삐약푸쉬 첫 출시입니다.
+버그를 고쳤습니다.
 
-병아리가 알을 밀어 둥지에 넣는 소코반 퍼즐, 300스테이지로 시작합니다.
-얼음·굴·단추와 문·금 간 바닥, 4가지 기믹과 챕터마다 도전 5판이 있습니다.
-매일 새 퍼즐도 함께 열립니다.
+· 방향키로 계속 걷다가 앱이 갑자기 꺼지던 문제
+· 폰 설정에 따라 병아리가 딱딱 끊겨 보이던 문제
+· 굴을 지날 때 순간이동이 아니라 미끄러져 보이던 문제
+· 목록 마지막 항목이 화면 아래 버튼에 가리던 문제
 
-즐겁게 플레이해 주세요!
+조작은 이제 방향키가 기본입니다(설정에서 조이스틱으로 바꿀 수 있어요).
 </ko-KR>
 <en-US>
-Peep Push launches today.
+Bug fixes.
 
-A Sokoban puzzle where a chick pushes eggs into their nests — 300 levels
-to start, with 4 mechanics (ice, burrows, buttons and doors, cracked floor)
-and 5 challenge stages per chapter. A new daily puzzle unlocks every day.
+· Fixed the app closing unexpectedly while walking with the D-pad
+· Fixed choppy chick movement on some device settings
+· Burrows now teleport instantly instead of sliding across the board
+· The last item in a list is no longer hidden behind the navigation bar
 
-Thanks for playing!
+The D-pad is now the default; you can switch to the joystick in settings.
 </en-US>
 <ja-JP>
-ピヨプッシュ、本日リリースです。
+不具合を修正しました。
 
-ヒヨコがタマゴを押して巣に入れる倉庫番パズル。300ステージから始まり、
-氷・穴・ボタンとドア・ひび割れた床の4種の仕掛けと、
-チャプターごとにチャレンジ5面があります。毎日新しいパズルも登場します。
+・方向キーで歩き続けるとアプリが突然終了する問題
+・端末の設定によってヒヨコがカクついて見える問題
+・穴を通るとき瞬間移動ではなく滑って見える問題
+・一覧の最後の項目が画面下のバーに隠れる問題
 
-ぜひ遊んでみてください!
+操作は方向キーが既定になりました(設定でスティックに変更できます)。
 </ja-JP>
 <zh-CN>
-Peep Push 正式上线。
+修复了一些问题。
 
-小鸡把蛋推进窝里的推箱子谜题,首发300个关卡。
-冰、洞穴、按钮与门、裂开的地板共4种机关,每章还有5个挑战关。
-每天还会解锁新的每日谜题。
+· 使用方向键持续移动时应用突然关闭
+· 在某些设备设置下小鸡移动卡顿
+· 通过洞穴时不是瞬间移动而是滑行
+· 列表最后一项被屏幕底部导航栏遮挡
 
-祝你玩得开心!
+现在默认使用方向键(可在设置中切换为摇杆)。
 </zh-CN>
 <zh-TW>
-Peep Push 正式上線。
+修復了一些問題。
 
-小雞把蛋推進窩裡的推箱子謎題,首發300個關卡。
-冰、洞穴、按鈕與門、裂開的地板共4種機關,每章還有5個挑戰關。
-每天還會解鎖新的每日謎題。
+· 使用方向鍵持續移動時應用程式突然關閉
+· 在某些裝置設定下小雞移動卡頓
+· 通過洞穴時不是瞬間移動而是滑行
+· 清單最後一項被螢幕底部導覽列遮擋
 
-祝你玩得開心!
+現在預設使用方向鍵(可在設定中切換為搖桿)。
 </zh-TW>
 <es-ES>
-Peep Push ya está disponible.
+Corrección de errores.
 
-Un puzle Sokoban en el que un pollito empuja huevos hasta sus nidos —
-300 niveles para empezar, con 4 mecánicas (hielo, madrigueras, botones y
-puertas, suelo agrietado) y 5 niveles de reto por capítulo. Cada día se
-desbloquea un puzle nuevo.
+· La aplicación se cerraba de repente al caminar con la cruceta
+· El pollito se movía a saltos según la configuración del dispositivo
+· Las madrigueras ahora teletransportan al instante en vez de deslizar
+· El último elemento de una lista ya no queda oculto tras la barra inferior
 
-¡Que lo disfrutes!
+La cruceta es ahora la opción predeterminada (puedes cambiar al joystick en ajustes).
 </es-ES>
 <fr-FR>
-Peep Push est disponible dès aujourd'hui.
+Corrections de bugs.
 
-Un puzzle Sokoban où un poussin pousse des œufs jusqu'à leurs nids —
-300 niveaux pour commencer, avec 4 mécaniques (glace, terriers, boutons
-et portes, sol fissuré) et 5 niveaux défi par chapitre. Un nouveau puzzle
-se débloque chaque jour.
+· L'application se fermait brusquement en marchant avec la croix directionnelle
+· Le poussin se déplaçait par à-coups selon les réglages de l'appareil
+· Les terriers téléportent désormais instantanément au lieu de glisser
+· Le dernier élément d'une liste n'est plus masqué par la barre de navigation
 
-Bon jeu !
+La croix directionnelle est désormais l'option par défaut (joystick disponible dans les réglages).
 </fr-FR>
 <de-DE>
-Peep Push startet heute.
+Fehlerbehebungen.
 
-Ein Sokoban-Puzzle, in dem ein Küken Eier in ihre Nester schiebt —
-300 Level zum Start, mit 4 Spielelementen (Eis, Baue, Knöpfe und Türen,
-rissiger Boden) und 5 Herausforderungs-Level pro Kapitel. Jeden Tag
-schaltet sich ein neues Rätsel frei.
+· Die App wurde beim Laufen mit dem Steuerkreuz plötzlich beendet
+· Das Küken bewegte sich je nach Geräteeinstellung ruckelig
+· Baue versetzen jetzt sofort, statt über das Brett zu gleiten
+· Der letzte Listeneintrag wird nicht mehr von der Navigationsleiste verdeckt
 
-Viel Spaß!
+Das Steuerkreuz ist jetzt Standard (Joystick in den Einstellungen wählbar).
 </de-DE>
 <pt-BR>
-Peep Push chega hoje.
+Correções de erros.
 
-Um quebra-cabeça Sokoban em que um pintinho empurra ovos até seus ninhos —
-300 fases para começar, com 4 mecânicas (gelo, tocas, botões e portas,
-chão rachado) e 5 fases de desafio por capítulo. Todo dia um novo
-quebra-cabeça é desbloqueado.
+· O aplicativo fechava de repente ao andar com o direcional
+· O pintinho se movia aos trancos em algumas configurações do aparelho
+· As tocas agora teletransportam na hora, em vez de deslizar
+· O último item da lista não fica mais escondido atrás da barra inferior
 
-Bom jogo!
+O direcional agora é o padrão (dá para mudar para o joystick nos ajustes).
 </pt-BR>
 <ru-RU>
-Peep Push уже вышла.
+Исправление ошибок.
 
-Головоломка сокобан, где цыплёнок толкает яйца в гнёзда — 300 уровней
-для начала, 4 механики (лёд, норы, кнопки и двери, треснувший пол)
-и 5 уровней-испытаний в каждой главе. Каждый день открывается новая
-головоломка.
+· Приложение внезапно закрывалось при ходьбе с крестовиной
+· Цыплёнок двигался рывками при некоторых настройках устройства
+· Норы теперь телепортируют мгновенно, а не скользят по полю
+· Последний элемент списка больше не прячется за панелью навигации
 
-Приятной игры!
+Крестовина теперь используется по умолчанию (джойстик можно выбрать в настройках).
 </ru-RU>
 <th>
-Peep Push เปิดตัวแล้ววันนี้
+แก้ไขข้อผิดพลาด
 
-เกมปริศนาโซโคบันที่ลูกเจี๊ยบดันไข่เข้ารัง เริ่มต้นด้วย 300 ด่าน
-พร้อมกลไก 4 แบบ (น้ำแข็ง โพรง ปุ่มกับประตู พื้นแตกร้าว)
-และด่านท้าทาย 5 ด่านในทุกบท ทุกวันจะมีปริศนาใหม่ปลดล็อกด้วย
+· แอปปิดเองกะทันหันขณะเดินด้วยปุ่มทิศทาง
+· ลูกเจี๊ยบเคลื่อนไหวกระตุกในบางการตั้งค่าเครื่อง
+· โพรงวาร์ปทันทีแล้ว ไม่ไถลข้ามกระดานอีกต่อไป
+· รายการสุดท้ายในลิสต์ไม่ถูกแถบนำทางด้านล่างบังอีกต่อไป
 
-ขอให้สนุกกับการเล่นนะครับ/คะ!
+ตอนนี้ปุ่มทิศทางเป็นค่าเริ่มต้น (เปลี่ยนเป็นจอยสติ๊กได้ในตั้งค่า)
 </th>
 <vi>
-Peep Push ra mắt hôm nay.
+Sửa lỗi.
 
-Trò giải đố Sokoban trong đó gà con đẩy trứng vào tổ — khởi đầu với
-300 màn chơi, 4 cơ chế (băng, hang, nút và cửa, sàn nứt) và 5 màn thử
-thách mỗi chương. Mỗi ngày còn mở khóa một câu đố mới.
+· Ứng dụng đột ngột đóng khi đi liên tục bằng phím định hướng
+· Gà con di chuyển giật cục ở một số thiết lập máy
+· Hang giờ dịch chuyển tức thì thay vì trượt ngang bàn cờ
+· Mục cuối trong danh sách không còn bị thanh điều hướng che
 
-Chúc bạn chơi vui vẻ!
+Phím định hướng giờ là mặc định (có thể đổi sang cần điều khiển trong cài đặt).
 </vi>
 <id>
-Peep Push resmi rilis hari ini.
+Perbaikan bug.
 
-Teka-teki Sokoban di mana anak ayam mendorong telur ke sarangnya — mulai
-dengan 300 level, 4 mekanik (es, liang, tombol dan pintu, lantai retak),
-dan 5 level tantangan tiap bab. Setiap hari ada teka-teki baru yang
-terbuka juga.
+· Aplikasi tiba-tiba tertutup saat berjalan dengan tombol arah
+· Anak ayam bergerak tersendat pada pengaturan perangkat tertentu
+· Liang kini memindahkan seketika, bukan meluncur melintasi papan
+· Item terakhir dalam daftar tidak lagi tertutup bilah navigasi
 
-Selamat bermain!
+Tombol arah kini menjadi bawaan (bisa diganti ke joystick di pengaturan).
 </id>
