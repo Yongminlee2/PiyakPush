@@ -166,11 +166,94 @@ lib/
               level_generator(레벨 생성) · tile_art(그림/코드 타일 전환)
   ui/         screens · widgets · theme · strings · nav
 tool/         validate_levels(전수 검증) · gen_chapters(레벨 생성)
-              gen_sfx(효과음 합성) · normalize_tiles · fill_tiles · transparent_tiles
-assets/       levels(200스테이지 JSON) · images · audio · fonts
+              verify_hard(도전판 재검증) · gen_sfx(효과음 합성)
+              shoot_all_langs(13개 언어 스크린샷) · prep_screenshots
+              apply_icon · make_feature_graphic · check_font_coverage
+assets/       levels(300스테이지 + 데일리 JSON) · images · audio · fonts
+store/        스토어에 넣을 글과 그림 (등록정보 13개국어 · 출시노트 · 업로드/)
+test/         218개 — engine · services · ui · levels
 ```
 
 설계 문서와 구현 계획은 `docs/superpowers/` 아래에 버전별로 남겨두었다.
+
+---
+
+## 이어서 작업하는 사람에게 (Codex 등)
+
+이 앱은 **플레이 스토어 비공개 테스트 중**이다. 이미 남의 폰에 깔려 있으니
+"내 화면에서 잘 보이면 됨"으로 끝내면 안 된다. 아래는 실제로 밟아서
+알게 된 것들이라, 모르고 건드리면 같은 데를 다시 밟는다.
+
+### 손대기 전에 반드시 알아야 하는 것
+
+**1. 빌드 전에 환경변수부터.** 이 기계는 사용자명이 한글이라 경로를
+ASCII로 강제하지 않으면 `flutter test`가 "Connection closed before test
+suite loaded"로 죽는다. 행(hang)처럼 보이지만 원인은 이것이다.
+아래 [빌드](#빌드) 절의 네 줄을 매 셸 세션마다 먼저 실행한다.
+
+**2. `lib/engine/`에 Flutter를 import하지 않는다.** 순수 Dart라서
+솔버·검증 도구가 `dart run`으로 돌아간다. 여기 Flutter가 들어오면
+`tool/*.dart`가 전부 못 돈다.
+
+**3. 레벨 JSON을 손으로 고쳤으면 반드시 재검증한다.**
+`optimal`(최소 수)은 솔버가 기록한 값이고 별 3개 판정의 기준이다.
+판을 고치고 이 값을 안 고치면 **깰 수 없는 판이나 못 받는 별**이 생긴다.
+```powershell
+dart run tool/validate_levels.dart   # 전수 검증 + optimal 재기록
+```
+
+**4. 화면에 글자를 추가하면 13개 언어를 다 채운다.**
+`lib/ui/strings_data.dart`의 13개 맵 전부에 키를 넣어야 한다.
+하나라도 빠지면 `i18n_completeness_test.dart`가 잡고, 한국어를 그대로
+두면 `no_korean_leak_test.dart`가 잡는다. **기본 언어는 영어다.**
+
+**5. 이동 연출은 `SmoothPositioned`를 쓴다. `AnimatedPositioned`로 되돌리지 말 것.**
+폰의 "애니메이션 끄기"(절전 모드 포함)가 켜지면 Flutter 기본값은
+애니메이션 길이를 **5%로 줄여** 병아리가 칸에서 칸으로 순간이동한다.
+`AnimationBehavior.preserve`로 막아 뒀다 (`lib/ui/widgets/board_view.dart`).
+
+**6. 스크롤 목록에는 `scrollPadding(context)`을 쓴다.**
+targetSdk 36이라 앱이 시스템 바 뒤까지 그린다(edge-to-edge 강제).
+그냥 `EdgeInsets.all(16)`을 주면 **마지막 항목이 내비게이션 바에 가린다.**
+헬퍼는 `lib/ui/theme.dart`에 있다.
+
+**7. 소리 풀을 새로 만들면 쓰던 것을 반드시 `dispose`한다.**
+안 하면 네이티브 오디오 플레이어가 쌓여 **앱이 통째로 죽는다**
+(Dart 예외가 아니라 아무 메시지 없이 꺼진다). `SoundService._make` 참고.
+
+**8. 서명 키는 절대 건드리지 않는다.**
+`android/upload.jks`와 `android/keystore.properties`는 `.gitignore`에 있다.
+**왁뿌볼·끝말잇기와 같은 키**라, 새로 만들거나 잃어버리면 세 앱 전부
+같은 패키지명으로 업데이트를 못 올린다. 백업은 `C:\workAndroid\_서명키_백업\`.
+
+**9. 스토어 글에 광고·인앱결제·무료 이야기를 넣지 않는다.**
+나중에 붙일 계획이라 지금 "없음"이라고 쓰면 그때 거짓말이 된다.
+자세한 이유와, 실제로 붙일 때 같이 고쳐야 할 신고 항목은
+`store/플레이스토어-작성내용.md` 9번에 있다.
+
+### 마음껏 고쳐도 되는 것 / 조심할 것
+
+| | |
+|---|---|
+| 자유롭게 | UI 다듬기 · 그림 교체 · 번역 문구 · 문서 · 새 테스트 |
+| 규칙 지키며 | 엔진(테스트가 잡는다) · 레벨 JSON(재검증) · 문자열(13개 언어) |
+| 건드리지 말 것 | 서명 키 · 패키지명 `com.peep.puzzle` · `versionCode` 되돌리기 |
+
+### 끝내기 전에
+
+```powershell
+flutter analyze     # 경고 0 이어야 한다
+flutter test        # 218개 전부 통과
+```
+
+그리고 **고친 부분을 잠깐 되돌려 테스트가 실제로 실패하는지 본다.**
+이 프로젝트에서 통과하는 줄 알았던 검사가 사실은 찾는 대상이 없어
+아무것도 검사하지 않고 통과한 적이 있다. 통과하는 테스트는 통과할 뿐,
+버그를 잡는다는 증거가 아니다.
+
+**버전을 올릴 때만** AAB를 만든다. `pubspec.yaml`의 `versionCode`(+뒤 숫자)는
+올릴 때마다 반드시 커져야 한다 — 같으면 콘솔이 거부한다.
+평소 수정은 APK로만 확인한다.
 
 ---
 
