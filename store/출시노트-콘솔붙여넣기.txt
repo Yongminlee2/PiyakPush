@@ -1,130 +1,156 @@
 <ko-KR>
 버그를 고쳤습니다.
 
-· 방향키로 계속 걷다가 앱이 갑자기 꺼지던 문제
-· 폰 설정에 따라 병아리가 딱딱 끊겨 보이던 문제
-· 굴을 지날 때 순간이동이 아니라 미끄러져 보이던 문제
-· 목록 마지막 항목이 화면 아래 버튼에 가리던 문제
+· 다시 하기를 누른 뒤에도 병아리가 계속 걸어서 앱이 꺼지던 문제
+· 벽에 대고 계속 누를 때 부딪히는 소리가 끝없이 나던 문제
 
-조작은 이제 방향키가 기본입니다(설정에서 조이스틱으로 바꿀 수 있어요).
+힌트를 손봤습니다.
+
+· 쓰기 전에 한 번 물어봅니다 (실수로 눌러서 날리지 않게)
+· 찾는 동안 기다리는 표시가 나옵니다
+· 이미 깰 수 없는 판이면 그렇다고 알려 주고, 힌트를 깎지 않습니다
 </ko-KR>
 <en-US>
 Bug fixes.
 
-· Fixed the app closing unexpectedly while walking with the D-pad
-· Fixed choppy chick movement on some device settings
-· Burrows now teleport instantly instead of sliding across the board
-· The last item in a list is no longer hidden behind the navigation bar
+· Fixed the app closing because the chick kept walking after you pressed restart
+· Fixed the bump sound repeating endlessly while holding against a wall
 
-The D-pad is now the default; you can switch to the joystick in settings.
+Hints improved.
+
+· Asks before spending one, so a stray tap no longer costs a hint
+· Shows a spinner while it searches
+· If the board can no longer be solved, it says so and keeps your hint
 </en-US>
 <ja-JP>
 不具合を修正しました。
 
-・方向キーで歩き続けるとアプリが突然終了する問題
-・端末の設定によってヒヨコがカクついて見える問題
-・穴を通るとき瞬間移動ではなく滑って見える問題
-・一覧の最後の項目が画面下のバーに隠れる問題
+・やり直しを押した後もヒヨコが歩き続けてアプリが終了する問題
+・壁に押し当てている間、ぶつかる音が鳴り続ける問題
 
-操作は方向キーが既定になりました(設定でスティックに変更できます)。
+ヒントを改善しました。
+
+・使う前に確認します(誤タップで減らないように)
+・探している間、待機中の表示が出ます
+・もうクリアできない状態なら、その旨をお知らせしてヒントは減りません
 </ja-JP>
 <zh-CN>
 修复了一些问题。
 
-· 使用方向键持续移动时应用突然关闭
-· 在某些设备设置下小鸡移动卡顿
-· 通过洞穴时不是瞬间移动而是滑行
-· 列表最后一项被屏幕底部导航栏遮挡
+· 按下重新开始后小鸡仍继续行走导致应用关闭
+· 抵住墙壁持续按压时碰撞音无限重复
 
-现在默认使用方向键(可在设置中切换为摇杆)。
+改进了提示。
+
+· 使用前会先询问,误触不再浪费提示
+· 搜索时会显示等待动画
+· 若当前局面已无法通关,会告知并且不扣除提示
 </zh-CN>
 <zh-TW>
 修復了一些問題。
 
-· 使用方向鍵持續移動時應用程式突然關閉
-· 在某些裝置設定下小雞移動卡頓
-· 通過洞穴時不是瞬間移動而是滑行
-· 清單最後一項被螢幕底部導覽列遮擋
+· 按下重新開始後小雞仍繼續行走導致應用程式關閉
+· 抵住牆壁持續按壓時碰撞音無限重複
 
-現在預設使用方向鍵(可在設定中切換為搖桿)。
+改進了提示。
+
+· 使用前會先詢問,誤觸不再浪費提示
+· 搜尋時會顯示等待動畫
+· 若目前局面已無法通關,會告知並且不扣除提示
 </zh-TW>
 <es-ES>
 Corrección de errores.
 
-· La aplicación se cerraba de repente al caminar con la cruceta
-· El pollito se movía a saltos según la configuración del dispositivo
-· Las madrigueras ahora teletransportan al instante en vez de deslizar
-· El último elemento de una lista ya no queda oculto tras la barra inferior
+· La aplicación se cerraba porque el pollito seguía andando tras pulsar reiniciar
+· El sonido de choque se repetía sin fin al mantener pulsado contra una pared
 
-La cruceta es ahora la opción predeterminada (puedes cambiar al joystick en ajustes).
+Pistas mejoradas.
+
+· Ahora pregunta antes de gastar una, así un toque accidental no te cuesta nada
+· Muestra un indicador mientras busca
+· Si el tablero ya no tiene solución, te lo dice y conserva tu pista
 </es-ES>
 <fr-FR>
 Corrections de bugs.
 
-· L'application se fermait brusquement en marchant avec la croix directionnelle
-· Le poussin se déplaçait par à-coups selon les réglages de l'appareil
-· Les terriers téléportent désormais instantanément au lieu de glisser
-· Le dernier élément d'une liste n'est plus masqué par la barre de navigation
+· L'application se fermait car le poussin continuait à marcher après un redémarrage
+· Le son de choc se répétait sans fin en maintenant la touche contre un mur
 
-La croix directionnelle est désormais l'option par défaut (joystick disponible dans les réglages).
+Indices améliorés.
+
+· Une confirmation est demandée avant d'en dépenser un
+· Un indicateur s'affiche pendant la recherche
+· Si le plateau n'a plus de solution, il vous le dit et garde votre indice
 </fr-FR>
 <de-DE>
 Fehlerbehebungen.
 
-· Die App wurde beim Laufen mit dem Steuerkreuz plötzlich beendet
-· Das Küken bewegte sich je nach Geräteeinstellung ruckelig
-· Baue versetzen jetzt sofort, statt über das Brett zu gleiten
-· Der letzte Listeneintrag wird nicht mehr von der Navigationsleiste verdeckt
+· Die App wurde beendet, weil das Küken nach dem Neustart weiterlief
+· Der Aufprall-Ton wiederholte sich endlos, wenn man gegen eine Wand drückte
 
-Das Steuerkreuz ist jetzt Standard (Joystick in den Einstellungen wählbar).
+Tipps verbessert.
+
+· Es wird vorher gefragt, damit ein Fehltipp keinen Tipp kostet
+· Während der Suche erscheint eine Wartanzeige
+· Ist das Brett nicht mehr lösbar, wird das gesagt und der Tipp bleibt erhalten
 </de-DE>
 <pt-BR>
 Correções de erros.
 
-· O aplicativo fechava de repente ao andar com o direcional
-· O pintinho se movia aos trancos em algumas configurações do aparelho
-· As tocas agora teletransportam na hora, em vez de deslizar
-· O último item da lista não fica mais escondido atrás da barra inferior
+· O aplicativo fechava porque o pintinho continuava andando após reiniciar
+· O som de batida se repetia sem parar ao segurar contra uma parede
 
-O direcional agora é o padrão (dá para mudar para o joystick nos ajustes).
+Dicas melhoradas.
+
+· Agora pergunta antes de gastar uma, então um toque acidental não custa nada
+· Mostra um indicador enquanto procura
+· Se o tabuleiro não tem mais solução, avisa e mantém sua dica
 </pt-BR>
 <ru-RU>
 Исправление ошибок.
 
-· Приложение внезапно закрывалось при ходьбе с крестовиной
-· Цыплёнок двигался рывками при некоторых настройках устройства
-· Норы теперь телепортируют мгновенно, а не скользят по полю
-· Последний элемент списка больше не прячется за панелью навигации
+· Приложение закрывалось, потому что цыплёнок продолжал идти после перезапуска
+· Звук удара повторялся бесконечно при удержании у стены
 
-Крестовина теперь используется по умолчанию (джойстик можно выбрать в настройках).
+Подсказки улучшены.
+
+· Теперь спрашивает перед тратой, случайное касание не отнимает подсказку
+· Во время поиска показывается индикатор
+· Если поле уже не решается, об этом сообщается, а подсказка сохраняется
 </ru-RU>
 <th>
 แก้ไขข้อผิดพลาด
 
-· แอปปิดเองกะทันหันขณะเดินด้วยปุ่มทิศทาง
-· ลูกเจี๊ยบเคลื่อนไหวกระตุกในบางการตั้งค่าเครื่อง
-· โพรงวาร์ปทันทีแล้ว ไม่ไถลข้ามกระดานอีกต่อไป
-· รายการสุดท้ายในลิสต์ไม่ถูกแถบนำทางด้านล่างบังอีกต่อไป
+· แอปปิดเองเพราะลูกเจี๊ยบยังเดินต่อหลังกดเริ่มใหม่
+· เสียงชนดังซ้ำไม่จบเมื่อกดค้างชนกำแพง
 
-ตอนนี้ปุ่มทิศทางเป็นค่าเริ่มต้น (เปลี่ยนเป็นจอยสติ๊กได้ในตั้งค่า)
+ปรับปรุงคำใบ้
+
+· ถามก่อนใช้ กดพลาดจะไม่เสียคำใบ้
+· มีสัญลักษณ์รอระหว่างค้นหา
+· ถ้ากระดานผ่านไม่ได้แล้วจะแจ้งให้ทราบ และไม่หักคำใบ้
 </th>
 <vi>
 Sửa lỗi.
 
-· Ứng dụng đột ngột đóng khi đi liên tục bằng phím định hướng
-· Gà con di chuyển giật cục ở một số thiết lập máy
-· Hang giờ dịch chuyển tức thì thay vì trượt ngang bàn cờ
-· Mục cuối trong danh sách không còn bị thanh điều hướng che
+· Ứng dụng đóng vì gà con vẫn tiếp tục đi sau khi bạn nhấn chơi lại
+· Tiếng va chạm lặp lại không dứt khi giữ phím vào tường
 
-Phím định hướng giờ là mặc định (có thể đổi sang cần điều khiển trong cài đặt).
+Cải thiện gợi ý.
+
+· Hỏi trước khi dùng, chạm nhầm không còn mất gợi ý
+· Hiện biểu tượng chờ trong lúc tìm
+· Nếu thế cờ không thể giải được nữa, sẽ báo cho bạn và giữ lại gợi ý
 </vi>
 <id>
 Perbaikan bug.
 
-· Aplikasi tiba-tiba tertutup saat berjalan dengan tombol arah
-· Anak ayam bergerak tersendat pada pengaturan perangkat tertentu
-· Liang kini memindahkan seketika, bukan meluncur melintasi papan
-· Item terakhir dalam daftar tidak lagi tertutup bilah navigasi
+· Aplikasi tertutup karena anak ayam terus berjalan setelah tombol ulangi ditekan
+· Suara benturan berulang tanpa henti saat menahan tombol ke arah dinding
 
-Tombol arah kini menjadi bawaan (bisa diganti ke joystick di pengaturan).
+Petunjuk diperbaiki.
+
+· Bertanya dulu sebelum dipakai, salah sentuh tidak lagi menghabiskan petunjuk
+· Menampilkan indikator saat mencari
+· Jika papan sudah tidak bisa diselesaikan, akan diberi tahu dan petunjuk tetap utuh
 </id>

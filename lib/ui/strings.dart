@@ -136,4 +136,10 @@ abstract final class S {
   static String get hintEmpty => _('hintEmpty');
   static String get hintHowTo => _('hintHowTo');
   static String hintGot(int n) => _('hintGot').replaceAll('{n}', '$n');
+
+  static String get hintAsk => _('hintAsk');
+  static String hintAskBody(int n) => _('hintAskBody').replaceAll('{n}', '$n');
+  static String get hintUse => _('hintUse');
+  static String get hintNoPath => _('hintNoPath');
+  static String get hintNoPathBody => _('hintNoPathBody');
 }

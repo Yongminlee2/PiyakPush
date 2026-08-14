@@ -101,6 +101,9 @@ class _GameScreenState extends State<GameScreen> {
   /// 걷는 중에 들어와 미뤄 둔 걸음 (하나만 기억한다).
   Dir? _queuedDir;
 
+  /// 힌트를 푸는 중 — 도는 표시를 띄우고 중복 요청을 막는다.
+  bool _hintBusy = false;
+
   bool get _gliding => _heldDir != null;
 
   /// 조이스틱이 방향을 잡거나 바꿀 때. 같은 방향이면 무시.
@@ -168,6 +171,20 @@ class _GameScreenState extends State<GameScreen> {
     _t30 = Timer(const Duration(seconds: 30), c.markIdle30s);
   }
 
+  /// 걷던 것을 전부 멈춘다 — 진행 중인 걸음·미뤄 둔 걸음·누르고 있던 방향.
+  ///
+  /// 걸음은 스스로 도는 고리다(`_step` → 타이머 → `_afterStep` → `_step`).
+  /// 누르고 있던 방향이 남으면 **판을 되돌려도 계속 걷는다.** 손 뗀 신호는
+  /// 버튼이 다시 그려지거나 화면이 바뀔 때 놓칠 수 있어서, 판을 손대는
+  /// 쪽에서 확실히 끊어 준다. 안 끊으면 걸음마다 소리가 끝없이 나고,
+  /// 네이티브 오디오 자원이 쌓여 앱이 통째로 꺼진다.
+  void _stopWalking() {
+    _stepCooldown?.cancel();
+    _stepCooldown = null;
+    _queuedDir = null;
+    _heldDir = null;
+  }
+
   void _step(Dir d) {
     _stepCooldown = Timer(kMoveAnim, _afterStep);
     _resetIdleTimers();
@@ -177,6 +194,10 @@ class _GameScreenState extends State<GameScreen> {
     } else {
       // 막힌 입력에 아무 반응이 없으면 조작이 뻣뻣하게 느껴진다.
       widget.onBlocked?.call();
+      // 다만 한 번만이다. 막힌 방향으로 계속 밀어붙여 봐야 소용없는데,
+      // 자동 반복을 두면 벽에 대고 누르는 동안 160ms마다 부딪히는 소리가
+      // 끝없이 난다. 방향을 바꾸면 다시 걷는다.
+      _heldDir = null;
       setState(() {
         _bumpDir = d;
         _bumpToken++;
@@ -185,6 +206,7 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _restart() {
+    _stopWalking();
     _resetIdleTimers();
     _hintMoves = null;
     _clearedNotified = false;
@@ -192,30 +214,82 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _undo() {
+    _stopWalking();
     _resetIdleTimers();
     _hintMoves = null;
     c.undo();
   }
 
   Future<void> _hint() async {
-    if (widget.hintProvider == null) return;
+    if (widget.hintProvider == null || _hintBusy) return;
     _resetIdleTimers();
     if ((widget.hintsLeft ?? 1) <= 0) {
       await _sayNoHints();
       return;
     }
-    final moves = await widget.hintProvider!.call(c);
+    // 힌트는 개수가 정해져 있다. 실수로 눌러서 하나 날리면 억울하니 먼저 묻는다.
+    if (!await _askUseHint()) return;
     if (!mounted) return;
-    // 길을 못 찾았으면(탐색 상한 초과 등) 힌트를 깎지 않는다 —
-    // 아무것도 못 받고 잃으면 억울하다.
+
+    // 푸는 데 시간이 걸린다(별도 아이솔레이트에서 최대 12만 상태 탐색).
+    // 그동안 아무 반응이 없으면 안 눌린 줄 알고 또 누른다 — 도는 표시를 띄운다.
+    setState(() => _hintBusy = true);
+    List<Dir>? moves;
+    try {
+      moves = await widget.hintProvider!.call(c);
+    } finally {
+      if (mounted) setState(() => _hintBusy = false);
+    }
+    if (!mounted) return;
+
+    // 길을 못 찾았으면 힌트를 깎지 않는다 — 아무것도 못 받고 잃으면 억울하다.
+    // 대신 왜 아무 일도 안 일어났는지 알려 준다. 예전엔 조용히 넘어가서
+    // 힌트가 고장 난 줄 알았다.
     if (moves == null || moves.isEmpty) {
       setState(() => _hintMoves = null);
+      await _sayNoPath();
       return;
     }
     await widget.onSpendHint?.call();
     if (!mounted) return;
     setState(() => _hintMoves = moves);
   }
+
+  /// 힌트를 쓸지 묻는다. 쓰겠다고 하면 true.
+  Future<bool> _askUseHint() async =>
+      await showDialog<bool>(
+        context: context,
+        builder: (dctx) => AlertDialog(
+          title: Text(S.hintAsk),
+          content: Text(S.hintAskBody(widget.hintsLeft ?? 0)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dctx, false),
+              child: Text(S.cancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(dctx, true),
+              child: Text(S.hintUse),
+            ),
+          ],
+        ),
+      ) ??
+      false;
+
+  /// 이 상태에서는 더 이상 깰 수 없다고 알려 준다.
+  Future<void> _sayNoPath() => showDialog<void>(
+        context: context,
+        builder: (dctx) => AlertDialog(
+          title: Text(S.hintNoPath),
+          content: Text(S.hintNoPathBody),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dctx),
+              child: Text(S.ok),
+            ),
+          ],
+        ),
+      );
 
   Future<void> _sayNoHints() => showDialog<void>(
     context: context,
@@ -367,6 +441,14 @@ class _GameScreenState extends State<GameScreen> {
                 ),
               ],
             ),
+            // 힌트를 푸는 동안 — 화면을 덮어 중복 입력을 막고, 기다리는 중임을 보인다.
+            if (_hintBusy)
+              const Positioned.fill(
+                child: ColoredBox(
+                  color: Color(0x33000000),
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+              ),
             if (c.cleared)
               Builder(
                 builder: (context) {
