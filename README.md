@@ -173,7 +173,7 @@ tool/         validate_levels(전수 검증) · gen_chapters(레벨 생성)
               apply_icon · make_feature_graphic · check_font_coverage
 assets/       levels(300스테이지 + 데일리 JSON) · images · audio · fonts
 store/        스토어에 넣을 글과 그림 (등록정보 13개국어 · 출시노트 · 업로드/)
-test/         233개 — engine · services · ui · levels
+test/         235개 — engine · services · ui · levels
 ```
 
 설계 문서와 구현 계획은 `docs/superpowers/` 아래에 버전별로 남겨두었다.
@@ -265,7 +265,7 @@ targetSdk 36이라 앱이 시스템 바 뒤까지 그린다(edge-to-edge 강제)
 
 ```powershell
 flutter analyze     # 경고 0 이어야 한다
-flutter test        # 233개 전부 통과
+flutter test        # 235개 전부 통과
 ```
 
 그리고 **고친 부분을 잠깐 되돌려 테스트가 실제로 실패하는지 본다.**

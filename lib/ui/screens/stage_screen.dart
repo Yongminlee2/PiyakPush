@@ -30,8 +30,11 @@ class StageScreen extends StatelessWidget {
     final ads = context.read<AdService>();
     final level = levels[idx];
     final firstClear = save.starsOf(level.id) == 0;
+    // 남은 힌트를 Consumer 안에서 읽는다. 밖에서 한 번만 읽으면 힌트를 써도
+    // 화면의 숫자가 그대로라, **0이 되지 않아 "광고 보고 받기"가 영영 안 뜬다.**
     return piyakRoute(
-      GameScreen(
+      Consumer<SaveService>(
+        builder: (context, save, _) => GameScreen(
         key: ValueKey(level.id),
         level: level,
         title: S.stageTitle(chapter, idx + 1, level.title),
@@ -55,6 +58,7 @@ class StageScreen extends StatelessWidget {
           await ads.maybeShowInterstitial(save.totalCleared);
         },
         clearOutcome: () => _outcomeFor(context, levels, idx),
+        ),
       ),
     );
   }

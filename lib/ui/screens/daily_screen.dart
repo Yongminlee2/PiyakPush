@@ -30,7 +30,7 @@ class DailyScreen extends StatelessWidget {
   }
 
   void _play(BuildContext context) async {
-    final save = context.read<SaveService>();
+    // save 는 아래 Consumer 안에서 읽는다 — 힌트를 쓰면 숫자가 따라 바뀌어야 한다.
     final sound = context.read<SoundService>();
     final ads = context.read<AdService>();
     final today = _today;
@@ -39,7 +39,10 @@ class DailyScreen extends StatelessWidget {
     Navigator.push(
       context,
       piyakRoute(
-        GameScreen(
+        // 남은 힌트를 Consumer 안에서 읽는다 — 밖에서 한 번만 읽으면 힌트를
+        // 써도 숫자가 그대로라 0이 되지 않고, "광고 보고 받기"가 안 뜬다.
+        Consumer<SaveService>(
+          builder: (context, save, _) => GameScreen(
           level: level,
           title: S.dailyTitle,
           useDpad: save.dpadOn,
@@ -59,6 +62,7 @@ class DailyScreen extends StatelessWidget {
             if (first) await save.addHints(SaveService.kHintPerDaily);
           },
           onNext: () => Navigator.pop(context),
+          ),
         ),
       ),
     );
