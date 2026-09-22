@@ -8,11 +8,15 @@ import '../../models/level.dart';
 import '../../models/progression.dart';
 import '../../services/hint_service.dart';
 import '../../services/level_repository.dart';
+import '../../services/ad_policy.dart';
+import '../../services/ad_rewards.dart';
+import '../../services/ad_service.dart';
 import '../../services/save_service.dart';
 import '../../services/sound_service.dart';
 import '../nav.dart';
 import '../strings.dart';
 import '../theme.dart';
+import '../widgets/ad_banner.dart';
 import '../widgets/act_background.dart';
 import 'game_screen.dart';
 
@@ -23,6 +27,7 @@ class StageScreen extends StatelessWidget {
   Route _gameRoute(BuildContext context, List<Level> levels, int idx) {
     final save = context.read<SaveService>();
     final sound = context.read<SoundService>();
+    final ads = context.read<AdService>();
     final level = levels[idx];
     final firstClear = save.starsOf(level.id) == 0;
     return piyakRoute(
@@ -36,10 +41,18 @@ class StageScreen extends StatelessWidget {
         onSpendHint: save.spendHint,
         onEvents: sound.playForEvents,
         onBlocked: () => sound.play(Sfx.bump),
+        canWatchAd: () =>
+            ads.rewardedReady &&
+            RewardPolicy.canWatch(
+                watchedToday: save.rewardedWatchedOn(DateTime.now())),
+        onWatchAdForHints: () => watchAdForHints(save, ads),
         onCleared: (stars) async {
           await save.setStars(level.id, stars);
           // 처음 깬 판에서만 힌트를 준다 — 같은 판을 반복해 모을 수 없게.
           if (firstClear) await save.addHints(SaveService.kHintPerStage);
+          // 전면 광고는 판을 깨고 넘어가는 자리에서만, 그것도 몇 판에 한 번.
+          // 판단은 InterstitialPolicy 가 한다.
+          await ads.maybeShowInterstitial(save.totalCleared);
         },
         clearOutcome: () => _outcomeFor(context, levels, idx),
       ),
@@ -102,6 +115,9 @@ class StageScreen extends StatelessWidget {
         ),
         backgroundColor: PiyakColors.creamBg,
       ),
+      // 배너는 메뉴 화면에만. 게임 화면에 넣으면 판이 작아진다.
+      bottomNavigationBar:
+          AdBanner(ads: context.watch<AdService>()),
       body: Stack(
         children: [
           ActBackground(chapter: chapter, wide: true),

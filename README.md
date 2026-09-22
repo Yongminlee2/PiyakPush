@@ -164,6 +164,8 @@ lib/
   models/     level · sticker · progression(해금 판정)
   services/   save · sound · hint · daily · level_repository
               level_generator(레벨 생성) · tile_art(그림/코드 타일 전환)
+              ad_service(AdMob 감싸기) · ad_policy(언제 띄울지·순수)
+              ad_rewards(광고 보고 힌트 받기)
   ui/         screens · widgets · theme · strings · nav
 tool/         validate_levels(전수 검증) · gen_chapters(레벨 생성)
               verify_hard(도전판 재검증) · gen_sfx(효과음 합성)
@@ -171,7 +173,7 @@ tool/         validate_levels(전수 검증) · gen_chapters(레벨 생성)
               apply_icon · make_feature_graphic · check_font_coverage
 assets/       levels(300스테이지 + 데일리 JSON) · images · audio · fonts
 store/        스토어에 넣을 글과 그림 (등록정보 13개국어 · 출시노트 · 업로드/)
-test/         224개 — engine · services · ui · levels
+test/         233개 — engine · services · ui · levels
 ```
 
 설계 문서와 구현 계획은 `docs/superpowers/` 아래에 버전별로 남겨두었다.
@@ -227,18 +229,26 @@ targetSdk 36이라 앱이 시스템 바 뒤까지 그린다(edge-to-edge 강제)
 앱이 꺼진다. 새로 판을 손대는 기능(재시작·되돌리기 등)을 만들면 이걸 부를 것.
 `lib/ui/screens/game_screen.dart` 참고.
 
-**9. 폰에 스토어판이 깔려 있으면 로컬 APK가 안 덮인다.**
+**9. 광고는 `AdService` 뒤에서만 부른다. 화면이 AdMob을 직접 쓰지 않는다.**
+언제 띄울지는 `AdService`가 아니라 **`ad_policy.dart`의 순수 함수**가 정한다
+(전면은 몇 판마다·최소 간격·튜토리얼 제외, 보상형은 하루 상한).
+화면 코드에 묻으면 검증할 수 없다. 규칙을 바꿀 땐 거기 테스트도 같이 고친다.
+**게임 화면에는 배너를 넣지 말 것** — 판이 작아지고 조작 방식별 화면이 달라진다.
+그리고 **인터넷이 없어도 게임은 그대로 돌아가야 한다.** 광고는 실패하면
+조용히 아무 일도 안 일어나는 게 정상이다.
+
+**10. 폰에 스토어판이 깔려 있으면 로컬 APK가 안 덮인다.**
 `INSTALL_FAILED_UPDATE_INCOMPATIBLE`이 나면 이것이다. **Play 앱 서명은
 구글이 자기 키로 다시 서명**해서, 업로드 키로 만든 로컬 APK와 서명이 다르다.
 지우고 새로 깔면 되지만 **진행 기록이 날아가니 먼저 사용자에게 물을 것.**
 기록을 지키려면 콘솔에 올려 스토어에서 업데이트로 받아야 한다.
 
-**10. 서명 키는 절대 건드리지 않는다.**
+**11. 서명 키는 절대 건드리지 않는다.**
 `android/upload.jks`와 `android/keystore.properties`는 `.gitignore`에 있다.
 **왁뿌볼·끝말잇기와 같은 키**라, 새로 만들거나 잃어버리면 세 앱 전부
 같은 패키지명으로 업데이트를 못 올린다. 백업은 `C:\workAndroid\_서명키_백업\`.
 
-**11. 스토어 글에 광고·인앱결제·무료 이야기를 넣지 않는다.**
+**12. 스토어 글에 광고·인앱결제·무료 이야기를 넣지 않는다.**
 나중에 붙일 계획이라 지금 "없음"이라고 쓰면 그때 거짓말이 된다.
 자세한 이유와, 실제로 붙일 때 같이 고쳐야 할 신고 항목은
 `store/플레이스토어-작성내용.md` 9번에 있다.
@@ -255,7 +265,7 @@ targetSdk 36이라 앱이 시스템 바 뒤까지 그린다(edge-to-edge 강제)
 
 ```powershell
 flutter analyze     # 경고 0 이어야 한다
-flutter test        # 224개 전부 통과
+flutter test        # 233개 전부 통과
 ```
 
 그리고 **고친 부분을 잠깐 되돌려 테스트가 실제로 실패하는지 본다.**

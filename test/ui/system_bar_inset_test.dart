@@ -13,6 +13,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:piyak_push/models/level.dart';
+import 'package:piyak_push/services/ad_service.dart';
 import 'package:piyak_push/services/save_service.dart';
 import 'package:piyak_push/ui/screens/chapter_screen.dart';
 import 'package:piyak_push/ui/screens/daily_screen.dart';
@@ -116,8 +117,12 @@ void main() {
   testWidgets('타이틀 메뉴 버튼이 내비게이션 바에 안 가린다', (tester) async {
     await setPhone(tester);
     final save = await SaveService.load();
-    await tester.pumpWidget(ChangeNotifierProvider.value(
-      value: save,
+    await tester.pumpWidget(MultiProvider(
+      providers: [
+        ChangeNotifierProvider<SaveService>.value(value: save),
+        // 화면들이 광고 서비스를 요구한다. 테스트에서는 광고가 없는 것으로.
+        Provider<AdService>.value(value: AdService.disabled()),
+      ],
       child: MaterialApp(home: _withNavBar(const TitleScreen())),
     ));
     await tester.pump(const Duration(milliseconds: 300));
@@ -130,8 +135,12 @@ void main() {
   testWidgets('설정 화면 항목이 내비게이션 바에 안 가린다', (tester) async {
     await setPhone(tester);
     final save = await SaveService.load();
-    await tester.pumpWidget(ChangeNotifierProvider.value(
-      value: save,
+    await tester.pumpWidget(MultiProvider(
+      providers: [
+        ChangeNotifierProvider<SaveService>.value(value: save),
+        // 화면들이 광고 서비스를 요구한다. 테스트에서는 광고가 없는 것으로.
+        Provider<AdService>.value(value: AdService.disabled()),
+      ],
       child: MaterialApp(home: _withNavBar(const SettingsScreen())),
     ));
     await tester.pump(const Duration(milliseconds: 300));
@@ -142,8 +151,12 @@ void main() {
   testWidgets('챕터 목록을 끝까지 내려도 마지막 카드가 다 보인다', (tester) async {
     await setPhone(tester);
     final save = await SaveService.load();
-    await tester.pumpWidget(ChangeNotifierProvider.value(
-      value: save,
+    await tester.pumpWidget(MultiProvider(
+      providers: [
+        ChangeNotifierProvider<SaveService>.value(value: save),
+        // 화면들이 광고 서비스를 요구한다. 테스트에서는 광고가 없는 것으로.
+        Provider<AdService>.value(value: AdService.disabled()),
+      ],
       child: MaterialApp(home: _withNavBar(const ChapterScreen())),
     ));
     await tester.pump(const Duration(milliseconds: 300));
@@ -157,8 +170,12 @@ void main() {
   testWidgets('데일리 화면이 내비게이션 바에 안 가린다', (tester) async {
     await setPhone(tester);
     final save = await SaveService.load();
-    await tester.pumpWidget(ChangeNotifierProvider.value(
-      value: save,
+    await tester.pumpWidget(MultiProvider(
+      providers: [
+        ChangeNotifierProvider<SaveService>.value(value: save),
+        // 화면들이 광고 서비스를 요구한다. 테스트에서는 광고가 없는 것으로.
+        Provider<AdService>.value(value: AdService.disabled()),
+      ],
       child: MaterialApp(home: _withNavBar(const DailyScreen())),
     ));
     await tester.pump(const Duration(milliseconds: 300));
@@ -172,8 +189,12 @@ void main() {
   testWidgets('스티커북을 끝까지 내려도 마지막 줄이 다 보인다', (tester) async {
     await setPhone(tester);
     final save = await SaveService.load();
-    await tester.pumpWidget(ChangeNotifierProvider.value(
-      value: save,
+    await tester.pumpWidget(MultiProvider(
+      providers: [
+        ChangeNotifierProvider<SaveService>.value(value: save),
+        // 화면들이 광고 서비스를 요구한다. 테스트에서는 광고가 없는 것으로.
+        Provider<AdService>.value(value: AdService.disabled()),
+      ],
       child: MaterialApp(home: _withNavBar(const StickerBookScreen())),
     ));
     await tester.pump(const Duration(milliseconds: 300));

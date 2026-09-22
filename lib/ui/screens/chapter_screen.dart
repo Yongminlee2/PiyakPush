@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/progression.dart';
+import '../../services/ad_service.dart';
 import '../../services/save_service.dart';
 import '../nav.dart';
 import '../strings.dart';
 import '../theme.dart';
+import '../widgets/ad_banner.dart';
 import '../widgets/act_background.dart';
 import 'stage_screen.dart';
 
@@ -44,6 +46,9 @@ class ChapterScreen extends StatelessWidget {
         ),
         backgroundColor: PiyakColors.creamBg,
       ),
+      // 배너는 메뉴 화면에만. 게임 화면에 넣으면 판이 작아진다.
+      bottomNavigationBar:
+          AdBanner(ads: context.watch<AdService>()),
       body: Stack(
         children: [
           const ActBackground(wide: true),

@@ -60,6 +60,16 @@ class GameScreen extends StatefulWidget {
 
   /// 벽에 막혀 못 움직였을 때. 튕기는 연출에 맞춰 소리를 낸다.
   final VoidCallback? onBlocked;
+
+  /// 힌트가 떨어졌을 때 "광고 보고 받기"를 띄울지. null이면 안 띄운다.
+  ///
+  /// 광고를 끝까지 보면 받은 힌트 개수를 돌려준다. 못 봤거나 실패하면 0.
+  /// 화면이 광고를 직접 붙들지 않게 콜백으로 받는다 — 테스트에서 광고 없이
+  /// 돌릴 수 있어야 하고, 나중에 광고를 끄거나 바꿀 때도 여기만 두면 된다.
+  final Future<int> Function()? onWatchAdForHints;
+
+  /// 지금 광고를 보여줄 수 있는지 (준비됨 + 하루 상한 남음).
+  final bool Function()? canWatchAd;
   const GameScreen({
     required this.level,
     this.title,
@@ -72,6 +82,8 @@ class GameScreen extends StatefulWidget {
     this.hintsLeft,
     this.onSpendHint,
     this.onBlocked,
+    this.onWatchAdForHints,
+    this.canWatchAd,
     super.key,
   });
 
@@ -291,16 +303,57 @@ class _GameScreenState extends State<GameScreen> {
         ),
       );
 
-  Future<void> _sayNoHints() => showDialog<void>(
-    context: context,
-    builder: (dctx) => AlertDialog(
-      title: Text(S.hintEmpty),
-      content: Text(S.hintHowTo),
-      actions: [
-        TextButton(onPressed: () => Navigator.pop(dctx), child: Text(S.ok)),
-      ],
-    ),
-  );
+  /// 힌트가 떨어졌을 때. 광고를 볼 수 있으면 받을 길을 함께 준다.
+  ///
+  /// 막혀서 답답한 순간에 **스스로 선택해서** 보는 광고다. 이 게임에서
+  /// 광고를 띄워도 되는 유일한 자리라고 봤다.
+  Future<void> _sayNoHints() async {
+    final canWatch = widget.onWatchAdForHints != null &&
+        (widget.canWatchAd?.call() ?? false);
+
+    final watch = await showDialog<bool>(
+      context: context,
+      builder: (dctx) => AlertDialog(
+        title: Text(S.hintEmpty),
+        content: Text(canWatch ? S.hintAdOffer : S.hintHowTo),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dctx, false),
+            child: Text(canWatch ? S.cancel : S.ok),
+          ),
+          if (canWatch)
+            TextButton(
+              onPressed: () => Navigator.pop(dctx, true),
+              child: Text(S.hintAdWatch),
+            ),
+        ],
+      ),
+    );
+    if (watch != true || !mounted) return;
+
+    // 광고를 부르는 동안 화면을 덮어 둔다 — 두 번 눌리지 않게.
+    setState(() => _hintBusy = true);
+    var got = 0;
+    try {
+      got = await widget.onWatchAdForHints!.call();
+    } finally {
+      if (mounted) setState(() => _hintBusy = false);
+    }
+    if (!mounted) return;
+
+    // 끝까지 안 봤으면 아무것도 주지 않는다. 다만 조용히 넘어가면
+    // 고장 난 줄 아니까 말은 해 준다.
+    await showDialog<void>(
+      context: context,
+      builder: (dctx) => AlertDialog(
+        title: Text(got > 0 ? S.hintAdGot : S.hintAdFailed),
+        content: Text(got > 0 ? S.hintGot(got) : S.hintAdFailedBody),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(dctx), child: Text(S.ok)),
+        ],
+      ),
+    );
+  }
 
   String? get _bubbleText {
     if (c.deadlocked) return S.deadlockHint;

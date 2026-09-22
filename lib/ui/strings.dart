@@ -142,4 +142,10 @@ abstract final class S {
   static String get hintUse => _('hintUse');
   static String get hintNoPath => _('hintNoPath');
   static String get hintNoPathBody => _('hintNoPathBody');
+
+  static String get hintAdOffer => _('hintAdOffer');
+  static String get hintAdWatch => _('hintAdWatch');
+  static String get hintAdGot => _('hintAdGot');
+  static String get hintAdFailed => _('hintAdFailed');
+  static String get hintAdFailedBody => _('hintAdFailedBody');
 }

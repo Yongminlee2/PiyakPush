@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import 'services/ad_service.dart';
 import 'services/save_service.dart';
 import 'services/sound_service.dart';
 import 'services/tile_art.dart';
@@ -23,7 +24,11 @@ Future<void> main() async {
   final sound = SoundService(isMuted: () => !save.soundOn);
   await _tryInit(sound.init); // 효과음 선로드 — 첫 입력부터 지연 없이
 
-  runApp(PiyakPushApp(save: save, sound: sound));
+  // 광고는 없으면 없는 대로 — 초기화가 실패해도 게임은 그대로 시작한다.
+  final ads = AdService();
+  await _tryInit(ads.init);
+
+  runApp(PiyakPushApp(save: save, sound: sound, ads: ads));
 }
 
 Future<void> _tryInit(Future<void> Function() step) async {
@@ -37,13 +42,20 @@ Future<void> _tryInit(Future<void> Function() step) async {
 class PiyakPushApp extends StatelessWidget {
   final SaveService save;
   final SoundService sound;
-  const PiyakPushApp({required this.save, required this.sound, super.key});
+  final AdService ads;
+  const PiyakPushApp({
+    required this.save,
+    required this.sound,
+    required this.ads,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) => MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: save),
           Provider.value(value: sound),
+          Provider.value(value: ads),
         ],
         // 언어 설정이 바뀌면 save가 알려 주고, 여기서 다시 적용한 뒤
         // 아래 화면 전체가 새 언어로 다시 그려진다.

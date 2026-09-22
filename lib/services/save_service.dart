@@ -98,6 +98,31 @@ class SaveService extends ChangeNotifier {
     notifyListeners();
   }
 
+  // ── 광고
+  //
+  // 보상형 광고로 받은 힌트에는 하루 상한을 둔다(RewardPolicy.kPerDay).
+  // 무제한이면 힌트로 다 밀어버릴 수 있어 퍼즐이 성립하지 않는다.
+  // 날짜가 바뀌면 자연히 0부터 — 날짜별 키를 쓴다.
+
+  static String _adKey(DateTime d) =>
+      'ad.rw.${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+
+  int rewardedWatchedOn(DateTime day) => _p.getInt(_adKey(day)) ?? 0;
+
+  Future<void> addRewardedWatch(DateTime day) async {
+    await _p.setInt(_adKey(day), rewardedWatchedOn(day) + 1);
+    notifyListeners();
+  }
+
+  /// 지금까지 깬 판 수(전 챕터 합계). 전면 광고 간격 판단에 쓴다.
+  int get totalCleared {
+    var n = 0;
+    for (var c = 1; c <= kChapterCount; c++) {
+      n += chapterClearedCount(c);
+    }
+    return n;
+  }
+
   // ── 설정
   bool get soundOn => _p.getBool('opt.sound') ?? true;
 

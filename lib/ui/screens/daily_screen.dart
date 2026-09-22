@@ -7,11 +7,15 @@ import 'package:provider/provider.dart';
 import '../../models/level.dart';
 import '../../services/daily_service.dart';
 import '../../services/hint_service.dart';
+import '../../services/ad_policy.dart';
+import '../../services/ad_rewards.dart';
+import '../../services/ad_service.dart';
 import '../../services/save_service.dart';
 import '../../services/sound_service.dart';
 import '../nav.dart';
 import '../strings.dart';
 import '../theme.dart';
+import '../widgets/ad_banner.dart';
 import '../widgets/act_background.dart';
 import 'game_screen.dart';
 
@@ -28,6 +32,7 @@ class DailyScreen extends StatelessWidget {
   void _play(BuildContext context) async {
     final save = context.read<SaveService>();
     final sound = context.read<SoundService>();
+    final ads = context.read<AdService>();
     final today = _today;
     final Level level = await DailyService.levelFor(today);
     if (!context.mounted) return;
@@ -39,6 +44,11 @@ class DailyScreen extends StatelessWidget {
           title: S.dailyTitle,
           useDpad: save.dpadOn,
           hintProvider: (c) => hintFor(c.board),
+          canWatchAd: () =>
+              ads.rewardedReady &&
+              RewardPolicy.canWatch(
+                  watchedToday: save.rewardedWatchedOn(DateTime.now())),
+          onWatchAdForHints: () => watchAdForHints(save, ads),
           hintsLeft: save.hints,
           onSpendHint: save.spendHint,
           onEvents: sound.playForEvents,
@@ -75,6 +85,9 @@ class DailyScreen extends StatelessWidget {
         ),
         backgroundColor: PiyakColors.creamBg,
       ),
+      // 배너는 메뉴 화면에만. 게임 화면에 넣으면 판이 작아진다.
+      bottomNavigationBar:
+          AdBanner(ads: context.watch<AdService>()),
       body: Stack(
         children: [
           const ActBackground(wide: true),

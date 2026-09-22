@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:piyak_push/main.dart';
+import 'package:piyak_push/services/ad_service.dart';
 import 'package:piyak_push/services/save_service.dart';
 import 'package:piyak_push/services/sound_service.dart';
 import 'package:piyak_push/ui/screens/chapter_screen.dart';
@@ -16,7 +17,8 @@ void main() {
     final save = await SaveService.load();
     final sound = SoundService(
         isMuted: () => true, playOverride: (_) async {});
-    await tester.pumpWidget(PiyakPushApp(save: save, sound: sound));
+    await tester.pumpWidget(PiyakPushApp(
+        save: save, sound: sound, ads: AdService.disabled()));
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.byType(TitleScreen), findsOneWidget);
     expect(find.text(S.appTitle), findsOneWidget);
@@ -35,7 +37,8 @@ void main() {
     final save = await SaveService.load();
     final sound = SoundService(
         isMuted: () => true, playOverride: (_) async {});
-    await tester.pumpWidget(PiyakPushApp(save: save, sound: sound));
+    await tester.pumpWidget(PiyakPushApp(
+        save: save, sound: sound, ads: AdService.disabled()));
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.text('ピヨプッシュ'), findsOneWidget);
     expect(find.text('あそぶ'), findsOneWidget);

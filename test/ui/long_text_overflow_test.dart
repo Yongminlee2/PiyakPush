@@ -9,6 +9,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:piyak_push/models/level.dart';
+import 'package:piyak_push/services/ad_service.dart';
 import 'package:piyak_push/services/save_service.dart';
 import 'package:piyak_push/ui/screens/chapter_screen.dart';
 import 'package:piyak_push/ui/screens/game_screen.dart';
@@ -66,8 +67,11 @@ void main() {
     final save = await SaveService.load();
     for (final code in _longest) {
       S.use(code);
-      await tester.pumpWidget(ChangeNotifierProvider.value(
-        value: save,
+      await tester.pumpWidget(MultiProvider(
+        providers: [
+          ChangeNotifierProvider<SaveService>.value(value: save),
+          Provider<AdService>.value(value: AdService.disabled()),
+        ],
         child: const MaterialApp(home: ChapterScreen()),
       ));
       await tester.pump(const Duration(milliseconds: 300));
