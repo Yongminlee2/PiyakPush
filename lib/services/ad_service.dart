@@ -57,6 +57,10 @@ class AdService {
   Future<void> init() async {
     if (!_enabled) return;
     try {
+      await _askConsent();
+      // 동의가 없어서 광고를 요청할 수 없는 사람(유럽에서 거부 등)에게는
+      // 광고를 켜지 않는다. 게임은 그대로 한다.
+      if (!await ConsentInformation.instance.canRequestAds()) return;
       await MobileAds.instance.initialize();
       // 콘텐츠 등급을 "어린이와 성인 모두"로 신고해 뒀다. 그래서 광고도
       // 전체 이용가만 나오게 묶고, 어린이 대상 취급으로 맞춤 광고를 끈다.
@@ -74,6 +78,34 @@ class AdService {
       // 광고를 못 켜도 게임은 한다.
       _ready = false;
     }
+  }
+
+  /// 유럽 등 동의가 필요한 지역이면 구글 동의 화면을 띄운다.
+  ///
+  /// 양식은 AdMob 콘솔(개인정보 보호 및 메시지)에서 만든다. 콘솔에 양식이
+  /// 없거나 동의가 필요 없는 지역이면 아무것도 안 뜨고 그냥 넘어간다 —
+  /// 그래서 코드를 먼저 넣어 두면 나중에 콘솔에서 켜기만 하면 된다.
+  /// 무슨 일이 있어도 게임 시작을 막지 않는다.
+  Future<void> _askConsent() async {
+    final done = Completer<void>();
+    try {
+      ConsentInformation.instance.requestConsentInfoUpdate(
+        ConsentRequestParameters(tagForUnderAgeOfConsent: true),
+        () async {
+          try {
+            await ConsentForm.loadAndShowConsentFormIfRequired((_) {});
+          } catch (_) {}
+          if (!done.isCompleted) done.complete();
+        },
+        (_) {
+          if (!done.isCompleted) done.complete();
+        },
+      );
+    } catch (_) {
+      if (!done.isCompleted) done.complete();
+    }
+    // 네트워크가 안 되면 응답이 영영 안 올 수 있다 — 오래 기다리지 않는다.
+    await done.future.timeout(const Duration(seconds: 8), onTimeout: () {});
   }
 
   // ── 전면

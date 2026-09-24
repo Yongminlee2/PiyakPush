@@ -1,123 +1,104 @@
 <ko-KR>
-삐약푸쉬 정식 출시입니다.
+힌트를 다 썼을 때, 짧은 광고를 보고 힌트 2개를 받을 수 있어요 (하루 5번까지).
 
-병아리가 알을 밀어 둥지에 넣는 소코반 퍼즐, 300스테이지로 시작합니다.
-얼음·굴·단추와 문·금 간 바닥, 4가지 기믹과 챕터마다 도전 5판이 있습니다.
-매일 새 퍼즐도 함께 열립니다.
+힌트를 써도 화면의 남은 개수가 줄지 않던 문제를 고쳤습니다.
 
-즐겁게 플레이해 주세요!
+이번 버전부터 메뉴 화면 아래에 광고가 표시되고, 스테이지를 몇 판 깬 뒤 가끔 광고가 나옵니다.
+게임 화면에는 광고가 나오지 않습니다.
 </ko-KR>
 <en-US>
-Peep Push is officially out.
+Out of hints? You can now watch a short ad to get 2 more (up to 5 times a day).
 
-A Sokoban puzzle where a chick pushes eggs into their nests — 300 levels
-to start, with 4 mechanics (ice, burrows, buttons and doors, cracked floor)
-and 5 challenge stages per chapter. A new daily puzzle unlocks every day.
+Fixed the remaining-hint count not going down on screen when you used a hint.
 
-Thanks for playing!
+From this version, ads appear at the bottom of menu screens and occasionally after clearing a few stages.
+No ads are shown on the game screen.
 </en-US>
 <ja-JP>
-ピヨプッシュ、正式リリースです。
+ヒントを使い切ったら、短い広告を見てヒントを2個もらえます(1日5回まで)。
 
-ヒヨコがタマゴを押して巣に入れる倉庫番パズル。300ステージから始まり、
-氷・穴・ボタンとドア・ひび割れた床の4種の仕掛けと、
-チャプターごとにチャレンジ5面があります。毎日新しいパズルも登場します。
+ヒントを使っても画面の残り数が減らない問題を修正しました。
 
-ぜひ遊んでみてください!
+このバージョンから、メニュー画面の下に広告が表示され、ステージを何回かクリアした後にときどき広告が出ます。
+ゲーム画面には広告は出ません。
 </ja-JP>
 <zh-CN>
-Peep Push 正式上线。
+提示用完时,可以观看一段短广告获得 2 个提示(每天最多 5 次)。
 
-小鸡把蛋推进窝里的推箱子谜题,首发300个关卡。
-冰、洞穴、按钮与门、裂开的地板共4种机关,每章还有5个挑战关。
-每天还会解锁新的每日谜题。
+修复了使用提示后屏幕上的剩余数量不减少的问题。
 
-祝你玩得开心!
+从本版本起,菜单画面底部会显示广告,通关几关后偶尔也会出现广告。
+游戏画面中不会出现广告。
 </zh-CN>
 <zh-TW>
-Peep Push 正式上線。
+提示用完時,可以觀看一段短廣告獲得 2 個提示(每天最多 5 次)。
 
-小雞把蛋推進窩裡的推箱子謎題,首發300個關卡。
-冰、洞穴、按鈕與門、裂開的地板共4種機關,每章還有5個挑戰關。
-每天還會解鎖新的每日謎題。
+修復了使用提示後畫面上的剩餘數量不減少的問題。
 
-祝你玩得開心!
+從本版本起,選單畫面底部會顯示廣告,通關幾關後偶爾也會出現廣告。
+遊戲畫面中不會出現廣告。
 </zh-TW>
 <es-ES>
-Peep Push ya está disponible.
+¿Sin pistas? Ahora puedes ver un anuncio corto para conseguir 2 más (hasta 5 veces al día).
 
-Un puzle Sokoban en el que un pollito empuja huevos hasta sus nidos —
-300 niveles para empezar, con 4 mecánicas (hielo, madrigueras, botones y
-puertas, suelo agrietado) y 5 niveles de reto por capítulo. Cada día se
-desbloquea un puzle nuevo.
+Corregido: el número de pistas restantes no bajaba en pantalla al usar una.
 
-¡Que lo disfrutes!
+Desde esta versión aparecen anuncios en la parte inferior de los menús y, de vez en cuando, tras superar algunos niveles.
+No se muestran anuncios en la pantalla de juego.
 </es-ES>
 <fr-FR>
-Peep Push est officiellement disponible.
+Plus d'indices ? Regardez une courte publicité pour en obtenir 2 (jusqu'à 5 fois par jour).
 
-Un puzzle Sokoban où un poussin pousse des œufs jusqu'à leurs nids —
-300 niveaux pour commencer, avec 4 mécaniques (glace, terriers, boutons
-et portes, sol fissuré) et 5 niveaux défi par chapitre. Un nouveau puzzle
-se débloque chaque jour.
+Correction : le nombre d'indices restants ne diminuait pas à l'écran après utilisation.
 
-Bon jeu !
+À partir de cette version, des publicités s'affichent en bas des menus et parfois après quelques niveaux terminés.
+Aucune publicité n'apparaît sur l'écran de jeu.
 </fr-FR>
 <de-DE>
-Peep Push ist jetzt offiziell da.
+Keine Tipps mehr? Sieh dir eine kurze Werbung an und erhalte 2 weitere (bis zu 5-mal am Tag).
 
-Ein Sokoban-Puzzle, in dem ein Küken Eier in ihre Nester schiebt —
-300 Level zum Start, mit 4 Spielelementen (Eis, Baue, Knöpfe und Türen,
-rissiger Boden) und 5 Herausforderungs-Level pro Kapitel. Jeden Tag
-schaltet sich ein neues Rätsel frei.
+Behoben: Die Anzahl der verbleibenden Tipps ging auf dem Bildschirm nicht zurück.
 
-Viel Spaß!
+Ab dieser Version erscheint Werbung unten in den Menüs und gelegentlich nach einigen geschafften Leveln.
+Im Spielbildschirm wird keine Werbung angezeigt.
 </de-DE>
 <pt-BR>
-Peep Push chegou oficialmente.
+Acabaram as dicas? Agora você pode assistir a um anúncio curto para ganhar mais 2 (até 5 vezes por dia).
 
-Um quebra-cabeça Sokoban em que um pintinho empurra ovos até seus ninhos —
-300 fases para começar, com 4 mecânicas (gelo, tocas, botões e portas,
-chão rachado) e 5 fases de desafio por capítulo. Todo dia um novo
-quebra-cabeça é desbloqueado.
+Corrigido: o número de dicas restantes não diminuía na tela ao usar uma.
 
-Bom jogo!
+A partir desta versão, aparecem anúncios na parte de baixo dos menus e, às vezes, depois de concluir algumas fases.
+Não há anúncios na tela de jogo.
 </pt-BR>
 <ru-RU>
-Peep Push официально вышла.
+Закончились подсказки? Посмотрите короткую рекламу и получите ещё 2 (до 5 раз в день).
 
-Головоломка сокобан, где цыплёнок толкает яйца в гнёзда — 300 уровней
-для начала, 4 механики (лёд, норы, кнопки и двери, треснувший пол)
-и 5 уровней-испытаний в каждой главе. Каждый день открывается новая
-головоломка.
+Исправлено: счётчик оставшихся подсказок не уменьшался на экране.
 
-Приятной игры!
+С этой версии реклама показывается внизу меню и иногда после прохождения нескольких уровней.
+На игровом экране рекламы нет.
 </ru-RU>
 <th>
-Peep Push เปิดให้บริการอย่างเป็นทางการแล้ว
+คำใบ้หมดแล้ว? ดูโฆษณาสั้น ๆ เพื่อรับคำใบ้เพิ่ม 2 อัน (สูงสุดวันละ 5 ครั้ง)
 
-เกมปริศนาโซโคบันที่ลูกเจี๊ยบดันไข่เข้ารัง เริ่มต้นด้วย 300 ด่าน
-พร้อมกลไก 4 แบบ (น้ำแข็ง โพรง ปุ่มกับประตู พื้นแตกร้าว)
-และด่านท้าทาย 5 ด่านในทุกบท ทุกวันจะมีปริศนาใหม่ปลดล็อกด้วย
+แก้ไขปัญหาจำนวนคำใบ้ที่เหลือบนหน้าจอไม่ลดลงหลังใช้งาน
 
-ขอให้สนุกกับการเล่นนะครับ/คะ!
+ตั้งแต่เวอร์ชันนี้ จะมีโฆษณาแสดงที่ด้านล่างของหน้าเมนู และบางครั้งหลังผ่านด่านไปหลายด่าน
+หน้าจอเล่นเกมจะไม่มีโฆษณา
 </th>
 <vi>
-Peep Push chính thức ra mắt.
+Hết gợi ý? Giờ bạn có thể xem một quảng cáo ngắn để nhận thêm 2 gợi ý (tối đa 5 lần mỗi ngày).
 
-Trò giải đố Sokoban trong đó gà con đẩy trứng vào tổ — khởi đầu với
-300 màn chơi, 4 cơ chế (băng, hang, nút và cửa, sàn nứt) và 5 màn thử
-thách mỗi chương. Mỗi ngày còn mở khóa một câu đố mới.
+Đã sửa lỗi số gợi ý còn lại trên màn hình không giảm khi dùng.
 
-Chúc bạn chơi vui vẻ!
+Từ phiên bản này, quảng cáo hiển thị ở cuối các màn hình menu và thỉnh thoảng sau khi qua vài màn.
+Màn hình chơi game không có quảng cáo.
 </vi>
 <id>
-Peep Push resmi dirilis.
+Petunjuk habis? Kini kamu bisa menonton iklan singkat untuk mendapat 2 petunjuk lagi (maksimal 5 kali sehari).
 
-Teka-teki Sokoban di mana anak ayam mendorong telur ke sarangnya — mulai
-dengan 300 level, 4 mekanik (es, liang, tombol dan pintu, lantai retak),
-dan 5 level tantangan tiap bab. Setiap hari ada teka-teki baru yang
-terbuka juga.
+Diperbaiki: jumlah petunjuk tersisa di layar tidak berkurang saat dipakai.
 
-Selamat bermain!
+Mulai versi ini, iklan muncul di bagian bawah layar menu dan sesekali setelah menyelesaikan beberapa level.
+Tidak ada iklan di layar permainan.
 </id>
