@@ -1,11 +1,11 @@
-/// 메뉴 화면 아래에 까는 배너.
+/// 게임 화면 맨 위에 까는 배너. 배너는 이 자리 하나뿐이다.
 ///
-/// **게임 화면에는 넣지 않는다.** 게임 화면은 조작 영역을 고정으로 빼고 남는
-/// 공간에 맞춰 칸 크기를 정한다. 배너를 끼우면 판이 작아지고, 작은 기기에서는
-/// 칸이 게임이 안 될 만큼 줄어든다.
+/// 조작(조이스틱·방향키)은 화면 아래쪽이라, 배너를 위에 둬야 광고를 잘못
+/// 누르지 않는다.
 ///
-/// 광고가 없거나(초기화 실패·인터넷 없음) 아직 안 차면 **아무 자리도 차지하지
-/// 않는다.** 빈 회색 띠가 남아 있는 것보다 낫다.
+/// 광고를 쓸 수 있으면 **불러오기 전부터 자리를 잡아 둔다** — 판을 하는 도중에
+/// 광고가 들어오면서 판이 아래로 밀리면 안 된다. 광고를 못 쓰면(초기화 실패·
+/// 인터넷 없음) 아무 자리도 차지하지 않는다.
 library;
 
 import 'package:flutter/material.dart';
@@ -68,16 +68,17 @@ class _AdBannerState extends State<AdBanner> {
   @override
   Widget build(BuildContext context) {
     final ad = _ad;
-    // Scaffold의 하단 슬롯에 놓는다. SafeArea가 시스템 바 몫을 대신 잡아 주므로
-    // 광고가 없을 때도 목록 마지막 항목이 내비게이션 바에 가리지 않는다.
-    return SafeArea(
-      top: false,
+    if (!widget.ads.ready) return const SizedBox.shrink();
+    return SizedBox(
+      height: AdSize.banner.height.toDouble(),
       child: (!_loaded || ad == null)
-          ? const SizedBox.shrink()
-          : SizedBox(
-              width: ad.size.width.toDouble(),
-              height: ad.size.height.toDouble(),
-              child: AdWidget(ad: ad),
+          ? null
+          : Center(
+              child: SizedBox(
+                width: ad.size.width.toDouble(),
+                height: ad.size.height.toDouble(),
+                child: AdWidget(ad: ad),
+              ),
             ),
     );
   }

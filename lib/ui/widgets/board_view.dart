@@ -247,6 +247,11 @@ class _SmoothPositionedState extends State<SmoothPositioned>
   late Offset _from = Offset(widget.left, widget.top);
   late Offset _to = _from;
 
+  /// 이번 걸음을 시작할 때의 곡선. 걸음 도중에 [widget.curve]가 바뀌어도
+  /// (방향키를 톡 눌렀다 떼면 등속→감속으로 바뀐다) 끝까지 이걸로 간다 —
+  /// 도중에 곡선을 갈아 끼우면 같은 시점의 위치가 달라져 병아리가 툭 튄다.
+  late Curve _curve = widget.curve;
+
   @override
   void initState() {
     super.initState();
@@ -262,6 +267,7 @@ class _SmoothPositionedState extends State<SmoothPositioned>
     // 시작점으로 되돌아가면 튀어 보인다.
     _from = _at(_c.value);
     _to = target;
+    _curve = widget.curve;
     if (widget.duration <= Duration.zero) {
       _c.value = 1.0; // 순간이동
     } else {
@@ -271,7 +277,7 @@ class _SmoothPositionedState extends State<SmoothPositioned>
   }
 
   Offset _at(double t) =>
-      Offset.lerp(_from, _to, widget.curve.transform(t.clamp(0.0, 1.0)))!;
+      Offset.lerp(_from, _to, _curve.transform(t.clamp(0.0, 1.0)))!;
 
   @override
   void dispose() {

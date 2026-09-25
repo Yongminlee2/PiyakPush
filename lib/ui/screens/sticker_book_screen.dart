@@ -3,10 +3,8 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../widgets/ad_banner.dart';
 
 import '../../models/sticker.dart';
-import '../../services/ad_service.dart';
 import '../../services/save_service.dart';
 import '../strings.dart';
 import '../theme.dart';
@@ -24,9 +22,6 @@ class StickerBookScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold, color: PiyakColors.outline)),
         backgroundColor: PiyakColors.creamBg,
       ),
-      // 배너는 메뉴 화면에만. 게임 화면에 넣으면 판이 작아진다.
-      bottomNavigationBar:
-          AdBanner(ads: context.watch<AdService>()),
       body: GridView.builder(
         padding: scrollPadding(context, all: 16),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

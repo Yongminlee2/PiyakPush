@@ -15,8 +15,8 @@ import '../../services/sound_service.dart';
 import '../nav.dart';
 import '../strings.dart';
 import '../theme.dart';
-import '../widgets/ad_banner.dart';
 import '../widgets/act_background.dart';
+import '../widgets/ad_banner.dart';
 import 'game_screen.dart';
 
 class DailyScreen extends StatelessWidget {
@@ -45,6 +45,7 @@ class DailyScreen extends StatelessWidget {
           builder: (context, save, _) => GameScreen(
           level: level,
           title: S.dailyTitle,
+          banner: AdBanner(ads: ads),
           useDpad: save.dpadOn,
           hintProvider: (c) => hintFor(c.board),
           canWatchAd: () =>
@@ -89,9 +90,6 @@ class DailyScreen extends StatelessWidget {
         ),
         backgroundColor: PiyakColors.creamBg,
       ),
-      // 배너는 메뉴 화면에만. 게임 화면에 넣으면 판이 작아진다.
-      bottomNavigationBar:
-          AdBanner(ads: context.watch<AdService>()),
       body: Stack(
         children: [
           const ActBackground(wide: true),

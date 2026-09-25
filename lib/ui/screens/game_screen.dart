@@ -70,6 +70,10 @@ class GameScreen extends StatefulWidget {
 
   /// 지금 광고를 보여줄 수 있는지 (준비됨 + 하루 상한 남음).
   final bool Function()? canWatchAd;
+
+  /// 화면 맨 위(HUD 위)에 까는 배너. 조작은 화면 아래쪽이라 위에 둬야
+  /// 광고를 잘못 누르지 않는다. null이면 자리를 비우지 않는다.
+  final Widget? banner;
   const GameScreen({
     required this.level,
     this.title,
@@ -84,6 +88,7 @@ class GameScreen extends StatefulWidget {
     this.onBlocked,
     this.onWatchAdForHints,
     this.canWatchAd,
+    this.banner,
     super.key,
   });
 
@@ -383,6 +388,7 @@ class _GameScreenState extends State<GameScreen> {
             ActBackground(chapter: widget.level.chapter),
             Column(
               children: [
+                ?widget.banner,
                 GameHud(
                   title: widget.title ?? widget.level.title,
                   moves: c.moves,

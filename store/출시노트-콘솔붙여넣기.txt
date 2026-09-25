@@ -3,102 +3,89 @@
 
 힌트를 써도 화면의 남은 개수가 줄지 않던 문제를 고쳤습니다.
 
-이번 버전부터 메뉴 화면 아래에 광고가 표시되고, 스테이지를 몇 판 깬 뒤 가끔 광고가 나옵니다.
-게임 화면에는 광고가 나오지 않습니다.
+이번 버전부터 게임 화면 맨 위에 광고가 표시되고, 스테이지를 몇 판 깬 뒤 가끔 광고가 나옵니다.
 </ko-KR>
 <en-US>
 Out of hints? You can now watch a short ad to get 2 more (up to 5 times a day).
 
 Fixed the remaining-hint count not going down on screen when you used a hint.
 
-From this version, ads appear at the bottom of menu screens and occasionally after clearing a few stages.
-No ads are shown on the game screen.
+From this version, an ad appears at the top of the game screen, and occasionally after clearing a few stages.
 </en-US>
 <ja-JP>
 ヒントを使い切ったら、短い広告を見てヒントを2個もらえます(1日5回まで)。
 
 ヒントを使っても画面の残り数が減らない問題を修正しました。
 
-このバージョンから、メニュー画面の下に広告が表示され、ステージを何回かクリアした後にときどき広告が出ます。
-ゲーム画面には広告は出ません。
+このバージョンから、ゲーム画面の上部に広告が表示され、ステージを何回かクリアした後にときどき広告が出ます。
 </ja-JP>
 <zh-CN>
 提示用完时,可以观看一段短广告获得 2 个提示(每天最多 5 次)。
 
 修复了使用提示后屏幕上的剩余数量不减少的问题。
 
-从本版本起,菜单画面底部会显示广告,通关几关后偶尔也会出现广告。
-游戏画面中不会出现广告。
+从本版本起,游戏画面顶部会显示广告,通关几关后偶尔也会出现广告。
 </zh-CN>
 <zh-TW>
 提示用完時,可以觀看一段短廣告獲得 2 個提示(每天最多 5 次)。
 
 修復了使用提示後畫面上的剩餘數量不減少的問題。
 
-從本版本起,選單畫面底部會顯示廣告,通關幾關後偶爾也會出現廣告。
-遊戲畫面中不會出現廣告。
+從本版本起,遊戲畫面頂部會顯示廣告,通關幾關後偶爾也會出現廣告。
 </zh-TW>
 <es-ES>
 ¿Sin pistas? Ahora puedes ver un anuncio corto para conseguir 2 más (hasta 5 veces al día).
 
 Corregido: el número de pistas restantes no bajaba en pantalla al usar una.
 
-Desde esta versión aparecen anuncios en la parte inferior de los menús y, de vez en cuando, tras superar algunos niveles.
-No se muestran anuncios en la pantalla de juego.
+Desde esta versión aparece un anuncio en la parte superior de la pantalla de juego y, de vez en cuando, tras superar algunos niveles.
 </es-ES>
 <fr-FR>
 Plus d'indices ? Regardez une courte publicité pour en obtenir 2 (jusqu'à 5 fois par jour).
 
 Correction : le nombre d'indices restants ne diminuait pas à l'écran après utilisation.
 
-À partir de cette version, des publicités s'affichent en bas des menus et parfois après quelques niveaux terminés.
-Aucune publicité n'apparaît sur l'écran de jeu.
+À partir de cette version, une publicité s'affiche en haut de l'écran de jeu, et parfois après quelques niveaux terminés.
 </fr-FR>
 <de-DE>
 Keine Tipps mehr? Sieh dir eine kurze Werbung an und erhalte 2 weitere (bis zu 5-mal am Tag).
 
 Behoben: Die Anzahl der verbleibenden Tipps ging auf dem Bildschirm nicht zurück.
 
-Ab dieser Version erscheint Werbung unten in den Menüs und gelegentlich nach einigen geschafften Leveln.
-Im Spielbildschirm wird keine Werbung angezeigt.
+Ab dieser Version erscheint Werbung oben im Spielbildschirm und gelegentlich nach einigen geschafften Leveln.
 </de-DE>
 <pt-BR>
 Acabaram as dicas? Agora você pode assistir a um anúncio curto para ganhar mais 2 (até 5 vezes por dia).
 
 Corrigido: o número de dicas restantes não diminuía na tela ao usar uma.
 
-A partir desta versão, aparecem anúncios na parte de baixo dos menus e, às vezes, depois de concluir algumas fases.
-Não há anúncios na tela de jogo.
+A partir desta versão, aparece um anúncio no topo da tela de jogo e, às vezes, depois de concluir algumas fases.
 </pt-BR>
 <ru-RU>
 Закончились подсказки? Посмотрите короткую рекламу и получите ещё 2 (до 5 раз в день).
 
 Исправлено: счётчик оставшихся подсказок не уменьшался на экране.
 
-С этой версии реклама показывается внизу меню и иногда после прохождения нескольких уровней.
-На игровом экране рекламы нет.
+С этой версии реклама показывается вверху игрового экрана и иногда после прохождения нескольких уровней.
 </ru-RU>
 <th>
 คำใบ้หมดแล้ว? ดูโฆษณาสั้น ๆ เพื่อรับคำใบ้เพิ่ม 2 อัน (สูงสุดวันละ 5 ครั้ง)
 
 แก้ไขปัญหาจำนวนคำใบ้ที่เหลือบนหน้าจอไม่ลดลงหลังใช้งาน
 
-ตั้งแต่เวอร์ชันนี้ จะมีโฆษณาแสดงที่ด้านล่างของหน้าเมนู และบางครั้งหลังผ่านด่านไปหลายด่าน
-หน้าจอเล่นเกมจะไม่มีโฆษณา
+ตั้งแต่เวอร์ชันนี้ จะมีโฆษณาแสดงที่ด้านบนของหน้าจอเล่นเกม และบางครั้งหลังผ่านด่านไปหลายด่าน
 </th>
 <vi>
 Hết gợi ý? Giờ bạn có thể xem một quảng cáo ngắn để nhận thêm 2 gợi ý (tối đa 5 lần mỗi ngày).
 
 Đã sửa lỗi số gợi ý còn lại trên màn hình không giảm khi dùng.
 
-Từ phiên bản này, quảng cáo hiển thị ở cuối các màn hình menu và thỉnh thoảng sau khi qua vài màn.
-Màn hình chơi game không có quảng cáo.
+Từ phiên bản này, quảng cáo hiển thị ở đầu màn hình chơi game và thỉnh thoảng sau khi qua vài màn.
 </vi>
 <id>
 Petunjuk habis? Kini kamu bisa menonton iklan singkat untuk mendapat 2 petunjuk lagi (maksimal 5 kali sehari).
 
 Diperbaiki: jumlah petunjuk tersisa di layar tidak berkurang saat dipakai.
 
-Mulai versi ini, iklan muncul di bagian bawah layar menu dan sesekali setelah menyelesaikan beberapa level.
-Tidak ada iklan di layar permainan.
+Mulai versi ini, iklan muncul di bagian atas layar permainan dan sesekali setelah menyelesaikan beberapa level.
 </id>

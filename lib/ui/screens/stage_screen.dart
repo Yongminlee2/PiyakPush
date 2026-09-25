@@ -16,8 +16,8 @@ import '../../services/sound_service.dart';
 import '../nav.dart';
 import '../strings.dart';
 import '../theme.dart';
-import '../widgets/ad_banner.dart';
 import '../widgets/act_background.dart';
+import '../widgets/ad_banner.dart';
 import 'game_screen.dart';
 
 class StageScreen extends StatelessWidget {
@@ -38,6 +38,7 @@ class StageScreen extends StatelessWidget {
         key: ValueKey(level.id),
         level: level,
         title: S.stageTitle(chapter, idx + 1, level.title),
+        banner: AdBanner(ads: ads),
         useDpad: save.dpadOn,
         hintProvider: (c) => hintFor(c.board),
         hintsLeft: save.hints,
@@ -119,9 +120,6 @@ class StageScreen extends StatelessWidget {
         ),
         backgroundColor: PiyakColors.creamBg,
       ),
-      // 배너는 메뉴 화면에만. 게임 화면에 넣으면 판이 작아진다.
-      bottomNavigationBar:
-          AdBanner(ads: context.watch<AdService>()),
       body: Stack(
         children: [
           ActBackground(chapter: chapter, wide: true),

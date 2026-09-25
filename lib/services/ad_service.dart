@@ -28,10 +28,10 @@ abstract final class AdUnits {
   static const _realInterstitial = 'ca-app-pub-6583185616347720/6850080385';
   static const _realRewarded = 'ca-app-pub-6583185616347720/7405537596';
 
-  static String get banner => kDebugMode ? _testBanner : _realBanner;
+  static String get banner => !kReleaseMode ? _testBanner : _realBanner;
   static String get interstitial =>
-      kDebugMode ? _testInterstitial : _realInterstitial;
-  static String get rewarded => kDebugMode ? _testRewarded : _realRewarded;
+      !kReleaseMode ? _testInterstitial : _realInterstitial;
+  static String get rewarded => !kReleaseMode ? _testRewarded : _realRewarded;
 }
 
 class AdService {
