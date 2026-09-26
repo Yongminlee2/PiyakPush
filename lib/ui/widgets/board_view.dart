@@ -16,8 +16,8 @@ import '../../services/tile_art.dart';
 import '../theme.dart';
 import 'tile_painter.dart';
 
-/// 한 칸 이동 시간. DPad 연속 간격(170ms)과 거의 맞물려야 꾹 눌러 이동할 때
-/// 칸마다 멈칫하지 않는다.
+/// 한 칸 이동 시간. 걸음은 항상 등속이다 — 감속 곡선을 쓰면 걸음마다 빠르게
+/// 출발해 멈추듯 끝나서, 연타하거나 꾹 누를 때 "멈췄다 확 튀는" 박자가 된다.
 const kMoveAnim = Duration(milliseconds: 160);
 
 class BoardView extends StatefulWidget {
@@ -34,9 +34,6 @@ class BoardView extends StatefulWidget {
   final Dir? bumpDir;
   final int bumpToken;
 
-  /// 홀드 연속 이동 중 — 곡선을 등속으로 바꿔 칸 경계에서 멈칫하지 않게 한다.
-  final bool gliding;
-
   /// 이번 이동이 굴 순간이동이었는가 (병아리/알 따로). true면 그 칸은
   /// 미끄러져 가지 않고 즉시 나타난다 — 굴은 순간이동이지 미끄럼이 아니다.
   final bool chickTeleported;
@@ -48,7 +45,6 @@ class BoardView extends StatefulWidget {
     this.hintMoves,
     this.bumpDir,
     this.bumpToken = 0,
-    this.gliding = false,
     this.chickTeleported = false,
     this.eggTeleported = false,
     super.key,
@@ -113,7 +109,6 @@ class _BoardViewState extends State<BoardView> {
             SmoothPositioned(
               key: ValueKey('egg$i'),
               duration: widget.eggTeleported ? Duration.zero : kMoveAnim,
-              curve: widget.gliding ? Curves.linear : Curves.easeOut,
               left: _eggOrder[i].x * cell,
               top: _eggOrder[i].y * cell,
               width: cell,
@@ -127,7 +122,6 @@ class _BoardViewState extends State<BoardView> {
           SmoothPositioned(
             key: const ValueKey('chick'),
             duration: widget.chickTeleported ? Duration.zero : kMoveAnim,
-            curve: widget.gliding ? Curves.linear : Curves.easeOut,
             left: b.chick.x * cell,
             top: b.chick.y * cell - cell * 0.12, // 살짝 위로 — 입체감
             width: cell,
@@ -219,7 +213,6 @@ class SmoothPositioned extends StatefulWidget {
   final double width;
   final double height;
   final Duration duration;
-  final Curve curve;
   final Widget child;
   const SmoothPositioned({
     required this.left,
@@ -227,7 +220,6 @@ class SmoothPositioned extends StatefulWidget {
     required this.width,
     required this.height,
     required this.duration,
-    required this.curve,
     required this.child,
     super.key,
   });
@@ -247,11 +239,6 @@ class _SmoothPositionedState extends State<SmoothPositioned>
   late Offset _from = Offset(widget.left, widget.top);
   late Offset _to = _from;
 
-  /// 이번 걸음을 시작할 때의 곡선. 걸음 도중에 [widget.curve]가 바뀌어도
-  /// (방향키를 톡 눌렀다 떼면 등속→감속으로 바뀐다) 끝까지 이걸로 간다 —
-  /// 도중에 곡선을 갈아 끼우면 같은 시점의 위치가 달라져 병아리가 툭 튄다.
-  late Curve _curve = widget.curve;
-
   @override
   void initState() {
     super.initState();
@@ -267,7 +254,6 @@ class _SmoothPositionedState extends State<SmoothPositioned>
     // 시작점으로 되돌아가면 튀어 보인다.
     _from = _at(_c.value);
     _to = target;
-    _curve = widget.curve;
     if (widget.duration <= Duration.zero) {
       _c.value = 1.0; // 순간이동
     } else {
@@ -277,7 +263,7 @@ class _SmoothPositionedState extends State<SmoothPositioned>
   }
 
   Offset _at(double t) =>
-      Offset.lerp(_from, _to, _curve.transform(t.clamp(0.0, 1.0)))!;
+      Offset.lerp(_from, _to, t.clamp(0.0, 1.0))!;
 
   @override
   void dispose() {

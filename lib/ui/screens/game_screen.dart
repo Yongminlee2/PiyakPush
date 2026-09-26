@@ -115,13 +115,13 @@ class _GameScreenState extends State<GameScreen> {
   /// 같은 간격으로 어긋나 박자가 흔들린다.
   Timer? _stepCooldown;
 
-  /// 걷는 중에 들어와 미뤄 둔 걸음 (하나만 기억한다).
-  Dir? _queuedDir;
+  /// 걷는 중에 들어와 미뤄 둔 걸음들. 누른 순서대로 한 칸씩 간다.
+  ///
+  /// 예전엔 하나만 기억해서, 연타하면 세 번째 누름이 사라졌다.
+  final List<Dir> _queued = [];
 
   /// 힌트를 푸는 중 — 도는 표시를 띄우고 중복 요청을 막는다.
   bool _hintBusy = false;
-
-  bool get _gliding => _heldDir != null;
 
   /// 조이스틱이 방향을 잡거나 바꿀 때. 같은 방향이면 무시.
   void holdDir(Dir d) {
@@ -134,7 +134,7 @@ class _GameScreenState extends State<GameScreen> {
   /// 걸음 요청. 직전 걸음이 아직 그려지는 중이면 끝날 때까지 미룬다.
   void _requestMove(Dir d) {
     if (_stepCooldown != null) {
-      _queuedDir = d; // 입력을 버리지 않는다 — 반드시 한 칸으로 이어진다
+      _queued.add(d); // 입력을 버리지 않는다 — 누른 만큼 한 칸씩 이어진다
       return;
     }
     _step(d);
@@ -144,13 +144,11 @@ class _GameScreenState extends State<GameScreen> {
   void _afterStep() {
     _stepCooldown = null;
     if (!mounted) return;
-    final queued = _queuedDir;
-    _queuedDir = null;
-    final next = queued ?? _heldDir;
+    final next = _queued.isNotEmpty ? _queued.removeAt(0) : _heldDir;
     if (next != null) _step(next);
   }
 
-  /// 손을 뗐거나 데드존으로 돌아왔을 때 — 마지막 칸은 easeOut으로 감속.
+  /// 손을 뗐거나 데드존으로 돌아왔을 때.
   ///
   /// 진행 중인 걸음과 미뤄 둔 걸음은 그대로 둔다. 누른 건 이미 누른 것이다.
   void releaseDir() {
@@ -198,7 +196,7 @@ class _GameScreenState extends State<GameScreen> {
   void _stopWalking() {
     _stepCooldown?.cancel();
     _stepCooldown = null;
-    _queuedDir = null;
+    _queued.clear();
     _heldDir = null;
   }
 
@@ -215,6 +213,7 @@ class _GameScreenState extends State<GameScreen> {
       // 자동 반복을 두면 벽에 대고 누르는 동안 160ms마다 부딪히는 소리가
       // 끝없이 난다. 방향을 바꾸면 다시 걷는다.
       _heldDir = null;
+      _queued.clear(); // 벽에 대고 연타한 것도 한 번만 부딪힌다
       setState(() {
         _bumpDir = d;
         _bumpToken++;
@@ -445,7 +444,6 @@ class _GameScreenState extends State<GameScreen> {
                                             hintMoves: _hintMoves,
                                             bumpDir: _bumpDir,
                                             bumpToken: _bumpToken,
-                                            gliding: _gliding,
                                             chickTeleported: c.lastEvents.any(
                                               (e) => e.type ==
                                                   GameEventType.chickTeleported,
