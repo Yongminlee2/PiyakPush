@@ -1,4 +1,4 @@
-/// 막별 배경 — 기존 codex 배너 그림을 하단에 깔고 위는 크림색으로 녹인다.
+/// 막별 배경 — 기존 배너 그림을 하단에 깔고 위는 크림색으로 녹인다.
 library;
 
 import 'package:flutter/material.dart';
