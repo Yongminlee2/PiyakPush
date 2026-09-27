@@ -62,14 +62,11 @@ class AdService {
       // 광고를 켜지 않는다. 게임은 그대로 한다.
       if (!await ConsentInformation.instance.canRequestAds()) return;
       await MobileAds.instance.initialize();
-      // 콘텐츠 등급을 "어린이와 성인 모두"로 신고해 뒀다. 그래서 광고도
-      // 전체 이용가만 나오게 묶고, 어린이 대상 취급으로 맞춤 광고를 끈다.
-      // 수익은 줄지만 정책 위반 위험이 없다.
+      // 콘솔 타겟층이 만 13세 이상이라 어린이 대상 취급은 하지 않는다.
+      // 광고 등급은 청소년(T)까지 — 성인(MA) 광고는 병아리 게임과 안 맞는다.
+      // (1.1.0은 전체이용가 + 어린이 취급이었는데 광고가 거의 안 들어왔다)
       await MobileAds.instance.updateRequestConfiguration(
-        RequestConfiguration(
-          maxAdContentRating: MaxAdContentRating.g,
-          ageRestrictedTreatment: AgeRestrictedTreatment.child,
-        ),
+        RequestConfiguration(maxAdContentRating: MaxAdContentRating.t),
       );
       _ready = true;
       unawaited(_loadInterstitial());
@@ -90,7 +87,7 @@ class AdService {
     final done = Completer<void>();
     try {
       ConsentInformation.instance.requestConsentInfoUpdate(
-        ConsentRequestParameters(tagForUnderAgeOfConsent: true),
+        ConsentRequestParameters(),
         () async {
           try {
             await ConsentForm.loadAndShowConsentFormIfRequired((_) {});
