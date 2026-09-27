@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:provider/provider.dart';
 
 import 'services/ad_service.dart';
@@ -29,6 +33,27 @@ Future<void> main() async {
   await _tryInit(ads.init);
 
   runApp(PiyakPushApp(save: save, sound: sound, ads: ads));
+  // 첫 화면이 뜬 뒤에 묻는다 — Play의 업데이트 화면은 앱 화면 위에 뜬다.
+  WidgetsBinding.instance.addPostFrameCallback((_) => _offerUpdate());
+}
+
+/// 스토어에 새 버전이 있으면 Play의 업데이트 화면을 띄운다.
+///
+/// 사용자가 "업데이트"를 누르면 Play가 받아서 설치하고 앱을 다시 켠다.
+/// 닫으면 그냥 지금 버전으로 계속한다 — 억지로 막지 않는다.
+/// Play 스토어에서 설치한 릴리스에서만 동작한다. 디버그나 직접 깐 APK,
+/// 인터넷이 없을 때는 조용히 넘어간다.
+Future<void> _offerUpdate() async {
+  if (!kReleaseMode || !Platform.isAndroid) return;
+  try {
+    final info = await InAppUpdate.checkForUpdate();
+    if (info.updateAvailability == UpdateAvailability.updateAvailable &&
+        info.immediateUpdateAllowed) {
+      await InAppUpdate.performImmediateUpdate();
+    }
+  } catch (_) {
+    // 업데이트 확인이 실패해도 게임은 그대로 한다.
+  }
 }
 
 Future<void> _tryInit(Future<void> Function() step) async {
