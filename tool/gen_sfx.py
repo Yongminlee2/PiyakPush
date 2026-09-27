@@ -85,8 +85,30 @@ def mix(a, b, offset_ms=0):
 
 random.seed(42)
 
-# 이동: 짧은 쉬익 — 발걸음 스치는 노이즈. (삐약 소리는 걸음마다 나니 금방 질렸다)
-write_wav("move", noise(85, 0.30, lowpass=0.55))
+
+
+def peep(ms, f0, f1, f2, vol):
+    """병아리 삐약 한 번: f0→f1로 올랐다가 f2로 떨어지는 짧은 지저귐.
+
+    사인파에 약한 2배음을 얹어 새소리처럼 만들고, 잔떨림(비브라토)을 조금 준다.
+    끝을 부드럽게(sin²) 닫아 딸깍 소리가 나지 않게 한다.
+    """
+    n = int(SR * ms / 1000)
+    out = []
+    phase = 0.0
+    for i in range(n):
+        x = i / n
+        f = f0 + (f1 - f0) * (x / 0.35) if x < 0.35 else f1 + (f2 - f1) * ((x - 0.35) / 0.65)
+        f *= 1 + 0.02 * math.sin(2 * math.pi * 38 * i / SR)
+        phase += 2 * math.pi * f / SR
+        v = math.sin(phase) + 0.25 * math.sin(2 * phase)
+        out.append(v / 1.25 * vol * math.sin(math.pi * x) ** 2)
+    return out
+
+
+# 이동: 삐약. 걸음마다 나므로 작고 짧게(90ms) — 날카로운 고음을 피해
+# 2.2~2.9kHz에 머문다. (예전엔 노이즈 "쉬익"이었는데 듣기 싫다고 했다)
+write_wav("move", peep(90, 2200, 2900, 2000, 0.32))
 # 막힘: 벽에 부딪히는 툭. 병아리가 튕기는 연출만 있고 소리가 없어
 # 화면과 귀가 따로 놀았다. 이동음보다 낮고 짧게 — 걸음과 헷갈리지 않게.
 write_wav("bump", mix(tone(120, 70, 0.42, "tri"), noise(45, 0.22, 0.8)))
