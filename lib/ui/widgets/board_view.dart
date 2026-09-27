@@ -18,7 +18,7 @@ import 'tile_painter.dart';
 
 /// 한 칸 이동 시간. 걸음은 항상 등속이다 — 감속 곡선을 쓰면 걸음마다 빠르게
 /// 출발해 멈추듯 끝나서, 연타하거나 꾹 누를 때 "멈췄다 확 튀는" 박자가 된다.
-const kMoveAnim = Duration(milliseconds: 160);
+const kMoveAnim = Duration(milliseconds: 180);
 
 class BoardView extends StatefulWidget {
   final Board board;
@@ -325,7 +325,7 @@ class _ChickSpriteState extends State<ChickSprite>
   )..repeat(reverse: true);
   late final AnimationController _hop = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 160),
+    duration: kMoveAnim, // 총총 뛰는 홉은 한 걸음과 같은 길이
     animationBehavior: AnimationBehavior.preserve,
   );
   late final AnimationController _bump = AnimationController(

@@ -210,7 +210,7 @@ class _GameScreenState extends State<GameScreen> {
       // 막힌 입력에 아무 반응이 없으면 조작이 뻣뻣하게 느껴진다.
       widget.onBlocked?.call();
       // 다만 한 번만이다. 막힌 방향으로 계속 밀어붙여 봐야 소용없는데,
-      // 자동 반복을 두면 벽에 대고 누르는 동안 160ms마다 부딪히는 소리가
+      // 자동 반복을 두면 벽에 대고 누르는 동안 한 걸음마다 부딪히는 소리가
       // 끝없이 난다. 방향을 바꾸면 다시 걷는다.
       _heldDir = null;
       _queued.clear(); // 벽에 대고 연타한 것도 한 번만 부딪힌다

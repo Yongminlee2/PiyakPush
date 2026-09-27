@@ -25,16 +25,55 @@ abstract class SfxPool {
   Future<void> dispose();
 }
 
-/// 실제 [AudioPool]을 감싼 것.
-class _AudioSfxPool implements SfxPool {
-  final AudioPool _pool;
-  _AudioSfxPool(this._pool);
+/// 저지연 모드(안드로이드 SoundPool) 플레이어 몇 개를 돌려 가며 쓴다.
+///
+/// 예전엔 [AudioPool](MediaPlayer)을 썼다. MediaPlayer는 재생할 때마다 속도
+/// 설정을 미디어 서버에 묻는데, 이게 **가끔 0.12초씩 폰의 메인 스레드를
+/// 붙잡았다.** Flutter는 화면을 그릴 신호(vsync)를 메인 스레드에서 받으므로
+/// 그동안 화면이 멈춘다 — 걷는 병아리가 걸음마다 가끔 "끊겼다 한 번에"
+/// 가던 진짜 원인이었다(실기기 프레임 기록으로 확인).
+/// SoundPool은 짧은 효과음용이라 재생 호출이 가볍다.
+///
+/// 오디오 포커스는 요청하지 않는다. 걸음마다 포커스를 잡으면 그것도 시스템
+/// 호출이고, 듣던 음악이 걸음마다 끊긴다.
+class _LowLatencyPool implements SfxPool {
+  final List<AudioPlayer> _players;
+  var _next = 0;
+  _LowLatencyPool(this._players);
+
+  static final _ctx = AudioContext(
+    android: AudioContextAndroid(audioFocus: AndroidAudioFocus.none),
+  );
+
+  /// 같은 소리가 겹쳐 날 수 있는 수. 걸음(180ms)보다 긴 소리(둥지 230·굴
+  /// 250·미끄럼 200)가 연달아 나도 앞 소리를 끊지 않게 셋을 돌린다.
+  static const _voices = 3;
+
+  static Future<_LowLatencyPool> fromAsset(String asset) async {
+    final players = <AudioPlayer>[];
+    for (var i = 0; i < _voices; i++) {
+      final p = AudioPlayer();
+      await p.setPlayerMode(PlayerMode.lowLatency);
+      await p.setAudioContext(_ctx);
+      await p.setReleaseMode(ReleaseMode.stop);
+      await p.setSource(AssetSource(asset));
+      players.add(p);
+    }
+    return _LowLatencyPool(players);
+  }
 
   @override
-  Future<void> start() => _pool.start();
+  Future<void> start() async {
+    final p = _players[_next];
+    _next = (_next + 1) % _players.length;
+    // 저지연 모드는 "재생 끝" 신호가 없어서, 한 번 울린 플레이어는 멈춰
+    // 두지 않으면 다음 resume이 끝난 소리를 이어 틀려다 조용히 넘어간다.
+    await p.stop();
+    await p.resume();
+  }
 
   @override
-  Future<void> dispose() => _pool.dispose();
+  Future<void> dispose() => Future.wait(_players.map((p) => p.dispose()));
 }
 
 class SoundService {
@@ -43,7 +82,7 @@ class SoundService {
   /// 테스트 주입용. null이면 실제 AudioPlayer 재생.
   final Future<void> Function(String asset)? playOverride;
 
-  /// 테스트 주입용. null이면 실제 [AudioPool]을 만든다.
+  /// 테스트 주입용. null이면 실제 저지연 플레이어 묶음을 만든다.
   final Future<SfxPool> Function(String asset)? poolFactory;
 
   SoundService({required this.isMuted, this.playOverride, this.poolFactory});
@@ -79,13 +118,7 @@ class SoundService {
   Future<SfxPool> _createPool(String asset) async {
     final custom = poolFactory;
     if (custom != null) return custom(asset);
-    // maxPlayers는 "미리 만들어 두는 수"가 아니라 **재사용하려고 남겨 두는
-    // 상한**이다. 재생 요청이 몰리면 풀이 알아서 더 만들고, 다 끝나면
-    // 넷까지만 남기고 나머지는 반납한다. 걸음이 160ms 간격이라 그보다 긴
-    // 소리(둥지 230·굴 250·미끄럼 200)가 겹칠 수 있어 넷까지 남긴다.
-    return _AudioSfxPool(
-      await AudioPool.createFromAsset(path: asset, maxPlayers: 4),
-    );
+    return _LowLatencyPool.fromAsset(asset);
   }
 
   Future<void> _make(Sfx s) async {
